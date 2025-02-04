@@ -65,9 +65,9 @@ MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
 
 void MsgTable_SetEntry(MsgTable* table, u16 textId, char* text) {
     // Updating Existing Entry:
-    MsgEntry* search = MsgTable_GetEntry(table, textId);
+    MsgBuffer* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
-        strcpy(search->buf.schar, text);
+        strcpy(search->schar, text);
         return;
     }
 
