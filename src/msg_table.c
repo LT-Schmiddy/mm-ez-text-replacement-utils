@@ -2,7 +2,7 @@
 #include "libc/string.h"
 // Patches a function in the base game that's used to check if the player should quickspin.
 
-#define START_USING_BINARY_LOOKUP 4
+#define START_USING_BINARY_LOOKUP 1
 
 MsgTable* MsgTable_Create() {
     MsgTable* retVal = recomp_alloc(sizeof(MsgTable));
@@ -48,7 +48,7 @@ MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
     }
     
     // To avoid bugs, don't use binary search until we've reached a minimum size.
-    if (table->count - 1 < START_USING_BINARY_LOOKUP) {
+    if (table->count < START_USING_BINARY_LOOKUP) {
         for (u32 i = 0; i < table->count; i++) {
             if (table->entries[0].textId == id) {
                 return &table->entries[i].buf;
@@ -56,16 +56,19 @@ MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
         }
         return NULL;
     } else {
-        u32 low = 0;
-        u32 high = table->count - 1;
+        s64 low = 0;
+        s64 high = table->count - 1;
         MsgEntry* entries = table->entries;
 
         while (low <= high) {
+
             int mid = low + (high - low) / 2;
             // recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
         
             if (entries[mid].textId == id) {
+                recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
                 return &entries[mid].buf;
+                
             }
             else if (entries[mid].textId < id) {
                 low = mid + 1;

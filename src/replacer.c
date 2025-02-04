@@ -17,6 +17,7 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     MsgTable_SetEntry(table, 0x0007, "Adding Eight Entry");
     MsgTable_SetEntry(table, 0x0008, "Adding Ninth Entry");
     MsgTable_SetEntry(table, 0x0009, "Adding Tenth Entry");
+    // MsgTable_SetEntry(table, 0x0000, "Adding Zeroth Entry");
 
     // MsgTable_BubbleSort(table);
     // MsgTable_QuickSort(table);
@@ -25,10 +26,10 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
         recomp_printf("Position %d, Content: %s\n", table->entries[i].textId, table->entries[i].buf.schar);
     }
 
-    MsgBuffer* entry = MsgTable_GetEntry(table, 0x0003);
+    MsgBuffer* entry = MsgTable_GetEntry(table, 0x0000);
     if (entry != NULL) {
         recomp_printf("LOOKUP - Content: %s\n", entry->schar);
     } else {
-        recomp_printf("LOOKUP - NULL");
+        recomp_printf("LOOKUP - NULL\n");
     }
 } 

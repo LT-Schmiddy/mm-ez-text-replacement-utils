@@ -6,6 +6,9 @@
 #define MSG_TABLE_START_SIZE 1
 #define LOG_HEADER "EZ Text Replacer: "
 
+// typedef unsigned long u64;
+// typedef long s64;
+
 typedef union {
         char schar[1280]; // msgBuf
         u16 wchar[640];   // msgBufWide
