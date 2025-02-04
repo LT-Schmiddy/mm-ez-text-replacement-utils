@@ -38,7 +38,40 @@ void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity) {
     recomp_printf("%sExpand MsgTable capacity to %d entries.\n", LOG_HEADER, table->capacity);
 }
 
-void MsgTable_AddEntry(MsgTable* table, u16 textId, char* text) {
+
+MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
+    // Using Binary search. Thanks to the constant sorting, This should be faster than a linear search:
+    u32 low = 0;
+    u32 high = table->count - 1;
+    MsgEntry* entries = table->entries;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
+    
+        if (entries[mid].textId == id) {
+            return &entries[mid];
+        }
+        if (entries[mid].textId < id) {
+            low = mid + 1;
+        }
+        else {
+            high = mid - 1;
+        }
+    }
+
+    return NULL;
+}
+
+void MsgTable_SetEntry(MsgTable* table, u16 textId, char* text) {
+    // Updating Existing Entry:
+    MsgEntry* search = MsgTable_GetEntry(table, textId);
+    if (search != NULL) {
+        strcpy(search->buf.schar, text);
+        return;
+    }
+
+    // Handle New Entry:
     if (table->capacity <= table->count) {
         MsgTable_Expand(table);
     }
