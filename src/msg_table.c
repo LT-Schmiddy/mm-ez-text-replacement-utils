@@ -39,7 +39,7 @@ void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity) {
 }
 
 
-MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
+MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
     // Using Binary search. Thanks to the constant sorting, This should be faster than a linear search:
     u32 low = 0;
     u32 high = table->count - 1;
@@ -50,7 +50,7 @@ MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
         recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
     
         if (entries[mid].textId == id) {
-            return &entries[mid];
+            return &entries[mid].buf;
         }
         if (entries[mid].textId < id) {
             low = mid + 1;
@@ -80,7 +80,7 @@ void MsgTable_SetEntry(MsgTable* table, u16 textId, char* text) {
     strcpy(table->entries[table->count].buf.schar, text);
     table->count++;
 
-    if (table->automaticSorting) {
+    if (table->_automaticSorting) {
         MsgTable_BubbleSort(table);
     }
 
