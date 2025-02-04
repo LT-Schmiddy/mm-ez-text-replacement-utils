@@ -49,19 +49,18 @@ MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
     
     // To avoid bugs, don't use binary search until we've reached a minimum size.
     if (table->count < START_USING_BINARY_LOOKUP) {
-        for (u32 i = 0; i < table->count; i++) {
+        for (s32 i = 0; i < table->count; i++) {
             if (table->entries[0].textId == id) {
                 return &table->entries[i].buf;
             }
         }
         return NULL;
     } else {
-        s64 low = 0;
-        s64 high = table->count - 1;
+        s32 low = 0;
+        s32 high = table->count - 1;
         MsgEntry* entries = table->entries;
 
         while (low <= high) {
-
             int mid = low + (high - low) / 2;
             // recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
         

@@ -21,8 +21,8 @@ typedef struct {
 
 typedef struct {
     MsgEntry* entries;
-    u32 count;
-    u32 capacity;
+    u16 count;
+    u16 capacity;
     bool _automaticSorting;
 } MsgTable;
 
