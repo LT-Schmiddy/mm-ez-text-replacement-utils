@@ -2,6 +2,8 @@
 #include "libc/string.h"
 // Patches a function in the base game that's used to check if the player should quickspin.
 
+#define START_USING_BINARY_LOOKUP 5
+
 MsgTable* MsgTable_Create() {
     MsgTable* retVal = recomp_alloc(sizeof(MsgTable));
     
@@ -9,7 +11,7 @@ MsgTable* MsgTable_Create() {
     retVal->entries = recomp_alloc( MSG_TABLE_START_SIZE * sizeof(MsgEntry));
     retVal->count = 0;
     retVal->capacity = MSG_TABLE_START_SIZE;
-    retVal->automaticSorting = true;
+    retVal->_automaticSorting = true;
 
     recomp_printf("%sMessage Table Created.\n", LOG_HEADER);
     return retVal;
@@ -41,26 +43,40 @@ void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity) {
 
 MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
     // Using Binary search. Thanks to the constant sorting, This should be faster than a linear search:
-    u32 low = 0;
-    u32 high = table->count - 1;
-    MsgEntry* entries = table->entries;
-
-    while (low <= high) {
-        int mid = low + (high - low) / 2;
-        recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
-    
-        if (entries[mid].textId == id) {
-            return &entries[mid].buf;
-        }
-        if (entries[mid].textId < id) {
-            low = mid + 1;
-        }
-        else {
-            high = mid - 1;
-        }
+    if (table->count == 0) {
+        return NULL;
     }
+    
+    // To avoid bugs, don't use binary search until we've reached a minimum size.
+    if (table->count < START_USING_BINARY_LOOKUP) {
+        for (u32 i = 0; i < table->count; i++) {
+            if (table->entries[0].textId == id) {
+                return &table->entries[0].buf;
+            }
+        }
+        return NULL;
+    } else {
+        u32 low = 0;
+        u32 high = table->count - 1;
+        MsgEntry* entries = table->entries;
 
-    return NULL;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
+        
+            if (entries[mid].textId == id) {
+                return &entries[mid].buf;
+            }
+            else if (entries[mid].textId < id) {
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+            }
+        }
+
+        return NULL;
+    }
 }
 
 void MsgTable_SetEntry(MsgTable* table, u16 textId, char* text) {

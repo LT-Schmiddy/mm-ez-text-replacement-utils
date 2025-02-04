@@ -22,9 +22,9 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
         recomp_printf("Position %d, Content: %s\n", table->entries[i].textId, table->entries[i].buf.schar);
     }
 
-    MsgEntry* entry = MsgTable_GetEntry(table, 0x0003);
+    MsgBuffer* entry = MsgTable_GetEntry(table, 0x0003);
     if (entry != NULL) {
-        recomp_printf("LOOKUP - Position %d, Content: %s\n", entry->textId, entry->buf.schar);
+        recomp_printf("LOOKUP - Content: %s\n", entry->schar);
     } else {
         recomp_printf("LOOKUP - NULL");
     }

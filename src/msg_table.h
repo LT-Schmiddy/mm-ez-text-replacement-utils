@@ -28,7 +28,7 @@ MsgTable* MsgTable_Create();
 void MsgTable_Destroy(MsgTable* tbl);
 void MsgTable_Expand(MsgTable* table);
 void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity);
-MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id);
+MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id);
 void MsgTable_SetEntry(MsgTable* table, u16 textId, char* text);
 void MsgTable_BubbleSort(MsgTable* table);
 void MsgTable_Swap(MsgEntry* a, MsgEntry* b);
