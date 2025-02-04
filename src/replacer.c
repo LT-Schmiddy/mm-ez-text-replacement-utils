@@ -13,7 +13,10 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     MsgTable_SetEntry(table, 0x0003, "Adding Third Entry");
     MsgTable_SetEntry(table, 0x0002, "Adding Fourth Entry");
     MsgTable_SetEntry(table, 0x0001, "Adding Fifth Entry");
-    MsgTable_SetEntry(table, 0x0000, "Adding Sixth Entry");
+    MsgTable_SetEntry(table, 0x0006, "Adding Seventh Entry");
+    MsgTable_SetEntry(table, 0x0007, "Adding Eight Entry");
+    MsgTable_SetEntry(table, 0x0008, "Adding Ninth Entry");
+    MsgTable_SetEntry(table, 0x0009, "Adding Tenth Entry");
 
     // MsgTable_BubbleSort(table);
     // MsgTable_QuickSort(table);
