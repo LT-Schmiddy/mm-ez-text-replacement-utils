@@ -1,8 +1,87 @@
-#include "msg_table.h"
 #include "libc/string.h"
+#include "msg_table.h"
+#include "util.h"
 // Patches a function in the base game that's used to check if the player should quickspin.
 
-#define START_USING_BINARY_LOOKUP 1
+#define START_USING_BINARY_LOOKUP 3
+#define MSG_ENDING_CHAR '\xBF'
+#define PIPE_CHAR '|'
+
+
+s32 MsgBuffer_Len(MsgBuffer* buf) {
+
+    recomp_printf("Counting: ");
+    int i = 0;
+    while (buf->schar[i] != MSG_ENDING_CHAR && i < MESSAGE_BUFFER_SIZE) {
+        recomp_printf( is_printable_char(buf->schar[i]) ? "%c" : "\\x%1X", buf->schar[i]);    
+        i++;
+    }
+
+    recomp_printf(" -> %i\n", i + 2);  
+    // Add 2 to include termination char, and to go from index to length.
+    return i + 1;
+}
+
+s32 MsgBuffer_CopyFromCharStr(MsgBuffer* dst, char* src) {
+
+    recomp_printf("Copying: ");
+    int i = 0;
+
+    bool should_end = false;
+    while (!should_end && i < MESSAGE_CONTENT_SIZE) {
+
+        recomp_printf( is_printable_char(src[i]) ? "%c" : "\\x%02X", src[i]);
+        dst->schar[i + MESSAGE_HEADER_SIZE] = src[i];
+        i++;
+
+        should_end = src[i] == MSG_ENDING_CHAR;
+    }
+    
+    recomp_printf(" -> %i\n", i); 
+    // Add 1 to go from index to length. 
+    return i + 0;
+}
+
+s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
+
+    recomp_printf("Copying w/ Pipes: ");
+    int src_pos = 0;
+    int dst_pos = 0;
+    bool should_end = false;
+    while (!should_end && dst_pos < MESSAGE_CONTENT_SIZE) {
+
+        recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
+
+        if (src[src_pos] != PIPE_CHAR) {
+            dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = src[src_pos];
+            should_end = src[src_pos] == MSG_ENDING_CHAR;
+            src_pos++;
+            dst_pos++;
+        } else if (src[src_pos + 1] == PIPE_CHAR) {
+            dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = PIPE_CHAR;
+            src_pos += 2;
+            dst_pos++;
+        } else {
+            // Parsing Byte Escape:
+            char write_byte = hex_to_byte(&src[src_pos + 1]);
+            dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = write_byte;
+            should_end = write_byte == MSG_ENDING_CHAR;
+            src_pos += 3;
+            dst_pos++;
+        }
+        // if (src[src_pos] != PIPE_CHAR) {
+        //     recomp_printf("PIPE");
+        // }
+
+    }
+    // Copy Final Char:
+    // recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
+    // dst->schar[src_pos + MESSAGE_HEADER_SIZE] = src[src_pos];
+    
+    recomp_printf(" -> %i\n", src_pos); 
+    // Add 1 to go from index to length. 
+    return dst_pos + 0;
+}
 
 MsgTable* MsgTable_Create() {
     MsgTable* retVal = recomp_alloc(sizeof(MsgTable));
@@ -40,18 +119,20 @@ void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity) {
     recomp_printf("%sExpand MsgTable capacity to %d entries.\n", LOG_HEADER, table->capacity);
 }
 
-
-MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
+MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
     // Using Binary search. Thanks to the constant sorting, This should be faster than a linear search:
     if (table->count == 0) {
+        recomp_printf("Empty Lookup:\n");
         return NULL;
-    }
+    }    
     
     // To avoid bugs, don't use binary search until we've reached a minimum size.
     if (table->count < START_USING_BINARY_LOOKUP) {
+        recomp_printf("Linear Lookup:\n");
         for (s32 i = 0; i < table->count; i++) {
-            if (table->entries[0].textId == id) {
-                return &table->entries[i].buf;
+            recomp_printf("\t%i\n", table->entries[i].textId);
+            if (table->entries[i].textId == id) {
+                return &table->entries[i];
             }
         }
         return NULL;
@@ -59,14 +140,14 @@ MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
         s32 low = 0;
         s32 high = table->count - 1;
         MsgEntry* entries = table->entries;
-
+        recomp_printf("Binary Lookup:\n");
         while (low <= high) {
             int mid = low + (high - low) / 2;
             // recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
         
             if (entries[mid].textId == id) {
-                recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
-                return &entries[mid].buf;
+                recomp_printf("\thigh: %d, Low: %d, Central Point: %d\n", high, low, mid);
+                return &entries[mid];
                 
             }
             else if (entries[mid].textId < id) {
@@ -81,11 +162,30 @@ MsgBuffer* MsgTable_GetEntry(MsgTable* table, u16 id) {
     }
 }
 
-void MsgTable_SetEntry(MsgTable* table, u16 textId, char* text) {
+MsgBuffer* MsgTable_GetBuffer(MsgTable* table, u16 id) {
+    MsgEntry* entry = MsgTable_GetEntry(table, id);
+    if (entry == NULL) {
+        return NULL;
+    }
+
+    return &entry->buf;
+}
+
+s32 MsgTable_GetBufferLen(MsgTable* table, u16 id) {
+    MsgEntry* entry = MsgTable_GetEntry(table, id);
+    if (entry == NULL) {
+        return -1;
+    }
+
+    return entry->len;
+}
+
+void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     // Updating Existing Entry:
-    MsgBuffer* search = MsgTable_GetEntry(table, textId);
+    MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
-        strcpy(search->schar, text);
+        memcpy(&search->buf, entry, sizeof(MsgBuffer));
+        search->len = MsgBuffer_Len(&search->buf);
         return;
     }
 
@@ -94,15 +194,17 @@ void MsgTable_SetEntry(MsgTable* table, u16 textId, char* text) {
         MsgTable_Expand(table);
     }
 
-    table->entries[table->count].textId = textId;
-    strcpy(table->entries[table->count].buf.schar, text);
+    search = &table->entries[table->count];
+    search->textId = textId;
+    memcpy(&search->buf, entry, sizeof(MsgBuffer));
+    search->len = MsgBuffer_Len(&search->buf);
     table->count++;
 
     if (table->_automaticSorting) {
         MsgTable_BubbleSort(table);
     }
 
-    recomp_printf("%sAdding text entry: %s\n", LOG_HEADER, text);
+    recomp_printf("%sAdding text entry id %i: %s\n", LOG_HEADER, search->textId, &table->entries[table->count].buf.schar[MESSAGE_HEADER_SIZE]);
 }
 
 
