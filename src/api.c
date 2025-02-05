@@ -1,15 +1,8 @@
-#include "mod_globals.h"
-#include "msg_table.h"
-#include "msg_table_quicksort.h"
-#include "libc/string.h"
-#include "util.h"
-
+#include "api.h"
 
 MsgTable* table;
 
 RECOMP_DECLARE_EVENT(OnDeclareTextReplacement());
-
-
 
 RECOMP_EXPORT void EZTR_ReplaceText(s16 textId,
     u8 text_box_type, 
@@ -38,29 +31,6 @@ RECOMP_EXPORT void EZTR_ReplaceText(s16 textId,
 RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     table = MsgTable_Create();
     OnDeclareTextReplacement();
-    char byte = '\xcb';
-    char hex_out[3];
-
-    write_byte_to_hex(byte, hex_out);
-    hex_out[2] = '\0';
-
-    u8 out = 0; 
-    out = hex_to_byte(hex_out);
-
-    recomp_printf("Testing hex parsing -> \\x%s\n", hex_out);
-    recomp_printf("Testing hex parsing -> \\x%i\n", out);
-
-    EZTR_ReplaceText(0x0C01, 0, 1, 254, 0xffff, 0xffff, 0xffff, "|17You can |01save|00 your |01progress|00 and|11|01quit|00 here. When you|11reselect your file, my face will|11appear by your file name.|18|10|17This indicates that the next time|11you reopen your file, you'll resume|11playing at this |01very place|00 and|11|01time|00 with your |01current status|00.|18|10|01Save|00 your |01progress|00 up to this|11point and |01quit|00 playing?|11|02|C2No|11Yes|BF|00");
-    // EZTR_ReplaceText(0x0C01, 0, 1, 254, 0xffff, 0xffff, 0xffff, "|17|01Save|00 your |01progress|00 up to this|11point and |01quit|00 playing?|11|02|C2No|11Yes|BF|00");
-    // EZTR_ReplaceText(0x0C01, 0, 1, 254, 0xffff, 0xffff, 0xffff, "\x17You can \x01save\x00 your \x01progress\x00 and\x11\x01quit\x00 here. When you\x11reselect your file, my face will\x11 appear by your file name.\x18\x10\x17This indicates that the next time\x11you reopen your file, you'll resume\x11playing at this \x01very place\x00 and\x11\x01time\x00 with your \x01current status\x00.\x18\x10\x01Save\x00 your \x01progress\x00 up to this\x11point and \x01quit\x00 playing?\x11\x02\xC2No\x11Yes\xBF\x00");
-    // EZTR_ReplaceText(0x0C01, 0, 1, 254, 0xffff, 0xffff, 0xffff, "\x17Quit Playing?\x11\x02\xC2No\x11Yes\xBF\x00");
-}
-
-void print_buf(char* buf, int len) {
-    int i = 0;
-    for (int i = 0; i < len; i++) {
-        recomp_printf("%c", buf[i]);
-    }
 }
 
 RECOMP_HOOK_RETURN("Message_OpenText") void handle_text_replacement(PlayState* play, u16 p_textId) {
