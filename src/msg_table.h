@@ -7,6 +7,10 @@
 #define MESSAGE_HEADER_SIZE 11
 #define MESSAGE_CONTENT_SIZE MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
 
+#define START_USING_BINARY_LOOKUP 3
+#define MSG_ENDING_CHAR '\xBF'
+#define PIPE_CHAR '|'
+
 #define MSG_TABLE_START_SIZE 16
 #define LOG_HEADER "EZ Text Replacer: "
 
@@ -14,8 +18,9 @@
 // typedef long s64;
 
 typedef union {
-        char schar[MESSAGE_BUFFER_SIZE]; // msgBuf
-        u16 wchar[MESSAGE_BUFFER_SIZE / 2];   // msgBufWide
+        char schar[1280]; // msgBuf
+        u16 wchar[640];   // msgBufWide
+        u64 force_structure_alignment_msg;
 } MsgBuffer;
 
 typedef struct {

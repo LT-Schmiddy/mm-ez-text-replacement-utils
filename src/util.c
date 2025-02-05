@@ -30,7 +30,7 @@ char hex_to_byte(char* str) {
     u8 upper = 0;
     u8 lower = 0;
     
-    recomp_printf("Str: %s\n", str);
+    // recomp_printf("Str: %s\n", str);
     for (u8 i = 0; i < 16; i++) {
         
         if (toupper(str[0]) == _hex[i]) {

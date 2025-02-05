@@ -1,25 +1,21 @@
 #include "libc/string.h"
 #include "msg_table.h"
 #include "util.h"
-// Patches a function in the base game that's used to check if the player should quickspin.
 
-#define START_USING_BINARY_LOOKUP 3
-#define MSG_ENDING_CHAR '\xBF'
-#define PIPE_CHAR '|'
 
 
 s32 MsgBuffer_Len(MsgBuffer* buf) {
 
-    recomp_printf("Counting: ");
+    // recomp_printf("Counting: ");
     int i = 0;
     while (buf->schar[i] != MSG_ENDING_CHAR && i < MESSAGE_BUFFER_SIZE) {
-        recomp_printf( is_printable_char(buf->schar[i]) ? "%c" : "\\x%1X", buf->schar[i]);    
+        // recomp_printf( is_printable_char(buf->schar[i]) ? "%c" : "\\x%1X", buf->schar[i]);    
         i++;
     }
 
-    recomp_printf(" -> %i\n", i + 2);  
+    // recomp_printf(" -> %i\n", i + 2);  
     // Add 2 to include termination char, and to go from index to length.
-    return i + 1;
+    return i + 2;
 }
 
 s32 MsgBuffer_CopyFromCharStr(MsgBuffer* dst, char* src) {
@@ -30,7 +26,7 @@ s32 MsgBuffer_CopyFromCharStr(MsgBuffer* dst, char* src) {
     bool should_end = false;
     while (!should_end && i < MESSAGE_CONTENT_SIZE) {
 
-        recomp_printf( is_printable_char(src[i]) ? "%c" : "\\x%02X", src[i]);
+        // recomp_printf( is_printable_char(src[i]) ? "%c" : "\\x%02X", src[i]);
         dst->schar[i + MESSAGE_HEADER_SIZE] = src[i];
         i++;
 
@@ -39,7 +35,7 @@ s32 MsgBuffer_CopyFromCharStr(MsgBuffer* dst, char* src) {
     
     recomp_printf(" -> %i\n", i); 
     // Add 1 to go from index to length. 
-    return i + 0;
+    return i + 1;
 }
 
 s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
@@ -63,24 +59,22 @@ s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
             dst_pos++;
         } else {
             // Parsing Byte Escape:
+            recomp_printf("%c%c", src[src_pos + 1], src[src_pos + 2]);
             char write_byte = hex_to_byte(&src[src_pos + 1]);
             dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = write_byte;
             should_end = write_byte == MSG_ENDING_CHAR;
             src_pos += 3;
             dst_pos++;
         }
-        // if (src[src_pos] != PIPE_CHAR) {
-        //     recomp_printf("PIPE");
-        // }
 
     }
     // Copy Final Char:
-    // recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
+    recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
     // dst->schar[src_pos + MESSAGE_HEADER_SIZE] = src[src_pos];
     
     recomp_printf(" -> %i\n", src_pos); 
     // Add 1 to go from index to length. 
-    return dst_pos + 0;
+    return dst_pos + 1;
 }
 
 MsgTable* MsgTable_Create() {
