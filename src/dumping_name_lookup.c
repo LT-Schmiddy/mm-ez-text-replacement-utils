@@ -1,6 +1,6 @@
 #include "dumping.h"
 
-const char* eztr_textbox_names = {
+const char* eztr_textbox_names[] = {
     "EZTR_STANDARD_TEXT_BOX_I",
     "EZTR_WOODEN_SIGN_BACKGROUND",
     "EZTR_TRANSLUSCENT_BLUE_TEXT_BOX",
@@ -19,7 +19,8 @@ const char* eztr_textbox_names = {
     "EZTR_RED_TEXT_BOX_II"
 };
 
-const char* eztr_icon_names = {
+
+const char* eztr_icon_names[] = {
     "EZTR_ICON_NOTHING",
     "EZTR_ICON_GREEN_RUPEE",
     "EZTR_ICON_BLUE_RUPEE",

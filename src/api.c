@@ -39,8 +39,11 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
 RECOMP_HOOK_RETURN("Message_OpenText") void handle_text_replacement(PlayState* play, u16 p_textId) {
     MessageContext* msgCtx = &play->msgCtx;
     Font* font = &msgCtx->font;
-    
     u16 textId = msgCtx->currentTextId;
+
+    if (TEXT_DUMPING) {
+        dump_buffer(textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
+    }
 
     MsgEntry* entry = MsgTable_GetEntry(table, textId);
     IF_DEBUG recomp_printf("Message_OpenText Hook: %d\n", textId); 

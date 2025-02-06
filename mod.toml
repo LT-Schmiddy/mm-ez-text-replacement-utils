@@ -5,13 +5,13 @@
 
 # Unique ID of this mod. Pick something long enough that it'll never be the same as any other mod.
 # The name displayed in the mod management menu is separate from this so this doesn't need to be human readable.
-id = "Simple_Text_Replacer_API"
+id = "EZ_Text_Replacer_API"
 
 # Version of this mod.
 version = "1.0.0"
 
 # The name that will show up for this mod in the mod menu. This should be human readable.
-display_name = "Simple Text Replacer API"
+display_name = "EZ Text Replacer API"
 
 # The description that will show up when this mod is displayed in the mod menu. This should be human readable.
 description =  """
@@ -67,7 +67,7 @@ additional_files = [
 [[manifest.config_options]]
 id = "debug_logging"
 name = "Debug Logging"
-description = "Log additional statements to the console for debugging."
+description = "Log additional information to the console for debugging."
 type = "Enum"
 options = [ "Off", "On" ]
 default = "Off"
@@ -75,7 +75,7 @@ default = "Off"
 [[manifest.config_options]]
 id = "text_dumping"
 name = "Text Dumping"
-description = "Print information to console on each message as it's loaded. Useful for creating your own text replacements."
+description = "Print information to console on each message as it's loaded, and before any text replacement happens. Useful for creating your own text replacements."
 type = "Enum"
 options = [ "Off", "On" ]
 default = "Off"

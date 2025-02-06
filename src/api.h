@@ -6,6 +6,7 @@
 #include "msg_table_quicksort.h"
 #include "libc/string.h"
 #include "util.h"
+#include "dumping.h"
 
 typedef enum {
     EZTR_STANDARD_TEXT_BOX_I = 0X0,
