@@ -6,14 +6,14 @@
 
 s32 MsgBuffer_Len(MsgBuffer* buf) {
 
-    // recomp_printf("Counting: ");
+    IF_DEBUG recomp_printf("Counting: ");
     int i = 0;
     while (buf->schar[i] != MSG_ENDING_CHAR && i < MESSAGE_BUFFER_SIZE) {
-        // recomp_printf( is_printable_char(buf->schar[i]) ? "%c" : "\\x%1X", buf->schar[i]);    
+        IF_DEBUG recomp_printf( is_printable_char(buf->schar[i]) ? "%c" : "\\x%1X", buf->schar[i]);    
         i++;
     }
 
-    // recomp_printf(" -> %i\n", i + 2);  
+    IF_DEBUG recomp_printf(" -> %i\n", i + 2);  
     // Add 2 to include termination char, and to go from index to length.
     return i + 2;
 }
@@ -45,8 +45,6 @@ s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
     int dst_pos = 0;
     bool should_end = false;
     while (!should_end && dst_pos < MESSAGE_CONTENT_SIZE) {
-
-        recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
 
         if (src[src_pos] != PIPE_CHAR) {
             dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = src[src_pos];
@@ -125,7 +123,7 @@ MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
     if (table->count < START_USING_BINARY_LOOKUP) {
         IF_DEBUG recomp_printf("Linear Lookup:\n");
         for (s32 i = 0; i < table->count; i++) {
-            recomp_printf("\t%i\n", table->entries[i].textId);
+            IF_DEBUG recomp_printf("\t%i\n", table->entries[i].textId);
             if (table->entries[i].textId == id) {
                 return &table->entries[i];
             }

@@ -28,7 +28,6 @@ RECOMP_EXPORT void EZTR_ReplaceText(s16 textId,
         MsgBuffer_CopyFromCharStr(&buf, content);
     }
     
-    recomp_printf("EZ Add %i\n", textId);
     MsgTable_SetBuffer(table, textId, &buf);
 }
 
@@ -44,12 +43,12 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_text_replacement(PlayState* p
     u16 textId = msgCtx->currentTextId;
 
     MsgEntry* entry = MsgTable_GetEntry(table, textId);
-    recomp_printf("Message_OpenText Hook: %d\n", textId); 
+    IF_DEBUG recomp_printf("Message_OpenText Hook: %d\n", textId); 
     // Handled text replacement
     if (entry != NULL) {
         recomp_printf("Replacing text %d.\n", textId);        
         msgCtx->msgLength = entry->len + 1;
-        recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
+        IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         
         // Not completely sure, but using memcpy causes issues if the message is too long.
         // We'll just copy char by char.

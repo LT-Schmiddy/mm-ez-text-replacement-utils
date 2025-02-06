@@ -11,7 +11,7 @@ id = "Simple_Text_Replacer_API"
 version = "1.0.0"
 
 # The name that will show up for this mod in the mod menu. This should be human readable.
-display_name = "Simple Text Replacer_API"
+display_name = "Simple Text Replacer API"
 
 # The description that will show up when this mod is displayed in the mod menu. This should be human readable.
 description =  """
@@ -70,7 +70,7 @@ name = "Debug Logging"
 description = "Log additional statements to the console for debugging."
 type = "Enum"
 options = [ "Off", "On" ]
-default = "On"
+default = "Off"
 
 [[manifest.config_options]]
 id = "text_dumping"
@@ -78,5 +78,5 @@ name = "Text Dumping"
 description = "Print information to console on each message as it's loaded. Useful for creating your own text replacements."
 type = "Enum"
 options = [ "Off", "On" ]
-default = "On"
+default = "Off"
 

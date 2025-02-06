@@ -27,7 +27,7 @@ typedef enum {
     EZTR_BOMBERS_NOTEBOOK = 0XD,
     EZTR_INVISIBLE_TEXT_BOX_VI = 0XE,
     EZTR_RED_TEXT_BOX_II = 0XF
-} EzTextBoxType;
+} EztrTextBoxType;
 
 typedef enum {
     EZTR_ICON_NOTHING = 0x00,
@@ -285,7 +285,7 @@ typedef enum {
     EZTR_ICON_NOTHING_92 = 0xFC,
     EZTR_ICON_NOTHING_93 = 0xFD,
     EZTR_ICON_NO_ICON = 0xFE
-} EzTextBoxIcon;
+} EztrTextBoxIcon;
 
 
 #endif
