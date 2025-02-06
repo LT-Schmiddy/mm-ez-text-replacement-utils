@@ -50,7 +50,7 @@ native_libraries = [
 elf_path = "build/mod.elf"
 
 # Output mod filename.
-mod_filename = "Simple_Text_Replacer_API_1.0.0"
+mod_filename = "EZ_Text_Replacer_API_1.0.0"
 
 # Reference symbol files.
 func_reference_syms_file = "Zelda64RecompSyms/mm.us.rev1.syms.toml"
