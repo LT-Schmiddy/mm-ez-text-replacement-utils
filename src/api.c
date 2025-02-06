@@ -2,7 +2,7 @@
 
 MsgTable* table;
 
-RECOMP_DECLARE_EVENT(OnDeclareTextReplacement());
+RECOMP_DECLARE_EVENT(EZTR_OnDeclareTextReplacement());
 
 RECOMP_EXPORT void EZTR_ReplaceText(s16 textId,
     u8 text_box_type, 
@@ -11,6 +11,7 @@ RECOMP_EXPORT void EZTR_ReplaceText(s16 textId,
     u16 next_message_id, 
     u16 first_item_rupees, 
     u16 second_item_rupees,
+    bool pipe_escape_bytes,
     char* content
 ) {
     MsgBuffer buf;
@@ -21,11 +22,14 @@ RECOMP_EXPORT void EZTR_ReplaceText(s16 textId,
     memcpy(&buf.schar[5], &first_item_rupees, sizeof(u16));
     memcpy(&buf.schar[7], &second_item_rupees, sizeof(u16));
 
-    // MsgBuffer_CopyFromCharStr(&buf, content);
-    MsgBuffer_CopyFromCharStr_PipeEscapeBytes(&buf, content);
+    if (pipe_escape_bytes) {
+        MsgBuffer_CopyFromCharStr_PipeEscapeBytes(&buf, content);
+    } else {
+        MsgBuffer_CopyFromCharStr(&buf, content);
+    }
+    
     recomp_printf("EZ Add %i\n", textId);
     MsgTable_SetBuffer(table, textId, &buf);
-
 }
 
 RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
