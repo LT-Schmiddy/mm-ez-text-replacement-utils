@@ -60,3 +60,23 @@ data_reference_syms_files = [ "Zelda64RecompSyms/mm.us.rev1.datasyms.toml", "Zel
 additional_files = [
     "thumb.dds"
 ]
+
+
+## Config options:
+
+[[manifest.config_options]]
+id = "debug_logging"
+name = "Debug Logging"
+description = "Log additional statements to the console for debugging."
+type = "Enum"
+options = [ "Off", "On" ]
+default = "On"
+
+[[manifest.config_options]]
+id = "text_dumping"
+name = "Text Dumping"
+description = "Print information to console on each message as it's loaded. Useful for creating your own text replacements."
+type = "Enum"
+options = [ "Off", "On" ]
+default = "On"
+

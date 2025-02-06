@@ -20,27 +20,27 @@ s32 MsgBuffer_Len(MsgBuffer* buf) {
 
 s32 MsgBuffer_CopyFromCharStr(MsgBuffer* dst, char* src) {
 
-    recomp_printf("Copying: ");
+    IF_DEBUG recomp_printf("Copying: ");
     int i = 0;
 
     bool should_end = false;
     while (!should_end && i < MESSAGE_CONTENT_SIZE) {
 
-        // recomp_printf( is_printable_char(src[i]) ? "%c" : "\\x%02X", src[i]);
+        IF_DEBUG recomp_printf( is_printable_char(src[i]) ? "%c" : "\\x%02X", src[i]);
         dst->schar[i + MESSAGE_HEADER_SIZE] = src[i];
         i++;
 
         should_end = src[i] == MSG_ENDING_CHAR;
     }
     
-    recomp_printf(" -> %i\n", i); 
+    IF_DEBUG recomp_printf(" -> %i\n", i); 
     // Add 1 to go from index to length. 
     return i + 1;
 }
 
 s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
 
-    recomp_printf("Copying w/ Pipes: ");
+    IF_DEBUG recomp_printf("Copying w/ Pipes: ");
     int src_pos = 0;
     int dst_pos = 0;
     bool should_end = false;
@@ -50,6 +50,7 @@ s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
 
         if (src[src_pos] != PIPE_CHAR) {
             dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = src[src_pos];
+            IF_DEBUG recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
             should_end = src[src_pos] == MSG_ENDING_CHAR;
             src_pos++;
             dst_pos++;
@@ -59,7 +60,7 @@ s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
             dst_pos++;
         } else {
             // Parsing Byte Escape:
-            recomp_printf("%c%c", src[src_pos + 1], src[src_pos + 2]);
+            IF_DEBUG recomp_printf("%c%c", src[src_pos + 1], src[src_pos + 2]);
             char write_byte = hex_to_byte(&src[src_pos + 1]);
             dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = write_byte;
             should_end = write_byte == MSG_ENDING_CHAR;
@@ -69,10 +70,10 @@ s32 MsgBuffer_CopyFromCharStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
 
     }
     // Copy Final Char:
-    recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
+    IF_DEBUG recomp_printf( is_printable_char(src[src_pos]) ? "%c" : "\\x%02X", src[src_pos]);
     // dst->schar[src_pos + MESSAGE_HEADER_SIZE] = src[src_pos];
     
-    recomp_printf(" -> %i\n", src_pos); 
+    IF_DEBUG recomp_printf(" -> %i\n", src_pos); 
     // Add 1 to go from index to length. 
     return dst_pos + 1;
 }
@@ -116,13 +117,13 @@ void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity) {
 MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
     // Using Binary search. Thanks to the constant sorting, This should be faster than a linear search:
     if (table->count == 0) {
-        recomp_printf("Empty Lookup:\n");
+        IF_DEBUG recomp_printf("Empty Lookup:\n");
         return NULL;
     }    
     
     // To avoid bugs, don't use binary search until we've reached a minimum size.
     if (table->count < START_USING_BINARY_LOOKUP) {
-        recomp_printf("Linear Lookup:\n");
+        IF_DEBUG recomp_printf("Linear Lookup:\n");
         for (s32 i = 0; i < table->count; i++) {
             recomp_printf("\t%i\n", table->entries[i].textId);
             if (table->entries[i].textId == id) {
@@ -134,13 +135,13 @@ MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
         s32 low = 0;
         s32 high = table->count - 1;
         MsgEntry* entries = table->entries;
-        recomp_printf("Binary Lookup:\n");
+        IF_DEBUG recomp_printf("Binary Lookup:\n");
         while (low <= high) {
             int mid = low + (high - low) / 2;
             // recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
         
             if (entries[mid].textId == id) {
-                recomp_printf("\thigh: %d, Low: %d, Central Point: %d\n", high, low, mid);
+                IF_DEBUG recomp_printf("\thigh: %d, Low: %d, Central Point: %d\n", high, low, mid);
                 return &entries[mid];
                 
             }
@@ -198,7 +199,7 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
         MsgTable_BubbleSort(table);
     }
 
-    recomp_printf("%sAdding text entry id %i: %s\n", LOG_HEADER, search->textId, &table->entries[table->count].buf.schar[MESSAGE_HEADER_SIZE]);
+    recomp_printf("%sAdding text entry id %i\n", LOG_HEADER, search->textId);
 }
 
 

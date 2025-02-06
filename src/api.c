@@ -34,7 +34,7 @@ RECOMP_EXPORT void EZTR_ReplaceText(s16 textId,
 
 RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     table = MsgTable_Create();
-    OnDeclareTextReplacement();
+    EZTR_OnDeclareTextReplacement();
 }
 
 RECOMP_HOOK_RETURN("Message_OpenText") void handle_text_replacement(PlayState* play, u16 p_textId) {
