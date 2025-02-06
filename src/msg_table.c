@@ -2,7 +2,15 @@
 #include "msg_table.h"
 #include "util.h"
 
+MsgEntry* MsgEntry_Create(u16 textId) {
+    MsgEntry* retVal = recomp_alloc(sizeof(MsgEntry));
+    retVal->textId = textId;
+    return retVal;
+}
 
+void MsgEntry_Destroy(MsgEntry* entry) {
+    recomp_free(entry);
+}
 
 s32 MsgBuffer_Len(MsgBuffer* buf) {
 
@@ -80,7 +88,7 @@ MsgTable* MsgTable_Create() {
     MsgTable* retVal = recomp_alloc(sizeof(MsgTable));
     
     // Setting Initial Values:
-    retVal->entries = recomp_alloc( MSG_TABLE_START_SIZE * sizeof(MsgEntry));
+    retVal->entries = recomp_alloc( MSG_TABLE_START_SIZE * sizeof(MsgEntry*));
     retVal->count = 0;
     retVal->capacity = MSG_TABLE_START_SIZE;
     retVal->_automaticSorting = true;
@@ -90,6 +98,9 @@ MsgTable* MsgTable_Create() {
 }
 
 void MsgTable_Destroy(MsgTable* table) {
+    for (int i = 0; i < table->count; i++) {
+        MsgEntry_Destroy(table->entries[i]);
+    }
     recomp_free(table->entries);
     recomp_free(table);
 }
@@ -100,9 +111,9 @@ void MsgTable_Expand(MsgTable* table) {
 
 void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity) {
     // Create the expanded table:
-    MsgEntry* new_entries = recomp_alloc(new_capacity * sizeof(MsgEntry));
+    MsgEntry** new_entries = recomp_alloc(new_capacity * sizeof(MsgEntry*));
     // Copy to it:
-    memcpy(new_entries, table->entries, table->count * sizeof(MsgEntry));
+    memcpy(new_entries, table->entries, table->count * sizeof(MsgEntry*));
     // Trash the old table:
     recomp_free(table->entries);
     // Now use the new table:
@@ -123,27 +134,27 @@ MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
     if (table->count < START_USING_BINARY_LOOKUP) {
         IF_DEBUG recomp_printf("Linear Lookup:\n");
         for (s32 i = 0; i < table->count; i++) {
-            IF_DEBUG recomp_printf("\t%i\n", table->entries[i].textId);
-            if (table->entries[i].textId == id) {
-                return &table->entries[i];
+            IF_DEBUG recomp_printf("\t%i\n", table->entries[i]->textId);
+            if (table->entries[i]->textId == id) {
+                return table->entries[i];
             }
         }
         return NULL;
     } else {
         s32 low = 0;
         s32 high = table->count - 1;
-        MsgEntry* entries = table->entries;
+        MsgEntry** entries = table->entries;
         IF_DEBUG recomp_printf("Binary Lookup:\n");
         while (low <= high) {
             int mid = low + (high - low) / 2;
             // recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
         
-            if (entries[mid].textId == id) {
+            if (entries[mid]->textId == id) {
                 IF_DEBUG recomp_printf("\thigh: %d, Low: %d, Central Point: %d\n", high, low, mid);
-                return &entries[mid];
+                return entries[mid];
                 
             }
-            else if (entries[mid].textId < id) {
+            else if (entries[mid]->textId < id) {
                 low = mid + 1;
             }
             else {
@@ -170,7 +181,7 @@ s32 MsgTable_GetBufferLen(MsgTable* table, u16 id) {
         return -1;
     }
 
-    return entry->len;
+    return MsgBuffer_Len(&entry->buf);
 }
 
 void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
@@ -178,7 +189,6 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
         memcpy(&search->buf, entry, sizeof(MsgBuffer));
-        search->len = MsgBuffer_Len(&search->buf);
         return;
     }
 
@@ -186,11 +196,11 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     if (table->capacity <= table->count) {
         MsgTable_Expand(table);
     }
-
-    search = &table->entries[table->count];
+    
+    table->entries[table->count] = MsgEntry_Create(textId);
+    search = table->entries[table->count];
     search->textId = textId;
     memcpy(&search->buf, entry, sizeof(MsgBuffer));
-    search->len = MsgBuffer_Len(&search->buf);
     table->count++;
 
     if (table->_automaticSorting) {
@@ -203,27 +213,26 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
 
 void MsgTable_BubbleSort(MsgTable* table) {
     // Since we're always adding entried to the END of the table, going from greatest to least will be more efficient.
-    MsgEntry* entries = table->entries;
+    MsgEntry** entries = table->entries;
     bool fully_sorted = false;
 
     while(!fully_sorted) {
         fully_sorted = true;
         for (int i = table->count - 1; i >= 1; i--) {
-            MsgEntry* upper = &entries[i];
-            MsgEntry* lower = &entries[i - 1];
+            MsgEntry* upper = entries[i];
+            MsgEntry* lower = entries[i - 1];
 
             if (upper->textId < lower->textId) {
-                MsgTable_Swap(upper, lower);
+                MsgTable_Swap(&upper, &lower);
                 fully_sorted = false;
             }
         }
     }
 }
 
-void MsgTable_Swap(MsgEntry* a, MsgEntry* b) {
-    MsgEntry t;
-
-    memcpy(&t, a, sizeof(MsgEntry));
-    memcpy(a, b, sizeof(MsgEntry));
-    memcpy(b, &t, sizeof(MsgEntry));
+void MsgTable_Swap(MsgEntry** a, MsgEntry** b) {
+    MsgEntry* t;
+    memcpy(&t, a, sizeof(MsgEntry*));
+    memcpy(a, b, sizeof(MsgEntry*));
+    memcpy(b, &t, sizeof(MsgEntry*));
 }

@@ -25,12 +25,12 @@ typedef union {
 
 typedef struct {
     u16 textId;
-    u16 len;
+    // u16 len;
     MsgBuffer buf;
 } MsgEntry;
 
 typedef struct {
-    MsgEntry* entries;
+    MsgEntry** entries;
     u16 count;
     u16 capacity;
     bool _automaticSorting;
@@ -49,6 +49,6 @@ MsgBuffer* MsgTable_GetBuffer(MsgTable* table, u16 id);
 s32 MsgTable_GetBufferLen(MsgTable* table, u16 id);
 void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry);
 void MsgTable_BubbleSort(MsgTable* table);
-void MsgTable_Swap(MsgEntry* a, MsgEntry* b);
+void MsgTable_Swap(MsgEntry** a, MsgEntry** b);
 
 #endif

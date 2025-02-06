@@ -50,12 +50,12 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_text_replacement(PlayState* p
     // Handled text replacement
     if (entry != NULL) {
         recomp_printf("Replacing text %d.\n", textId);        
-        msgCtx->msgLength = entry->len + 1;
+        msgCtx->msgLength = MsgBuffer_Len(&entry->buf);
         IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         
         // Not completely sure, but using memcpy causes issues if the message is too long.
         // We'll just copy char by char.
-        for (int i = 0; i < entry->len; i++) {
+        for (int i = 0; i < msgCtx->msgLength; i++) {
             font->msgBuf.schar[i] = entry->buf.schar[i];
         }
 
