@@ -5,6 +5,7 @@
 #include "global.h"
 
 RECOMP_IMPORT("EZ_Text_Replacer_API", void EZTR_ReplaceText(s16 textId, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content));
+RECOMP_IMPORT("EZ_Text_Replacer_API", void EZTR_ReplaceNESText(s16 textId, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content));
 
 #define EZTR_ON_INIT RECOMP_CALLBACK("EZ_Text_Replacer_API", EZTR_OnDeclareTextReplacement)
 
