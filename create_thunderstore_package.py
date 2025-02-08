@@ -50,7 +50,6 @@ def update_manifest(path: Path):
     print(f"Updating manifest at '{path}'...")
     current_manifest: dict[str, str] = json.loads(path.read_text());
     current_manifest.update({
-        "name":  bm.mod_data["manifest"]["id"],
         "version_number":  bm.mod_data["manifest"]["version"],
         "description":  bm.mod_data["manifest"]["short_description"],
     })
