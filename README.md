@@ -59,9 +59,9 @@ EZTR_ON_INIT void replace_msgs() {
 ```
 
 To use this API in your own projects, include `MM_EZ_Text_Replacer_API:1.1.0` as a dependency in your `mod.toml`,
-and download the API header from GitHub [here](https://github.com/LT-Schmiddy/mm-ez-text-replacement-utils/blob/main/include_in_dependents/eztr_api.h).
+and download the API header from GitHub [here](./include_in_dependents/eztr_api.h).
 
-More detailed usage instructions can be found on GitHub [here](https://github.com/LT-Schmiddy/mm-ez-text-replacement-utils/blob/main/docs/Basic_API.md).
+More detailed usage instructions can be found on GitHub [here](./docs/Basic_API.md).
 
 The API is fairly simple at the moment, but will be expanded in future updates. Planned features include:
 
@@ -72,6 +72,7 @@ The API is fairly simple at the moment, but will be expanded in future updates. 
 * and more!
 
 ## Tools
+
 You'll need to install `clang`, `make`, and the latest version of Python to build this template.
 
 * On Windows, using [chocolatey](https://chocolatey.org/) to install both is recommended. The packages are `llvm` and `make` respectively.
