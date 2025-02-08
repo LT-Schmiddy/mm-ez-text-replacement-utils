@@ -8,6 +8,8 @@
 #include "util.h"
 #include "dumping.h"
 
+extern MsgTable* ETZR_mainTable;
+
 typedef enum {
     EZTR_STANDARD_TEXT_BOX_I = 0X0,
     EZTR_WOODEN_SIGN_BACKGROUND = 0X1,
