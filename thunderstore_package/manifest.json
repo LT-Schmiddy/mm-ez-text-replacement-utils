@@ -1,6 +1,6 @@
 {
     "name": "EZ_Text_Replacer_API",
-    "version_number": "1.1.0",
+    "version_number": "1.1.1",
     "website_url": "https://github.com/LT-Schmiddy/mm-ez-text-replacement-utils",
     "description": "Helps modders with text replacement.",
     "dependencies": []
