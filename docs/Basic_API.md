@@ -1,6 +1,6 @@
 # EZTR Basic API
 
-Currently, the basic API is the only implemented method of replacing text. It's very simple, but it should be able to a lot situations.
+Currently, the basic API is the only implemented method of replacing text. It's very simple, but it should be able to handle a lot situations.
 
 The basic API exposes exactly one function and one callback. All components to the basic API are built included in `eztr_api.h`, so there's
 no need to declare them yourself.
