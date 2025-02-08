@@ -1,0 +1,3 @@
+According to Wiseguy:
+
+`Font_LoadCharNES` loads the characters from the ROM and `Message_DrawTextChar` draws them, they get stored in the `charBuf` field of the `Font` object that message context has as the `font` member
