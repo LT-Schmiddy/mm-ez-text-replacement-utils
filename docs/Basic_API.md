@@ -39,6 +39,7 @@ The first 6 arguments of the function are used to compose the message's header, 
 
 | Argument | Description |
 | -------- | ----------- |
+| u16 textId | The id of the text message you want to replace. Only one replacement for an id can be declared at a time. Calling this function with an ID you've already used will cause the old text replacement to be overridden with the new one. |
 | `u8 text_box_type` | The style of textbox to render. `eztr_api.h` has offers the enum `EztrTextBoxType` to make this more readable. |
 | `u8 text_box_y_pos` | The vertical position of the textbox on the screen. |
 | `u8 display_icon` | An icon id to display in the textbox. `eztr_api.h` has offers the enum `EztrTextBoxIcon` to make this more readable. |
@@ -49,3 +50,5 @@ The first 6 arguments of the function are used to compose the message's header, 
 | `char* content` | The actual text of the message. Remember that Majora's Mask uses completely different control bytes than standard ASCII. Consult the Cloud Modding page for information about how these work. |
 
 For information on how to get this information for any given piece of text, see the page on text dumping (coming soon).
+
+Lastly, you can call this function while the game is running, if you want to add a replacement during gameplay, or to update a replacement you've already made.
