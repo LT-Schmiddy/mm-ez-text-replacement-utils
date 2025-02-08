@@ -5,7 +5,7 @@
 #include "global.h"
 
 RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText(
-    s16 textId, 
+    u16 textId, 
     u8 text_box_type, 
     u8 text_box_y_pos, 
     u8 display_icon, 

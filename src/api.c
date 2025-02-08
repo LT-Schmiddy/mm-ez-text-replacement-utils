@@ -9,7 +9,7 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     EZTR_OnInit();
 }
 
-RECOMP_EXPORT void EZTR_Basic_ReplaceText(s16 textId,
+RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,
     u8 text_box_type, 
     u8 text_box_y_pos, 
     u8 display_icon, 
