@@ -7,6 +7,8 @@ RECOMP_DECLARE_EVENT(EZTR_OnInit());
 RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     ETZR_mainTable = MsgTable_Create();
     EZTR_OnInit();
+
+    printf("Hello Alex %i, %02f, %c, %s", 1, 2.0f, 'c', "How are you?\n");
 }
 
 RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,

@@ -38,20 +38,11 @@
 #include "modding.h"
 #include "msg_buffer_printf.h"
 
-
-#define pf_va_start(v, l) __builtin_va_start(v, l)
-#define pf_va_end(v) __builtin_va_end(v)
-#define pf_va_arg(v, l) __builtin_va_arg(v, l)
-#define pf_va_copy(d, s) __builtin_va_copy(d, s)
-
 RECOMP_IMPORT("*", int recomp_printf(const char* fmt, ...));
 
 void _putchar(char character) {
   recomp_printf("%c", character);
 }
-
-
-
 
 // import float.h for DBL_MAX
 #if defined(PRINTF_SUPPORT_FLOAT)

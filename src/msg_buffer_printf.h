@@ -113,6 +113,11 @@
 #define PF_FLAGS_PRECISION (1U << 10U)
 #define PF_FLAGS_ADAPT_EXP (1U << 11U)
 
+#define pf_va_start(v, l) __builtin_va_start(v, l)
+#define pf_va_end(v) __builtin_va_end(v)
+#define pf_va_arg(v, l) __builtin_va_arg(v, l)
+#define pf_va_copy(d, s) __builtin_va_copy(d, s)
+
 // output function type
 typedef void (*out_fct_type)(char character, void* buffer, size_t idx, size_t maxlen);
 
