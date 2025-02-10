@@ -151,6 +151,10 @@ MsgSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
    return (MsgSContent*)&buf->schar[MSG_HEADER_SIZE];
 }
 
+char* MsgBuffer_GetCharPtr(MsgBuffer* buf) {
+   return &buf->schar[MSG_HEADER_SIZE];
+}
+
 void MsgSContent_SetEmpty(MsgSContent* cont) {
     char* c = (char*)cont;
     for (int i = 0; i < MSG_CONTENT_SIZE; i++) {
