@@ -5,6 +5,7 @@
 #include "libc/string.h"
 #include "util.h"
 #include "enums.h"
+#include "msg_buffer_printf.h"
 
 #define MESSAGE_BUFFER_SIZE 1280
 #define MESSAGE_HEADER_SIZE 11

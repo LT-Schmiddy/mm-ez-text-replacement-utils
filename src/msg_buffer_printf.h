@@ -100,18 +100,18 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // internal flag definitions
-#define FLAGS_ZEROPAD   (1U <<  0U)
-#define FLAGS_LEFT      (1U <<  1U)
-#define FLAGS_PLUS      (1U <<  2U)
-#define FLAGS_SPACE     (1U <<  3U)
-#define FLAGS_HASH      (1U <<  4U)
-#define FLAGS_UPPERCASE (1U <<  5U)
-#define FLAGS_CHAR      (1U <<  6U)
-#define FLAGS_SHORT     (1U <<  7U)
-#define FLAGS_LONG      (1U <<  8U)
-#define FLAGS_LONG_LONG (1U <<  9U)
-#define FLAGS_PRECISION (1U << 10U)
-#define FLAGS_ADAPT_EXP (1U << 11U)
+#define PF_FLAGS_ZEROPAD   (1U <<  0U)
+#define PF_FLAGS_LEFT      (1U <<  1U)
+#define PF_FLAGS_PLUS      (1U <<  2U)
+#define PF_FLAGS_SPACE     (1U <<  3U)
+#define PF_FLAGS_HASH      (1U <<  4U)
+#define PF_FLAGS_UPPERCASE (1U <<  5U)
+#define PF_FLAGS_CHAR      (1U <<  6U)
+#define PF_FLAGS_SHORT     (1U <<  7U)
+#define PF_FLAGS_LONG      (1U <<  8U)
+#define PF_FLAGS_LONG_LONG (1U <<  9U)
+#define PF_FLAGS_PRECISION (1U << 10U)
+#define PF_FLAGS_ADAPT_EXP (1U << 11U)
 
 // output function type
 typedef void (*out_fct_type)(char character, void* buffer, size_t idx, size_t maxlen);
@@ -216,6 +216,7 @@ size_t _etoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, double v
 size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, double value, unsigned int prec, unsigned int width, unsigned int flags);
 
 #endif
+int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
 
 
 #endif  // _PRINTF_H_
