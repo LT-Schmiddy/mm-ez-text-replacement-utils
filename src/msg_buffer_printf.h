@@ -113,6 +113,17 @@
 #define FLAGS_PRECISION (1U << 10U)
 #define FLAGS_ADAPT_EXP (1U << 11U)
 
+// output function type
+typedef void (*out_fct_type)(char character, void* buffer, size_t idx, size_t maxlen);
+
+
+// wrapper (used as buffer) for output function type
+typedef struct {
+  void  (*fct)(char character, void* arg);
+  void* arg;
+} out_fct_wrap_type;
+
+
 /**
  * Output a character to a custom device like UART, used by the printf() function
  * This function is declared here only. You have to write your custom implementation somewhere

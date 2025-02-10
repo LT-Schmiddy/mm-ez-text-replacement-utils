@@ -53,17 +53,6 @@ void _putchar(char character) {
 #endif
 
 
-// output function type
-typedef void (*out_fct_type)(char character, void* buffer, size_t idx, size_t maxlen);
-
-
-// wrapper (used as buffer) for output function type
-typedef struct {
-  void  (*fct)(char character, void* arg);
-  void* arg;
-} out_fct_wrap_type;
-
-
 // internal buffer output
 void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
 {
