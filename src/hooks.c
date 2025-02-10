@@ -14,7 +14,9 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlaySta
     IF_DEBUG recomp_printf("Message_OpenText Hook: %d\n", textId); 
     // Handled text replacement
     if (buf != NULL) {
-        recomp_printf("Replacing Text %d.\n", textId);        
+        recomp_printf("Replacing Text %d.\n", textId);     
+        MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
+
         msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
         IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         
@@ -125,6 +127,9 @@ RECOMP_PATCH void func_801514B0(PlayState* play, u16 arg1, u8 arg2) {
     MsgBuffer* buf = MsgTable_GetBuffer(ETZR_mainTable, msgCtx->currentTextId);
     if (buf != NULL) {
         recomp_printf("Replacing Text %d.\n", msgCtx->currentTextId);        
+        // running Callbacks:
+        MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
+
         msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
         for (int i = 0; i < msgCtx->msgLength; i++) {
             font->msgBuf.schar[i] = buf->schar[i];

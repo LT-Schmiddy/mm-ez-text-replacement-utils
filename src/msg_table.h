@@ -6,15 +6,16 @@
 #include "util.h"
 #include "msg_buffer.h"
 
-#define START_USING_BINARY_LOOKUP 3
+#define START_USING_BINARY_LOOKUP 10
 
 #define MSG_TABLE_START_SIZE 16
 #define LOG_HEADER "EZ Text Replacer: "
 
+typedef void (*MsgCallback)(PlayState* play, u16 textId, MsgBuffer* buf);
 
 typedef struct {
     u16 textId;
-    // u16 len;
+    MsgCallback callback;
     MsgBuffer buf;
 } MsgEntry;
 
@@ -26,6 +27,8 @@ typedef struct {
 } MsgTable;
 
 // Function Declarations:
+MsgEntry* MsgEntry_Create(u16 textId);
+void MsgEntry_Destroy(MsgEntry* entry);
 MsgTable* MsgTable_Create();
 void MsgTable_Destroy(MsgTable* tbl);
 void MsgTable_Expand(MsgTable* table);
@@ -34,6 +37,8 @@ MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id);
 MsgBuffer* MsgTable_GetBuffer(MsgTable* table, u16 id);
 s32 MsgTable_GetBufferLen(MsgTable* table, u16 id);
 void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry);
+void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback);
+bool MsgTable_RunCallback(MsgTable* table, u16 textId, PlayState* play);
 void MsgTable_BubbleSort(MsgTable* table);
 void MsgTable_Swap(MsgEntry** a, MsgEntry** b);
 

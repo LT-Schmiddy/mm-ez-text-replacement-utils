@@ -41,5 +41,6 @@ void MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 pos);
 u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
+int MsgBufferSContent_Sprintf(MsgBufferSContent* buffer, const char* format, ...);
 
 #endif

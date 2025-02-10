@@ -2,6 +2,7 @@
 
 MsgEntry* MsgEntry_Create(u16 textId) {
     MsgEntry* retVal = recomp_alloc(sizeof(MsgEntry));
+    retVal->callback = NULL;
     retVal->textId = textId;
     return retVal;
 }
@@ -122,34 +123,76 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     if (table->capacity <= table->count) {
         MsgTable_Expand(table);
     }
-    
+    recomp_printf("correct_size\n");
     table->entries[table->count] = MsgEntry_Create(textId);
     search = table->entries[table->count];
     search->textId = textId;
     memcpy(&search->buf, entry, sizeof(MsgBuffer));
     table->count++;
-
+    
+    recomp_printf("sorting\n");
     if (table->_automaticSorting) {
         MsgTable_BubbleSort(table);
     }
 
+    recomp_printf("sorted\n");
     recomp_printf("%sAdding text entry id %i\n", LOG_HEADER, search->textId);
+}
+
+void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
+    MsgEntry* search = MsgTable_GetEntry(table, textId);
+    if (search != NULL) {
+        search->callback = callback;
+    } else {
+        recomp_printf("%sERROR assigning callback for textId %i - set the buffer first.\n", LOG_HEADER, search->textId);
+    }
+}
+
+bool MsgTable_RunCallback(MsgTable* table, u16 textId, PlayState* play){
+    MsgEntry* search = MsgTable_GetEntry(table, textId);
+    if (search != NULL) {
+        recomp_printf("ID FOUND\n");
+        if (search->callback != NULL) {
+            recomp_printf("CALLBACK FOUND\n");
+            search->callback(play, textId, &search->buf);
+            return true;
+        }
+        else {
+            recomp_printf("NO CALLBACK FOUND\n");
+        }
+    }
+
+    return false;
 }
 
 
 void MsgTable_BubbleSort(MsgTable* table) {
     // Since we're always adding entried to the END of the table, going from greatest to least will be more efficient.
-    MsgEntry** entries = table->entries;
     bool fully_sorted = false;
 
     while(!fully_sorted) {
         fully_sorted = true;
+
+
+        //print state of list:
+        recomp_printf("Current Array: ");
+        for (int i = 0; i < table->count; i++) {
+            recomp_printf("0x%04X ", table->entries[i]->textId);
+        }
+        recomp_printf("\n");
+
         for (int i = table->count - 1; i >= 1; i--) {
-            MsgEntry* upper = entries[i];
-            MsgEntry* lower = entries[i - 1];
+            MsgEntry* upper = table->entries[i];
+            MsgEntry* lower = table->entries[i - 1];
+            
+            // recomp_printf("Upper: %X (%i), Lower: %X (%i)\n", (u32)upper->textId, (u32)upper->textId, (u32)lower->textId, (u32)lower->textId);
+        
 
             if (upper->textId < lower->textId) {
-                MsgTable_Swap(&upper, &lower);
+                MsgEntry* temp = upper;
+                upper = lower;
+                lower = temp;
+                recomp_printf("another_pass is needed\n");
                 fully_sorted = false;
             }
         }

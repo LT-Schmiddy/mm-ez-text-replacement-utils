@@ -58,7 +58,7 @@ s32 MsgBuffer_CreateFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
             dst_pos++;
         } else {
             // Parsing Byte Escape:
-            IF_DEBUG recomp_printf("%c%c", src[src_pos + 1], src[src_pos + 2]);
+            IF_DEBUG recomp_printf("|%c%c", src[src_pos + 1], src[src_pos + 2]);
             char write_byte = hex_to_byte(&src[src_pos + 1]);
             dst->schar[dst_pos + MESSAGE_HEADER_SIZE] = write_byte;
             should_end = write_byte == MSG_ENDING_CHAR;
@@ -146,7 +146,7 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos) {
 MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
    return (MsgBufferSContent*)&buf->schar[MESSAGE_HEADER_SIZE];
 }
-
+/*
 // MsgBuffer Printf Implementation:
 int MsgBufferSContent_Vsnprintf(out_fct_type out, char *buffer, const size_t maxlen, const char *format, va_list va) {
     unsigned int flags, width, precision, n;
@@ -461,11 +461,12 @@ int MsgBufferSContent_Vsnprintf(out_fct_type out, char *buffer, const size_t max
     return (int)idx;
 }
 
-int MsgBufferSContent_Sprintf(MsgBufferSContent* buffer, const char* format, ...)
-{
+int MsgBufferSContent_Sprintf(MsgBufferSContent* buffer, const char* format, ...) {
   va_list va;
   pf_va_start(va, format);
-  const int ret = _vsnprintf(_out_buffer, buffer, MESSAGE_CONTENT_SIZE, format, va);
+  const int ret = MsgBufferSContent_Vsnprintf(_out_buffer, buffer, MESSAGE_CONTENT_SIZE, format, va);
   pf_va_end(va);
   return ret;
 }
+
+*/

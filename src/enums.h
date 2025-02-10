@@ -1,3 +1,7 @@
+#ifndef __ENUMS__
+#define __ENUMS__
+
+#define EZTR_NO_VALUE 0xffff
 
 typedef enum {
     EZTR_STANDARD_TEXT_BOX_I = 0X0,
@@ -276,3 +280,5 @@ typedef enum {
     EZTR_ICON_NO_ICON = 0xFE,
     EZTR_ICON_MAX= 0xFF
 } EztrTextBoxIcon;
+
+#endif

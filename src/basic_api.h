@@ -7,6 +7,7 @@
 #include "libc/string.h"
 #include "util.h"
 #include "dumping.h"
+#include "enums.h"
 
 extern MsgTable* ETZR_mainTable;
 
