@@ -142,6 +142,16 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     recomp_printf("%sAdding Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)search->textId, (u32)search->textId);
 }
 
+void MsgTable_SetBuffer(MsgTable* table, u16 textId) {
+    MsgBuffer buf;
+    for (int i = 0; i < MSG_BUFFER_SIZE; i++) {
+        buf.schar[i] = '\xBF';
+    }
+
+    MsgTable_SetBuffer(table, textId, &buf);
+}
+
+
 void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
