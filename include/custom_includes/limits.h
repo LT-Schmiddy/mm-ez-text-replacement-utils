@@ -1,6 +1,6 @@
 #ifndef LIMITS_H__
 #define LIMITS_H__
-
+#include "libc/math.h"
 // System Specific Limits
 // #include <_limits.h>
 
@@ -40,7 +40,7 @@
 #define SHRT_MIN (-1 - 0x7fff)
 
 /*! Expands to the Hex constant 0x7fff. Maximum value of signed short */
-#define SHRT_MAX 0x7fff
+// #define SHRT_MAX 0x7fff
 
 /*! Expands to hex 0xffff. Maximum value of unsigned short */
 #define USHRT_MAX 0xffff

@@ -1,4 +1,6 @@
 #include "msg_table.h"
+#include "custom_includes/stdbool.h"
+#include "custom_includes/stdint.h"
 
 MsgEntry* MsgEntry_Create(u16 textId) {
     MsgEntry* retVal = recomp_alloc(sizeof(MsgEntry));

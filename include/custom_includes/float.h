@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#include "libc/math.h"
 #if 0
 //TODO
 int __flt_rounds(void);
@@ -15,7 +15,7 @@ int __flt_rounds(void);
 
 #define FLT_TRUE_MIN 1.40129846432481707092e-45F
 #define FLT_MIN 1.17549435082228750797e-38F
-#define FLT_MAX 3.40282346638528859812e+38F
+// #define FLT_MAX 3.40282346638528859812e+38F
 
 #define FLT_EPSILON 1.1920928955078125e-07F
 // TODO: is this correct? I see this other value... #define FLT_EPSILON 1.19209290E-07F
