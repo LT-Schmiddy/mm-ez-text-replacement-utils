@@ -15,7 +15,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlaySta
     // Handled text replacement
     if (buf != NULL) {
         recomp_printf("Replacing Text %d.\n", textId);        
-        msgCtx->msgLength = MsgBuffer_Len(buf);
+        msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
         IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         
         // Not completely sure, but using memcpy causes issues if the message is too long.
@@ -125,7 +125,7 @@ RECOMP_PATCH void func_801514B0(PlayState* play, u16 arg1, u8 arg2) {
     MsgBuffer* buf = MsgTable_GetBuffer(ETZR_mainTable, msgCtx->currentTextId);
     if (buf != NULL) {
         recomp_printf("Replacing Text %d.\n", msgCtx->currentTextId);        
-        msgCtx->msgLength = MsgBuffer_Len(buf);
+        msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
         for (int i = 0; i < msgCtx->msgLength; i++) {
             font->msgBuf.schar[i] = buf->schar[i];
         }

@@ -2,16 +2,23 @@
 
 s32 MsgBuffer_Len(MsgBuffer* buf) {
 
-    IF_DEBUG recomp_printf("Counting: ");
     int i = 0;
-    while (buf->schar[i] != MSG_ENDING_CHAR && i < MESSAGE_BUFFER_SIZE) {
-        IF_DEBUG recomp_printf( is_printable_char(buf->schar[i]) ? "%c" : "\\x%1X", buf->schar[i]);    
+    while (buf->schar[i] != MSG_ENDING_CHAR && i < MESSAGE_BUFFER_SIZE) { 
         i++;
     }
 
-    IF_DEBUG recomp_printf(" -> %i\n", i + 2);  
-    // Add 2 to include termination char, and to go from index to length.
-    return i + 2;
+    return i;
+}
+
+s32 MsgBuffer_ContentLen(MsgBuffer* buf) {
+
+
+    int i = MESSAGE_HEADER_SIZE;
+    while (buf->schar[i] != MSG_ENDING_CHAR && i < MESSAGE_BUFFER_SIZE) {
+        i++;
+    }
+
+    return i;
 }
 
 s32 MsgBuffer_CreateFromStr(MsgBuffer* dst, char* src) {
