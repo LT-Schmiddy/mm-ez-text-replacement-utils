@@ -148,7 +148,7 @@ void MsgTable_SetBufferEmpty(MsgTable* table, u16 textId) {
     MsgBuffer_WriteDefaultHeader(&buf);
 
     // Empty Content:
-    MsgBufferSContent_SetEmpty(MsgBuffer_GetContentPtr(&buf));
+    MsgSContent_SetEmpty(MsgBuffer_GetContentPtr(&buf));
 
     // Copy to table:
     MsgTable_SetBuffer(table, textId, &buf);

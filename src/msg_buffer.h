@@ -13,7 +13,7 @@
 #define MSG_ENDING_CHAR '\xBF'
 #define PIPE_CHAR '|'
 
-typedef char MsgBufferSContent [MSG_CONTENT_SIZE];
+typedef char MsgSContent [MSG_CONTENT_SIZE];
 
 typedef union {
         char schar[1280]; // msgBuf
@@ -42,8 +42,8 @@ u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 
 // Msg Content:
-MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
-void MsgBufferSContent_SetEmpty(MsgBufferSContent* cont);
-void MsgBufferSContent_Len(MsgBufferSContent* cont);
+MsgSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
+void MsgSContent_SetEmpty(MsgSContent* cont);
+s32 MsgSContent_Len(MsgSContent* cont);
 
 #endif

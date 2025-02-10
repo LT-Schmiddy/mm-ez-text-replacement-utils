@@ -53,4 +53,12 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,
 RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     ETZR_mainTable = MsgTable_Create();
     EZTR_OnInit();
+
+    MsgBuffer* buf = MsgTable_GetBuffer(ETZR_mainTable, 0x1785);
+    s32 len = MsgBuffer_Len(buf);
+    s32 clen = MsgBuffer_ContentLen(buf);
+    s32 diff = len - clen;
+
+    recomp_printf("TEST: Len = %i, Content Len = %i, Diff = %i\n", len, clen, diff);
+
 }

@@ -224,7 +224,7 @@ size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, double v
 
 #endif
 int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
-int MsgBufferSContent_Sprintf(MsgBufferSContent* buffer, const char* format, ...);
+int MsgBufferSContent_Sprintf(MsgSContent* buffer, const char* format, ...);
 
 
 #endif  // _PRINTF_H_
