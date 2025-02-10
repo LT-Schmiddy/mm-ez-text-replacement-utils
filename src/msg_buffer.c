@@ -10,12 +10,7 @@ s32 MsgBuffer_Len(MsgBuffer* buf) {
 }
 
 s32 MsgBuffer_ContentLen(MsgBuffer* buf) {
-    int i = MSG_HEADER_SIZE;
-    while (buf->schar[i] != MSG_ENDING_CHAR && i < MSG_BUFFER_SIZE) {
-        i++;
-    }
-
-    return i;
+    return MsgBufferSContent_Len(MsgBuffer_GetContentPtr(buf));
 }
 
 s32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
@@ -151,7 +146,7 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 value) {
     memcpy(&buf->schar[7], &value, sizeof(u16));
 }
 
-
+// Content Stuff
 MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
    return (MsgBufferSContent*)&buf->schar[MSG_HEADER_SIZE];
 }
@@ -160,4 +155,13 @@ void MsgBufferSContent_SetEmpty(MsgBufferSContent* cont) {
     for (int i = 0; i < MSG_CONTENT_SIZE; i++) {
         (*cont[i]) = '\xBF';
     }
+}
+
+s32 MsgBufferSContent_Len(MsgBufferSContent* cont) {
+    int i = 0;
+    while (*cont[i] != MSG_ENDING_CHAR && i < MSG_CONTENT_SIZE) {
+        i++;
+    }
+
+    return i;
 }

@@ -44,5 +44,6 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 // Msg Content:
 MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
 void MsgBufferSContent_SetEmpty(MsgBufferSContent* cont);
+void MsgBufferSContent_Len(MsgBufferSContent* cont);
 
 #endif
