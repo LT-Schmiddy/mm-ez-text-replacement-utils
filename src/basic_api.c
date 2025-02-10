@@ -57,17 +57,17 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
 
     printf("Hello Alex %i, %02f, %c, %s", 1, 2.0f, 'c', "How are you?\n");
 
-    _EZTR_Basic_ReplaceText(
-        0x0C01,
-        EZTR_STANDARD_TEXT_BOX_I,
-        1,
-        EZTR_ICON_NO_ICON,
-        EZTR_NO_VALUE,
-        EZTR_NO_VALUE,
-        EZTR_NO_VALUE,
-        true,
-        "|17You can |01save|00 your |01progress|00 and|11|01quit|00 here. When you|11reselect your file, my face will|11appear by your file name.|18|10|17This indicates that the next time|11you reopen your file, you'll resume|11playing at this |01very place|00 and|11|01time|00 with your |01current status|00.|18|10|01Save|00 your |01progress|00 up to this|11point and |01quit|00 playing?|11|02|C2No|11Yes|BF|00"
-    );
+    // _EZTR_Basic_ReplaceText(
+    //     0x0C01,
+    //     EZTR_STANDARD_TEXT_BOX_I,
+    //     1,
+    //     EZTR_ICON_NO_ICON,
+    //     EZTR_NO_VALUE,
+    //     EZTR_NO_VALUE,
+    //     EZTR_NO_VALUE,
+    //     true,
+    //     "|17You can |01save|00 your |01progress|00 and|11|01quit|00 here. When you|11reselect your file, my face will|11appear by your file name.|18|10|17This indicates that the next time|11you reopen your file, you'll resume|11playing at this |01very place|00 and|11|01time|00 with your |01current status|00.|18|10|01Save|00 your |01progress|00 up to this|11point and |01quit|00 playing?|11|02|C2No|11Yes|BF|00"
+    // );
 
-    MsgTable_SetCallback(ETZR_mainTable, 0x0C01, test_callback);
+    MsgTable_SetCallback(ETZR_mainTable, 0x1785, test_callback);
 }

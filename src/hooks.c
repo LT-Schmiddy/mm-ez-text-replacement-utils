@@ -11,10 +11,10 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlaySta
     }
 
     MsgBuffer* buf = MsgTable_GetBuffer(ETZR_mainTable, textId);
-    IF_DEBUG recomp_printf("Message_OpenText Hook: %d\n", textId); 
+    IF_DEBUG recomp_printf("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
     // Handled text replacement
     if (buf != NULL) {
-        recomp_printf("Replacing Text %d.\n", textId);     
+        recomp_printf("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
         MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
