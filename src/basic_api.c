@@ -28,9 +28,9 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,
     memcpy(&buf.schar[7], &second_item_rupees, sizeof(u16));
 
     if (pipe_escape_bytes) {
-        MsgBuffer_CopyFromCharStr_PipeEscapeBytes(&buf, content);
+        MsgBuffer_CreateFromStr_PipeEscapeBytes(&buf, content);
     } else {
-        MsgBuffer_CopyFromCharStr(&buf, content);
+        MsgBuffer_CreateFromStr(&buf, content);
     }
     
     MsgTable_SetBuffer(ETZR_mainTable, textId, &buf);
