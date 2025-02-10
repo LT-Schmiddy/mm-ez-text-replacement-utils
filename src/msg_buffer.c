@@ -76,6 +76,15 @@ s32 MsgBuffer_CreateFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
     return dst_pos + 1;
 }
 
+void MsgBuffer_AssignDefaultHeader(MsgBuffer* buf) {
+    MsgBuffer_SetTextBoxType(buf, EZTR_STANDARD_TEXT_BOX_I);
+    MsgBuffer_SetTextBoxYPos(buf, 1);
+    MsgBuffer_SetTextBoxDisplayIcon(buf, EZTR_ICON_NO_ICON);
+    MsgBuffer_SetNextMsg(buf, EZTR_NO_VALUE);
+    MsgBuffer_SetFirstItemRupees(buf, EZTR_NO_VALUE);
+    MsgBuffer_SetSecondItemRupees(buf, EZTR_NO_VALUE);
+}
+
 // Getters/Setters for the header:
 u8 MsgBuffer_GetTextBoxType(MsgBuffer* buf) {
     u8 retVal;
@@ -145,4 +154,10 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 value) {
 
 MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
    return (MsgBufferSContent*)&buf->schar[MSG_HEADER_SIZE];
+}
+
+void MsgBufferSContent_SetEmpty(MsgBufferSContent* cont) {
+    for (int i = 0; i < MSG_CONTENT_SIZE; i++) {
+        (*cont[i]) = '\xBF';
+    }
 }

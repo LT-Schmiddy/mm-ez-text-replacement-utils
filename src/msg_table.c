@@ -142,15 +142,17 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     recomp_printf("%sAdding Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)search->textId, (u32)search->textId);
 }
 
-void MsgTable_SetBuffer(MsgTable* table, u16 textId) {
+void MsgTable_SetBufferEmpty(MsgTable* table, u16 textId) {
     MsgBuffer buf;
-    for (int i = 0; i < MSG_BUFFER_SIZE; i++) {
-        buf.schar[i] = '\xBF';
-    }
+    // Default Header.
+    MsgBuffer_AssignDefaultHeader(&buf);
 
+    // Empty Content:
+    MsgBufferSContent_SetEmpty(MsgBuffer_GetContentPtr(&buf));
+
+    // Copy to table:
     MsgTable_SetBuffer(table, textId, &buf);
 }
-
 
 void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
@@ -210,10 +212,7 @@ void MsgTable_BubbleSort(MsgTable* table) {
 
 void MsgTable_Swap(MsgEntry** a, MsgEntry** b) {
     MsgEntry* t;
-    // memcpy(&t, a, sizeof(MsgEntry*));
-    // memcpy(a, b, sizeof(MsgEntry*));
-    // memcpy(b, &t, sizeof(MsgEntry*));
-
+    
     t = *a;
     *a = *b;
     *b = t;

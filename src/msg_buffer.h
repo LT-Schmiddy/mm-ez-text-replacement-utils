@@ -25,6 +25,7 @@ s32 MsgBuffer_Len(MsgBuffer* buf);
 s32 MsgBuffer_ContentLen(MsgBuffer* buf);
 s32 MsgBuffer_CreateFromStr(MsgBuffer* dst, char* src);
 s32 MsgBuffer_CreateFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src);
+void MsgBuffer_AssignDefaultHeader(MsgBuffer* buf);
 
 // Getters/Setters for the header:
 u8 MsgBuffer_GetTextBoxType(MsgBuffer* buf);
@@ -39,6 +40,9 @@ u16 MsgBuffer_GetFirstItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 pos);
 u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
+
+// Msg Content:
 MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
+void MsgBufferSContent_SetEmpty(MsgBufferSContent* cont);
 
 #endif
