@@ -23,9 +23,9 @@ typedef union {
 
 s32 MsgBuffer_Len(MsgBuffer* buf);
 s32 MsgBuffer_ContentLen(MsgBuffer* buf);
-s32 MsgBuffer_CreateFromStr(MsgBuffer* dst, char* src);
-s32 MsgBuffer_CreateFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src);
-void MsgBuffer_AssignDefaultHeader(MsgBuffer* buf);
+s32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src);
+s32 MsgBuffer_WriteFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src);
+void MsgBuffer_WriteDefaultHeader(MsgBuffer* buf);
 
 // Getters/Setters for the header:
 u8 MsgBuffer_GetTextBoxType(MsgBuffer* buf);

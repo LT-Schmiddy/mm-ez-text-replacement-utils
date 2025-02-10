@@ -18,7 +18,7 @@ s32 MsgBuffer_ContentLen(MsgBuffer* buf) {
     return i;
 }
 
-s32 MsgBuffer_CreateFromStr(MsgBuffer* dst, char* src) {
+s32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
 
     IF_DEBUG recomp_printf("Copying: ");
     int i = 0;
@@ -38,7 +38,7 @@ s32 MsgBuffer_CreateFromStr(MsgBuffer* dst, char* src) {
     return i + 1;
 }
 
-s32 MsgBuffer_CreateFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
+s32 MsgBuffer_WriteFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
 
     IF_DEBUG recomp_printf("Copying w/ Pipes: ");
     int src_pos = 0;
@@ -76,7 +76,7 @@ s32 MsgBuffer_CreateFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
     return dst_pos + 1;
 }
 
-void MsgBuffer_AssignDefaultHeader(MsgBuffer* buf) {
+void MsgBuffer_WriteDefaultHeader(MsgBuffer* buf) {
     MsgBuffer_SetTextBoxType(buf, EZTR_STANDARD_TEXT_BOX_I);
     MsgBuffer_SetTextBoxYPos(buf, 1);
     MsgBuffer_SetTextBoxDisplayIcon(buf, EZTR_ICON_NO_ICON);

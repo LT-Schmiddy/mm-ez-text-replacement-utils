@@ -24,9 +24,9 @@ RECOMP_DECLARE_EVENT(EZTR_OnInit());
     memcpy(&buf.schar[7], &second_item_rupees, sizeof(u16));
 
     if (pipe_escape_bytes) {
-        MsgBuffer_CreateFromStr_PipeEscapeBytes(&buf, content);
+        MsgBuffer_WriteFromStr_PipeEscapeBytes(&buf, content);
     } else {
-        MsgBuffer_CreateFromStr(&buf, content);
+        MsgBuffer_WriteFromStr(&buf, content);
     }
 
     MsgTable_SetBuffer(ETZR_mainTable, textId, &buf);

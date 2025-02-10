@@ -145,7 +145,7 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
 void MsgTable_SetBufferEmpty(MsgTable* table, u16 textId) {
     MsgBuffer buf;
     // Default Header.
-    MsgBuffer_AssignDefaultHeader(&buf);
+    MsgBuffer_WriteDefaultHeader(&buf);
 
     // Empty Content:
     MsgBufferSContent_SetEmpty(MsgBuffer_GetContentPtr(&buf));
