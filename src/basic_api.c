@@ -4,7 +4,7 @@ MsgTable* ETZR_mainTable;
 
 RECOMP_DECLARE_EVENT(EZTR_OnInit());
 
-RECOMP_EXPORT void EZTR_Basic_ReplaceText_Callback(u16 textId,
+/* RECOMP_EXPORT */ void EZTR_Basic_ReplaceText_Callback(u16 textId,
     u8 text_box_type, 
     u8 text_box_y_pos, 
     u8 display_icon, 
