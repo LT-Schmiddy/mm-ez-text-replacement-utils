@@ -56,7 +56,7 @@ void dump_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf) {
 
     recomp_printf("\tContent: \"");
     // Printing Message Content:
-    for (s32 i = MESSAGE_HEADER_SIZE; i < len; i++) {
+    for (s32 i = MSG_HEADER_SIZE; i < len; i++) {
         char c = buf->schar[i];
 
         if (is_printable_char(c)) {
@@ -120,7 +120,7 @@ void dump_full_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf)
 
     recomp_printf("\tContent: \"");
     // Printing Message Content:
-    for (s32 i = 0; i < MESSAGE_BUFFER_SIZE; i++) {
+    for (s32 i = 0; i < MSG_BUFFER_SIZE; i++) {
         char c = buf->schar[i];
 
         if (is_printable_char(c)) {

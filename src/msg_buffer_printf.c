@@ -38,7 +38,6 @@
 #include "modding.h"
 #include "msg_buffer_printf.h"
 
-RECOMP_IMPORT("*", int recomp_printf(const char* fmt, ...));
 
 void _putchar(char character) {
   recomp_printf("%c", character);

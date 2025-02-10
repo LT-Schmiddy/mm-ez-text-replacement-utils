@@ -5,16 +5,15 @@
 #include "libc/string.h"
 #include "util.h"
 #include "enums.h"
-#include "msg_buffer_printf.h"
 
-#define MESSAGE_BUFFER_SIZE 1280
-#define MESSAGE_HEADER_SIZE 11
-#define MESSAGE_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
+#define MSG_BUFFER_SIZE 1280
+#define MSG_HEADER_SIZE 11
+#define MSG_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
 
 #define MSG_ENDING_CHAR '\xBF'
 #define PIPE_CHAR '|'
 
-typedef char MsgBufferSContent [MESSAGE_CONTENT_SIZE];
+typedef char MsgBufferSContent [MSG_CONTENT_SIZE];
 
 typedef union {
         char schar[1280]; // msgBuf
@@ -41,6 +40,5 @@ void MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 pos);
 u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 MsgBufferSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
-int MsgBufferSContent_Sprintf(MsgBufferSContent* buffer, const char* format, ...);
 
 #endif
