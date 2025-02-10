@@ -1,0 +1,14 @@
+1) Rename buffer size macros.
+2) Write create empty entry func.
+3) Write static char/byte/pipe-byte processing function.
+4) Use (1) to rewrite buffer construction func.
+5) Use (1) to write buffer content construction func.
+6) Expose sprintf/snprintf?
+7) Write modified vsnprintf.
+8) Handle adding ids for original text.
+9) Refactor quicksort implementation.
+10) Queue entry system.
+
+Extension for loading replacements from text file?
+
+Figue out how to nest subdirectories with make
