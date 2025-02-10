@@ -7,6 +7,6 @@
 #include "libc/string.h"
 #include "util.h"
 #include "dumping.h"
-#include "api.h"
+#include "basic_api.h"
 
 #endif
