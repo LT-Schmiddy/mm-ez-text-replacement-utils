@@ -1,4 +1,6 @@
-1) Rename buffer size macros.
+(+ indicates completion)
+
+1) Rename buffer size macros. 
 2) Write create empty entry func.
 3) Write static char/byte/pipe-byte processing function.
 4) Use (1) to rewrite buffer construction func.
