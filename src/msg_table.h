@@ -6,7 +6,7 @@
 #include "util.h"
 #include "msg_buffer.h"
 
-#define START_USING_BINARY_LOOKUP 10
+#define START_USING_BINARY_LOOKUP 3
 
 #define MSG_TABLE_START_SIZE 16
 #define LOG_HEADER "EZ Text Replacer: "

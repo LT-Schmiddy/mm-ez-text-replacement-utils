@@ -61,8 +61,9 @@ MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
     if (table->count < START_USING_BINARY_LOOKUP) {
         IF_DEBUG recomp_printf("Linear Lookup:\n");
         for (s32 i = 0; i < table->count; i++) {
-            IF_DEBUG recomp_printf("\t%i\n", table->entries[i]->textId);
+            IF_DEBUG recomp_printf("\t0x%04X\n", table->entries[i]->textId);
             if (table->entries[i]->textId == id) {
+                IF_DEBUG recomp_printf("FOUND ID\n");
                 return table->entries[i];
             }
         }
@@ -74,10 +75,10 @@ MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
         IF_DEBUG recomp_printf("Binary Lookup:\n");
         while (low <= high) {
             int mid = low + (high - low) / 2;
-            // recomp_printf("High: %d, Low: %d, Central Point: %d\n", high, low, mid);
+            IF_DEBUG recomp_printf("\tHigh: %d, Low: %d, Central Point: %d Center ID: 0x%04X\n", high, low, mid, (u32)entries[mid]->textId);
         
             if (entries[mid]->textId == id) {
-                IF_DEBUG recomp_printf("\thigh: %d, Low: %d, Central Point: %d\n", high, low, mid);
+                IF_DEBUG recomp_printf("FOUND ID\n");
                 return entries[mid];
                 
             }
@@ -123,20 +124,20 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     if (table->capacity <= table->count) {
         MsgTable_Expand(table);
     }
-    recomp_printf("correct_size\n");
+    IF_DEBUG recomp_printf("correct size\n");
     table->entries[table->count] = MsgEntry_Create(textId);
     search = table->entries[table->count];
     search->textId = textId;
     memcpy(&search->buf, entry, sizeof(MsgBuffer));
     table->count++;
     
-    recomp_printf("sorting\n");
+    IF_DEBUG recomp_printf("sorting\n");
     if (table->_automaticSorting) {
         MsgTable_BubbleSort(table);
     }
 
-    recomp_printf("sorted\n");
-    recomp_printf("%sAdding text entry id %i\n", LOG_HEADER, search->textId);
+    IF_DEBUG recomp_printf("sorted\n");
+    recomp_printf("%sAdding Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)search->textId, (u32)search->textId);
 }
 
 void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
@@ -172,36 +173,36 @@ void MsgTable_BubbleSort(MsgTable* table) {
 
     while(!fully_sorted) {
         fully_sorted = true;
-
-
-        //print state of list:
-        recomp_printf("Current Array: ");
-        for (int i = 0; i < table->count; i++) {
-            recomp_printf("0x%04X ", table->entries[i]->textId);
-        }
-        recomp_printf("\n");
-
+        
         for (int i = table->count - 1; i >= 1; i--) {
-            MsgEntry* upper = table->entries[i];
-            MsgEntry* lower = table->entries[i - 1];
             
             // recomp_printf("Upper: %X (%i), Lower: %X (%i)\n", (u32)upper->textId, (u32)upper->textId, (u32)lower->textId, (u32)lower->textId);
-        
-
-            if (upper->textId < lower->textId) {
-                MsgEntry* temp = upper;
-                upper = lower;
-                lower = temp;
-                recomp_printf("another_pass is needed\n");
+            if (table->entries[i]->textId < table->entries[i - 1]->textId) {
+                MsgTable_Swap(&table->entries[i], &table->entries[i - 1]);
+                IF_DEBUG recomp_printf("another_pass is needed\n");
                 fully_sorted = false;
             }
         }
+
+        IF_DEBUG {
+            //print state of list:
+            recomp_printf("Current Array: ");
+            for (int i = 0; i < table->count; i++) {
+                recomp_printf("0x%04X ", table->entries[i]->textId);
+            }
+            recomp_printf("\n");
+        }
+
     }
 }
 
 void MsgTable_Swap(MsgEntry** a, MsgEntry** b) {
     MsgEntry* t;
-    memcpy(&t, a, sizeof(MsgEntry*));
-    memcpy(a, b, sizeof(MsgEntry*));
-    memcpy(b, &t, sizeof(MsgEntry*));
+    // memcpy(&t, a, sizeof(MsgEntry*));
+    // memcpy(a, b, sizeof(MsgEntry*));
+    // memcpy(b, &t, sizeof(MsgEntry*));
+
+    t = *a;
+    *a = *b;
+    *b = t;
 }

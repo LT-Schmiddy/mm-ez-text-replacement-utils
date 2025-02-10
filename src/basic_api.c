@@ -4,7 +4,7 @@ MsgTable* ETZR_mainTable;
 
 RECOMP_DECLARE_EVENT(EZTR_OnInit());
 
-RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,
+void _EZTR_Basic_ReplaceText(u16 textId,
     u8 text_box_type, 
     u8 text_box_y_pos, 
     u8 display_icon, 
@@ -27,13 +27,29 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,
     } else {
         MsgBuffer_CreateFromStr(&buf, content);
     }
-    recomp_printf("Adding buffer %X\n", (u32)textId);
+    recomp_printf("... Adding buffer... %04X\n", (u32)textId);
     MsgTable_SetBuffer(ETZR_mainTable, textId, &buf);
+    recomp_printf("Buffer Added 0x%04X\n", (u32)textId);
+}
+
+RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,
+    u8 text_box_type, 
+    u8 text_box_y_pos, 
+    u8 display_icon, 
+    u16 next_message_id, 
+    u16 first_item_rupees, 
+    u16 second_item_rupees,
+    bool pipe_escape_bytes,
+    char* content
+) {
+    _EZTR_Basic_ReplaceText(textId, text_box_type, text_box_y_pos, display_icon, next_message_id, 
+        first_item_rupees, second_item_rupees, pipe_escape_bytes, content);
 }
 
 void test_callback(PlayState* play, u16 textId, MsgBuffer* buf) {
     recomp_printf("Test Callback on text id: %X\n", (u32)textId);
 }
+
 
 RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     ETZR_mainTable = MsgTable_Create();
@@ -41,7 +57,7 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
 
     printf("Hello Alex %i, %02f, %c, %s", 1, 2.0f, 'c', "How are you?\n");
 
-    EZTR_Basic_ReplaceText(
+    _EZTR_Basic_ReplaceText(
         0x0C01,
         EZTR_STANDARD_TEXT_BOX_I,
         1,
