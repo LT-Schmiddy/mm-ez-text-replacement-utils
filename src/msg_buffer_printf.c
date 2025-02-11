@@ -36,7 +36,8 @@
 
 #include "modding.h"
 #include "msg_buffer_printf.h"
-#include "util.h"
+
+#include "msg_buffer.h"
 
 // internal vsnprintf
 int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va)
@@ -48,9 +49,8 @@ int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* 
         // use null output function
         out = _out_null;
     }
-
-    while (*format)
-    {
+    bool main_should_quit = false;
+    while (*format != MSG_ENDING_CHAR && !main_should_quit) {
         // format specifier?  %[flags][width][.precision][length]
         if (*format != '%') {
             // no
@@ -66,9 +66,14 @@ int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* 
                 format++;
             }
             else {
-                out(hex_to_byte((char*)format), buffer, idx++, maxlen);
-                format++;
-                format++;
+                char out_char = hex_to_byte((char*)format);
+                if (out_char != MSG_ENDING_CHAR) {
+                    out(out_char, buffer, idx++, maxlen);
+                    format++;
+                    format++;
+                } else {
+                    main_should_quit = true;
+                }
             }
             continue;
         }
@@ -300,8 +305,8 @@ int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* 
             }
             // To Modify: Message Buffer flag:
             case 'm' : {
-                const char* p = pf_va_arg(va, char*);
-                unsigned int l = _strnlen_s(p, precision ? precision : (size_t)-1);
+                MsgSContent* p = pf_va_arg(va, MsgSContent*);
+                unsigned int l = MIN(MsgSContent_Len(p), (precision ? precision : (size_t)-1));
                 // pre padding
                 if (flags & PF_FLAGS_PRECISION) {
                     l = (l < precision ? l : precision);
@@ -311,8 +316,29 @@ int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* 
                         out(' ', buffer, idx++, maxlen);
                     }
                 }
-                // string output
-                
+                bool str_should_quit = false;
+                while (*p != MSG_ENDING_CHAR && !str_should_quit && (!(flags & PF_FLAGS_PRECISION) || precision--)) {
+                    // Handle pipe-escaped byte:
+                    if (*p == PIPE_CHAR) {
+                        if (*p == PIPE_CHAR) {
+                            out(PIPE_CHAR, buffer, idx++, maxlen);
+                            p++;
+                        }
+                        else {
+                            char out_char = hex_to_byte((char*)p);
+                            if (out_char != MSG_ENDING_CHAR) {
+                                out(out_char, buffer, idx++, maxlen);
+                                p++;
+                                p++;
+                            } else {
+                                str_should_quit = true;
+                            }
+                        }
+                    } else {
+                        out(*p, buffer, idx++, maxlen);
+                        p++;
+                    }
+                }
                 // post padding
                 if (flags & PF_FLAGS_LEFT) {
                     while (l++ < width) {

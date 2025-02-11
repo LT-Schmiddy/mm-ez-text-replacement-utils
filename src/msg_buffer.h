@@ -5,15 +5,7 @@
 #include "libc/string.h"
 #include "util.h"
 #include "enums.h"
-
-#define MSG_BUFFER_SIZE 1280
-#define MSG_HEADER_SIZE 11
-#define MSG_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
-
-#define MSG_ENDING_CHAR '\xBF'
-#define PIPE_CHAR '|'
-
-typedef char MsgSContent [MSG_CONTENT_SIZE];
+#include "msg_buffer_printf.h"
 
 typedef union {
         char schar[1280]; // msgBuf

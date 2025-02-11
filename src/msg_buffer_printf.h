@@ -32,8 +32,6 @@
 #ifndef _PRINTF_H_
 #define _PRINTF_H_
 
-#include "msg_buffer.h"
-
 #include "custom_includes/stdarg.h"
 // #include "libc/stdarg.h"
 #include "custom_includes/stddef.h"
@@ -47,7 +45,13 @@
 #include "printf_config.h"
 #endif
 
+#define MSG_BUFFER_SIZE 1280
+#define MSG_HEADER_SIZE 11
+#define MSG_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
 
+#define MSG_ENDING_CHAR '\xBF'
+#define PIPE_CHAR '|'
+typedef char MsgSContent [MSG_CONTENT_SIZE];
 
 
 /**
