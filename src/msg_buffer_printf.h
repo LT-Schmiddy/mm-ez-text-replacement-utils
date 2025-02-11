@@ -72,7 +72,8 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer, const size_t m
  * \return The number of characters that are written into the array, not counting the terminating null character
  */
 // #define printf printf_
-int MsgSContent_Printf(const char* format, ...);
+int MsgSContent_PrintfChar(const char* format, ...);
+int MsgSContent_Printf(MsgSContent* format, ...);
 
 
 /**
@@ -83,7 +84,8 @@ int MsgSContent_Printf(const char* format, ...);
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
 // #define sprintf sprintf_
-int MsgSContent_Sprintf(MsgSContent* buffer, const char* format, ...);
+int MsgSContent_SprintfChar(MsgSContent* buffer, const char* format, ...);
+int MsgSContent_Sprintf(MsgSContent* buffer, MsgSContent* format, ...);
 
 
 /**

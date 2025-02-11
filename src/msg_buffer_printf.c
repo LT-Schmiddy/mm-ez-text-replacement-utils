@@ -65,10 +65,15 @@ void _out_char(char character, void* buffer, size_t idx, size_t maxlen) {
         if (is_printable_char(character)) {
             recomp_printf("%c", character);
         } else {
-            // converting to hex
-            char out_str[4] = "|00";
-            write_byte_to_hex(character,&out_str[1]);
-            recomp_printf("%s", out_str);
+            if (recomp_get_config_u32("text_dumping_byte_format")) {
+                char out_str[5] = "\\x00";
+                write_byte_to_hex(character,&out_str[2]);
+                recomp_printf("%s", out_str);
+            } else {
+                char out_str[4] = "|00";
+                write_byte_to_hex(character,&out_str[1]);
+                recomp_printf("%s", out_str);
+            }
         }
     }
 }
@@ -439,7 +444,7 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int MsgSContent_Printf(const char* format, ...) {
+int MsgSContent_PrintfChar(const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
@@ -448,11 +453,28 @@ int MsgSContent_Printf(const char* format, ...) {
     return ret;
 }
 
+int MsgSContent_Printf(MsgSContent* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, (MsgSContent*)buffer, sizeof(MsgSContent), (const char*)format, sizeof(MsgSContent), va);
+    pf_va_end(va);
+    return ret;
+}
 
-int MsgSContent_Sprintf(MsgSContent* buffer, const char* format, ...) {
+int MsgSContent_SprintfChar(MsgSContent* buffer, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, sizeof(MsgSContent), format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+
+int MsgSContent_Sprintf(MsgSContent* buffer, MsgSContent* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, sizeof(MsgSContent), (const char*)format, sizeof(MsgSContent), va);
     pf_va_end(va);
     return ret;
 }

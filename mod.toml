@@ -80,3 +80,12 @@ type = "Enum"
 options = [ "Off", "On" ]
 default = "Off"
 
+[[manifest.config_options]]
+id = "text_dumping_byte_format"
+name = "Text Dumping Byte Format"
+description = "How non-printable bytes are dumped, with _ representing hexadecimal digits."
+type = "Enum"
+options = [ "Pipes (|__)", "Escapes (\\x__)" ]
+default = "Pipes (|__)"
+
+

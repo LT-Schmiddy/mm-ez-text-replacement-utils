@@ -50,9 +50,12 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId,
 
 void test_callback(PlayState* play, u16 textId, MsgBuffer* buf) {
     recomp_printf("Running Test Callback:\n");
+    MsgSContent* content = MsgBuffer_GetContentPtr(buf);
+    static int i = 0;
+    i++;
+    MsgSContent_SprintfChar(content, "You've read this sign %i times.\xBF", i);
+    MsgSContent_Printf(content);
 
-    MsgSContent c = "Hello alex|BF";
-    MsgSContent_Printf(MsgBuffer_GetContentPtr(buf), c);
 }
 
 RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
@@ -63,14 +66,11 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     // s32 len = MsgBuffer_Len(buf);
     // s32 clen = MsgBuffer_ContentLen(buf);
     // s32 diff = len - clen;
-
-    MsgSContent c = "Hello alex\xbf";
-
     // recomp_printf("TEST: Len = %i, Content Len = %i, Diff = %i\n", len, clen, diff);
 
     // MsgSContent_Printf("%m|BF", &c);
 
     EZTR_Basic_ReplaceText_Callback(0x0314, EZTR_WOODEN_SIGN_BACKGROUND, 32, EZTR_ICON_NO_ICON, EZTR_NO_VALUE, EZTR_NO_VALUE, 
-        EZTR_NO_VALUE, true, "|01This way to Snowhead.|11|00Beware of the slippery valley trail|11and the giant falling snowballs %m.|BF", test_callback);
+        EZTR_NO_VALUE, true, "\x01This way to Snowhead.\x11\x00Beware of the slippery valley trail\x11/and the giant falling snowballs\xBF", test_callback);
 
 }

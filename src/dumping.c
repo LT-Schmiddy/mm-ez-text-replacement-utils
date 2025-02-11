@@ -56,18 +56,9 @@ void dump_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf) {
 
     recomp_printf("\tContent: \"");
     // Printing Message Content:
-    for (s32 i = MSG_HEADER_SIZE; i < len; i++) {
-        char c = buf->schar[i];
-
-        if (is_printable_char(c)) {
-            recomp_printf("%c", c);
-        } else {
-            // converting to hex
-            char out_str[4] = "|00";
-            write_byte_to_hex(c,&out_str[1]);
-            recomp_printf("%s", out_str);
-        }
-    }
+    MsgSContent* content = MsgBuffer_GetContentPtr(buf);
+    // MsgSContent_Printf("%m", content);
+    MsgSContent_Printf(content);
 
      recomp_printf("\"\n\n");
 }
