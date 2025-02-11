@@ -16,16 +16,13 @@ RECOMP_DECLARE_EVENT(EZTR_OnInit());
     MsgCallback callback
 ) {
     MsgBuffer buf;
-    memcpy(&buf.schar[0], &text_box_type, sizeof(u8));
-    memcpy(&buf.schar[1], &text_box_y_pos, sizeof(u8));
-    memcpy(&buf.schar[2], &display_icon, sizeof(u8));
-    memcpy(&buf.schar[3], &next_message_id, sizeof(u16));
-    memcpy(&buf.schar[5], &first_item_rupees, sizeof(u16));
-    memcpy(&buf.schar[7], &second_item_rupees, sizeof(u16));
+    MsgBuffer_WriteHeader(&buf, text_box_type, text_box_y_pos, display_icon, next_message_id, first_item_rupees, second_item_rupees);
 
+    MsgSContent* cont = MsgBuffer_GetContentPtr(&buf);
     if (pipe_escape_bytes) {
         
-        MsgBuffer_WriteFromStr_PipeEscapeBytes(&buf, content);
+        // MsgBuffer_WriteFromStr_PipeEscapeBytes(&buf, content);
+        MsgSContent_SprintfChar(cont, content);
     } else {
         MsgBuffer_WriteFromStr(&buf, content);
     }
@@ -72,6 +69,6 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     // MsgSContent_Printf("%m|BF", &c);
 
     EZTR_Basic_ReplaceText_Callback(0x0314, EZTR_WOODEN_SIGN_BACKGROUND, 32, EZTR_ICON_NO_ICON, EZTR_NO_VALUE, EZTR_NO_VALUE, 
-        EZTR_NO_VALUE, true, "|01This way to Snowhead.|11Beware of the slippery valley trail|11and the giant falling snowballs|11", test_callback);
+        EZTR_NO_VALUE, true, "|01This way to Snowhead.|00|11Beware of the slippery valley trail|11and the giant falling snowballs|BF", test_callback);
 
 }
