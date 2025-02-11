@@ -148,10 +148,10 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 value) {
 
 // Content Stuff
 MsgSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
-   return (MsgSContent*)MsgBuffer_GetCharPtr(buf);
+   return (MsgSContent*)MsgBuffer_GetContentCharPtr(buf);
 }
 
-char* MsgBuffer_GetCharPtr(MsgBuffer* buf) {
+char* MsgBuffer_GetContentCharPtr(MsgBuffer* buf) {
    return &buf->schar[MSG_HEADER_SIZE];
 }
 

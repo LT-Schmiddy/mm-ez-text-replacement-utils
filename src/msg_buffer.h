@@ -43,7 +43,7 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 
 // Msg Content:
 MsgSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
-char* MsgBuffer_GetCharPtr(MsgBuffer* buf);
+char* MsgBuffer_GetContentCharPtr(MsgBuffer* buf);
 void MsgSContent_SetEmpty(MsgSContent* cont);
 s32 MsgSContent_Len(MsgSContent* cont);
 
