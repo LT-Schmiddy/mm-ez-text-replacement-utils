@@ -13,6 +13,28 @@ void MsgEntry_Destroy(MsgEntry* entry) {
     recomp_free(entry);
 }
 
+
+MsgEntryCluster* MsgEntryCluster_Create() {
+    MsgEntryCluster* retVal = recomp_alloc(sizeof(MsgEntryCluster));
+    retVal->count = 0;
+    // Make sure all entries are null:
+    for (int i = 0; i < UINT8_MAX; i++) {
+        retVal->entries[i] == NULL;
+    }
+
+    return retVal;
+}
+
+void MsgEntryCluster_Destroy(MsgEntryCluster* cluster) {
+    for (int i = 0; i < UINT8_MAX; i++) {
+        if (cluster->entries[i] != NULL) {
+            MsgEntry_Destroy(cluster->entries[i]);
+        }
+    }
+    recomp_free(cluster);
+}
+
+
 MsgTable* MsgTable_Create() {
     MsgTable* retVal = recomp_alloc(sizeof(MsgTable));
     

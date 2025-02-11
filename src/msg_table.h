@@ -20,10 +20,18 @@ typedef struct {
 } MsgEntry;
 
 typedef struct {
+    MsgEntry* entries[UINT8_MAX];
+    u8 count;
+} MsgEntryCluster;
+
+typedef struct {
     MsgEntry** entries;
     u16 count;
     u16 capacity;
     bool _automaticSorting;
+
+    MsgEntryCluster clusters[UINT8_MAX];
+    u8 cluster_count;
 } MsgTable;
 
 // Function Declarations:
