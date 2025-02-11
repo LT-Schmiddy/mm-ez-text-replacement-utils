@@ -59,6 +59,8 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     s32 clen = MsgBuffer_ContentLen(buf);
     s32 diff = len - clen;
 
+    MsgSContent c = "Hello alex\xbf";
+
     recomp_printf("TEST: Len = %i, Content Len = %i, Diff = %i\n", len, clen, diff);
 
 }
