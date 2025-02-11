@@ -54,13 +54,14 @@
 typedef char MsgSContent [MSG_CONTENT_SIZE];
 
 // Internal Functions:
-void _putchar(char character);
+// void _putchar(char character);
 
 void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen);
 void _out_null(char character, void* buffer, size_t idx, size_t maxlen);
 void _out_char(char character, void* buffer, size_t idx, size_t maxlen);
 void _out_fct(char character, void* buffer, size_t idx, size_t maxlen);
-int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
+// int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
+int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer, const size_t max_len, const char* format, const size_t max_format_len, va_list va);
 
 /**
  * Tiny printf implementation
@@ -82,7 +83,7 @@ int MsgSContent_Printf(const char* format, ...);
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
 // #define sprintf sprintf_
-int MsgSContent_Sprintf(char* buffer, const char* format, ...);
+int MsgSContent_Sprintf(MsgSContent* buffer, const char* format, ...);
 
 
 /**
@@ -96,8 +97,8 @@ int MsgSContent_Sprintf(char* buffer, const char* format, ...);
  */
 // #define snprintf  snprintf_
 // #define vsnprintf vsnprintf_
-int  MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...);
-int MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va);
+int  MsgSContent_Snprintf(MsgSContent* buffer, size_t count, const char* format, ...);
+int MsgSContent_Vsnprintf(MsgSContent* buffer, size_t count, const char* format, va_list va);
 
 
 /**
@@ -118,7 +119,7 @@ int MsgSContent_Vprintf(const char* format, va_list va);
  * \param format A string that specifies the format of the output
  * \return The number of characters that are sent to the output function, not counting the terminating null character
  */
-int MsgSContent_fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...);
+int MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...);
 
 
 #endif  // _PRINTF_H_

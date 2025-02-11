@@ -40,13 +40,12 @@
 #include "msg_buffer.h"
 
 
-void _putchar(char character) {
-    recomp_printf("%c", character);
-}
+// void _putchar(char character) {
+//     recomp_printf("%c", character);
+// }
 
 // internal buffer output
-void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
-{
+void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen) {
     if (idx < maxlen) {
         ((char*)buffer)[idx] = character;
     }
@@ -54,25 +53,29 @@ void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
 
 
 // internal null output
-void _out_null(char character, void* buffer, size_t idx, size_t maxlen)
-{
+void _out_null(char character, void* buffer, size_t idx, size_t maxlen) {
     (void)character; (void)buffer; (void)idx; (void)maxlen;
 }
 
 
 // internal _putchar wrapper
-void _out_char(char character, void* buffer, size_t idx, size_t maxlen)
-{
+void _out_char(char character, void* buffer, size_t idx, size_t maxlen) {
     (void)buffer; (void)idx; (void)maxlen;
     if (character) {
-        _putchar(character);
+        if (is_printable_char(character)) {
+            recomp_printf("%c", character);
+        } else {
+            // converting to hex
+            char out_str[4] = "|00";
+            write_byte_to_hex(character,&out_str[1]);
+            recomp_printf("%s", out_str);
+        }
     }
 }
 
 
 // internal output function wrapper
-void _out_fct(char character, void* buffer, size_t idx, size_t maxlen)
-{
+void _out_fct(char character, void* buffer, size_t idx, size_t maxlen) {
     (void)idx; (void)maxlen;
     if (character) {
         // buffer is the output fct pointer
@@ -81,21 +84,22 @@ void _out_fct(char character, void* buffer, size_t idx, size_t maxlen)
 }
 
 // internal vsnprintf
-int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va)
-{
+int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size_t max_len, const char* format, const size_t max_format_len, va_list va) {
     unsigned int flags, width, precision, n;
     size_t idx = 0U;
+    char* buffer = (char*)buffer_msg;
+    const char* start = format;
 
     if (!buffer) {
         // use null output function
         out = _out_null;
     }
     bool main_should_quit = false;
-    while (*format != MSG_ENDING_CHAR && !main_should_quit) {
+    while (*format != MSG_ENDING_CHAR && !main_should_quit && (size_t)(format - start) < max_format_len) {
         // format specifier?  %[flags][width][.precision][length]
         if (*format != '%') {
             // no
-            out(*format, buffer, idx++, maxlen);
+            out(*format, buffer, idx++, max_len);
             format++;
             continue;
         }
@@ -103,13 +107,13 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
             // Pipe-escaped byte;
             format++;
             if (*format == PIPE_CHAR) {
-                out(PIPE_CHAR, buffer, idx++, maxlen);
+                out(PIPE_CHAR, buffer, idx++, max_len);
                 format++;
             }
             else {
                 char out_char = hex_to_byte((char*)format);
                 if (out_char != MSG_ENDING_CHAR) {
-                    out(out_char, buffer, idx++, maxlen);
+                    out(out_char, buffer, idx++, max_len);
                     format++;
                     format++;
                 } else {
@@ -250,31 +254,31 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
                     if (flags & PF_FLAGS_LONG_LONG) {
 #if defined(PRINTF_SUPPORT_LONG_LONG)
                         const long long value = pf_va_arg(va, long long);
-                        idx = _ntoa_long_long(out, buffer, idx, maxlen, (unsigned long long)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
+                        idx = _ntoa_long_long(out, buffer, idx, max_len, (unsigned long long)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
 #endif
                     }
                     else if (flags & PF_FLAGS_LONG) {
                         const long value = pf_va_arg(va, long);
-                        idx = _ntoa_long(out, buffer, idx, maxlen, (unsigned long)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
+                        idx = _ntoa_long(out, buffer, idx, max_len, (unsigned long)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
                     }
                     else {
                         const int value = (flags & PF_FLAGS_CHAR) ? (char) pf_va_arg(va, int) : (flags & PF_FLAGS_SHORT) ? (short int)pf_va_arg(va, int) : pf_va_arg(va, int);
-                        idx = _ntoa_long(out, buffer, idx, maxlen, (unsigned int)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
+                        idx = _ntoa_long(out, buffer, idx, max_len, (unsigned int)(value > 0 ? value : 0 - value), value < 0, base, precision, width, flags);
                     }
                 }
                 else {
                     // unsigned
                     if (flags & PF_FLAGS_LONG_LONG) {
 #if defined(PRINTF_SUPPORT_LONG_LONG)
-                        idx = _ntoa_long_long(out, buffer, idx, maxlen, pf_va_arg(va, unsigned long long), false, base, precision, width, flags);
+                        idx = _ntoa_long_long(out, buffer, idx, max_len, pf_va_arg(va, unsigned long long), false, base, precision, width, flags);
 #endif
                     }
                     else if (flags & PF_FLAGS_LONG) {
-                        idx = _ntoa_long(out, buffer, idx, maxlen, pf_va_arg(va, unsigned long), false, base, precision, width, flags);
+                        idx = _ntoa_long(out, buffer, idx, max_len, pf_va_arg(va, unsigned long), false, base, precision, width, flags);
                     }
                     else {
                         const unsigned int value = (flags & PF_FLAGS_CHAR) ? (unsigned char)pf_va_arg(va, unsigned int) : (flags & PF_FLAGS_SHORT) ? (unsigned short int)pf_va_arg(va, unsigned int) : pf_va_arg(va, unsigned int);
-                        idx = _ntoa_long(out, buffer, idx, maxlen, value, false, base, precision, width, flags);
+                        idx = _ntoa_long(out, buffer, idx, max_len, value, false, base, precision, width, flags);
                     }
                 }
                 format++;
@@ -284,7 +288,7 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
             case 'f' :
             case 'F' :
                 if (*format == 'F') flags |= PF_FLAGS_UPPERCASE;
-                idx = _ftoa(out, buffer, idx, maxlen, pf_va_arg(va, double), precision, width, flags);
+                idx = _ftoa(out, buffer, idx, max_len, pf_va_arg(va, double), precision, width, flags);
                 format++;
                 break;
 #if defined(PRINTF_SUPPORT_EXPONENTIAL)
@@ -294,7 +298,7 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
             case 'G':
                 if ((*format == 'g')||(*format == 'G')) flags |= PF_FLAGS_ADAPT_EXP;
                 if ((*format == 'E')||(*format == 'G')) flags |= PF_FLAGS_UPPERCASE;
-                idx = _etoa(out, buffer, idx, maxlen, pf_va_arg(va, double), precision, width, flags);
+                idx = _etoa(out, buffer, idx, max_len, pf_va_arg(va, double), precision, width, flags);
                 format++;
                 break;
 #endif  // PRINTF_SUPPORT_EXPONENTIAL
@@ -304,15 +308,15 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
                 // pre padding
                 if (!(flags & PF_FLAGS_LEFT)) {
                     while (l++ < width) {
-                        out(' ', buffer, idx++, maxlen);
+                        out(' ', buffer, idx++, max_len);
                     }
                 }
                 // char output
-                out((char)pf_va_arg(va, int), buffer, idx++, maxlen);
+                out((char)pf_va_arg(va, int), buffer, idx++, max_len);
                 // post padding
                 if (flags & PF_FLAGS_LEFT) {
                     while (l++ < width) {
-                        out(' ', buffer, idx++, maxlen);
+                        out(' ', buffer, idx++, max_len);
                     }
                 }
                 format++;
@@ -328,17 +332,17 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
                 }
                 if (!(flags & PF_FLAGS_LEFT)) {
                     while (l++ < width) {
-                        out(' ', buffer, idx++, maxlen);
+                        out(' ', buffer, idx++, max_len);
                     }
                 }
                 // string output
                 while ((*p != 0) && (!(flags & PF_FLAGS_PRECISION) || precision--)) {
-                    out(*(p++), buffer, idx++, maxlen);
+                    out(*(p++), buffer, idx++, max_len);
                 }
                 // post padding
                 if (flags & PF_FLAGS_LEFT) {
                     while (l++ < width) {
-                        out(' ', buffer, idx++, maxlen);
+                        out(' ', buffer, idx++, max_len);
                     }
                 }
                 format++;
@@ -346,29 +350,31 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
             }
             // To Modify: Message Buffer flag:
             case 'm' : {
-                MsgSContent* p = pf_va_arg(va, MsgSContent*);
-                unsigned int l = MIN(MsgSContent_Len(p), (precision ? precision : (size_t)-1));
+                MsgSContent* m = pf_va_arg(va, MsgSContent*);
+                char* p = (char*)m;
+                unsigned int l = MIN(MsgSContent_Len(m), (precision ? precision : sizeof(MsgSContent)));
                 // pre padding
                 if (flags & PF_FLAGS_PRECISION) {
                     l = (l < precision ? l : precision);
                 }
                 if (!(flags & PF_FLAGS_LEFT)) {
                     while (l++ < width) {
-                        out(' ', buffer, idx++, maxlen);
+                        out(' ', buffer, idx++, max_len);
                     }
                 }
                 bool str_should_quit = false;
                 while (*p != MSG_ENDING_CHAR && !str_should_quit && (!(flags & PF_FLAGS_PRECISION) || precision--)) {
                     // Handle pipe-escaped byte:
                     if (*p == PIPE_CHAR) {
+                        p++;
                         if (*p == PIPE_CHAR) {
-                            out(PIPE_CHAR, buffer, idx++, maxlen);
+                            out(PIPE_CHAR, buffer, idx++, max_len);
                             p++;
                         }
                         else {
                             char out_char = hex_to_byte((char*)p);
                             if (out_char != MSG_ENDING_CHAR) {
-                                out(out_char, buffer, idx++, maxlen);
+                                out(out_char, buffer, idx++, max_len);
                                 p++;
                                 p++;
                             } else {
@@ -376,14 +382,14 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
                             }
                         }
                     } else {
-                        out(*p, buffer, idx++, maxlen);
+                        out(*p, buffer, idx++, max_len);
                         p++;
                     }
                 }
                 // post padding
                 if (flags & PF_FLAGS_LEFT) {
                     while (l++ < width) {
-                        out(' ', buffer, idx++, maxlen);
+                        out(' ', buffer, idx++, max_len);
                     }
                 }
                 format++;
@@ -396,11 +402,11 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
 #if defined(PRINTF_SUPPORT_LONG_LONG)
                 const bool is_ll = sizeof(uintptr_t) == sizeof(long long);
                 if (is_ll) {
-                    idx = _ntoa_long_long(out, buffer, idx, maxlen, (uintptr_t)pf_va_arg(va, void*), false, 16U, precision, width, flags);
+                    idx = _ntoa_long_long(out, buffer, idx, max_len, (uintptr_t)pf_va_arg(va, void*), false, 16U, precision, width, flags);
                 }
                 else {
 #endif
-                    idx = _ntoa_long(out, buffer, idx, maxlen, (unsigned long)((uintptr_t)pf_va_arg(va, void*)), false, 16U, precision, width, flags);
+                    idx = _ntoa_long(out, buffer, idx, max_len, (unsigned long)((uintptr_t)pf_va_arg(va, void*)), false, 16U, precision, width, flags);
 #if defined(PRINTF_SUPPORT_LONG_LONG)
                 }
 #endif
@@ -409,19 +415,22 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
             }
 
             case '%' :
-                out('%', buffer, idx++, maxlen);
+                out('%', buffer, idx++, max_len);
                 format++;
                 break;
 
             default :
-                out(*format, buffer, idx++, maxlen);
+                out(*format, buffer, idx++, max_len);
                 format++;
                 break;
         }
     }
 
+
+    out(MSG_ENDING_CHAR, buffer, idx < max_len ? idx : max_len - 1U, max_len);
+
     // termination
-    out((char)0, buffer, idx < maxlen ? idx : maxlen - 1U, maxlen);
+
 
     // return written chars without terminating \0
     return (int)idx;
@@ -430,56 +439,50 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, 
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int MsgSContent_Printf(const char* format, ...)
-{
+int MsgSContent_Printf(const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
-    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, (size_t)-1, format, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_char, (MsgSContent*)buffer, sizeof(MsgSContent), format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
 
 
-int MsgSContent_Sprintf(char* buffer, const char* format, ...)
-{
+int MsgSContent_Sprintf(MsgSContent* buffer, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, (size_t)-1, format, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, sizeof(MsgSContent), format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
 
 
-int MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...)
-{
+int MsgSContent_Snprintf(MsgSContent* buffer, size_t count, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
 
 
-int MsgSContent_Vprintf(const char* format, va_list va)
-{
+int MsgSContent_Vprintf(const char* format, va_list va) {
     char buffer[1];
-    return _MsgSContent_Vsnprintf(_out_char, buffer, (size_t)-1, format, va);
+    return _MsgSContent_Vsnprintf(_out_char, (MsgSContent*)buffer, (size_t)-1, format, (size_t)-1, va);
 }
 
 
-int MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va)
-{
-    return _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, va);
+int MsgSContent_Vsnprintf(MsgSContent* buffer, size_t count, const char* format, va_list va) {
+    return _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
 }
 
 
-int MsgSContent_fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...)
-{
+int MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     const out_fct_wrap_type out_fct_wrap = { out, arg };
-    const int ret = _MsgSContent_Vsnprintf(_out_fct, (char*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_fct, (MsgSContent*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }

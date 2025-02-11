@@ -13,10 +13,10 @@ typedef union {
         u64 force_structure_alignment_msg;
 } MsgBuffer;
 
-s32 MsgBuffer_Len(MsgBuffer* buf);
-s32 MsgBuffer_ContentLen(MsgBuffer* buf);
-s32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src);
-s32 MsgBuffer_WriteFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src);
+u32 MsgBuffer_Len(MsgBuffer* buf);
+u32 MsgBuffer_ContentLen(MsgBuffer* buf);
+u32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src);
+u32 MsgBuffer_WriteFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src);
 void MsgBuffer_WriteDefaultHeader(MsgBuffer* buf);
 
 // Getters/Setters for the header:
@@ -37,6 +37,6 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 MsgSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
 char* MsgBuffer_GetContentCharPtr(MsgBuffer* buf);
 void MsgSContent_SetEmpty(MsgSContent* cont);
-s32 MsgSContent_Len(MsgSContent* cont);
+u32 MsgSContent_Len(MsgSContent* cont);
 
 #endif

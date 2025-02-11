@@ -1,6 +1,6 @@
 #include "msg_buffer.h"
 
-s32 MsgBuffer_Len(MsgBuffer* buf) {
+u32 MsgBuffer_Len(MsgBuffer* buf) {
     int i = 0;
     while (buf->schar[i] != MSG_ENDING_CHAR && i < MSG_BUFFER_SIZE) { 
         i++;
@@ -9,14 +9,14 @@ s32 MsgBuffer_Len(MsgBuffer* buf) {
     return i;
 }
 
-s32 MsgBuffer_ContentLen(MsgBuffer* buf) {
+u32 MsgBuffer_ContentLen(MsgBuffer* buf) {
     return MsgSContent_Len(MsgBuffer_GetContentPtr(buf));
 }
 
-s32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
+u32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
 
     IF_DEBUG recomp_printf("Copying: ");
-    int i = 0;
+    u32 i = 0;
 
     bool should_end = false;
     while (!should_end && i < MSG_CONTENT_SIZE) {
@@ -33,11 +33,11 @@ s32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
     return i + 1;
 }
 
-s32 MsgBuffer_WriteFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
+u32 MsgBuffer_WriteFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src) {
 
     IF_DEBUG recomp_printf("Copying w/ Pipes: ");
-    int src_pos = 0;
-    int dst_pos = 0;
+    u32 src_pos = 0;
+    u32 dst_pos = 0;
     bool should_end = false;
     while (!should_end && dst_pos < MSG_CONTENT_SIZE) {
 
@@ -162,7 +162,7 @@ void MsgSContent_SetEmpty(MsgSContent* cont) {
     }
 }
 
-s32 MsgSContent_Len(MsgSContent* cont) {
+u32 MsgSContent_Len(MsgSContent* cont) {
     int i = 0;
     char* c = (char*)cont;
     while (c[i] != MSG_ENDING_CHAR && i < MSG_CONTENT_SIZE) {
