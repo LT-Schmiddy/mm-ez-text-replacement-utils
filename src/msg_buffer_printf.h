@@ -53,6 +53,14 @@
 #define PIPE_CHAR '|'
 typedef char MsgSContent [MSG_CONTENT_SIZE];
 
+// Internal Functions:
+void _putchar(char character);
+
+void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen);
+void _out_null(char character, void* buffer, size_t idx, size_t maxlen);
+void _out_char(char character, void* buffer, size_t idx, size_t maxlen);
+void _out_fct(char character, void* buffer, size_t idx, size_t maxlen);
+int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
 
 /**
  * Tiny printf implementation
@@ -62,8 +70,8 @@ typedef char MsgSContent [MSG_CONTENT_SIZE];
  * \param format A string that specifies the format of the output
  * \return The number of characters that are written into the array, not counting the terminating null character
  */
-#define printf printf_
-int printf_(const char* format, ...);
+// #define printf printf_
+int MsgSContent_Printf(const char* format, ...);
 
 
 /**
@@ -73,8 +81,8 @@ int printf_(const char* format, ...);
  * \param format A string that specifies the format of the output
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
-#define sprintf sprintf_
-int sprintf_(char* buffer, const char* format, ...);
+// #define sprintf sprintf_
+int MsgSContent_Sprintf(char* buffer, const char* format, ...);
 
 
 /**
@@ -86,10 +94,10 @@ int sprintf_(char* buffer, const char* format, ...);
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  *         If the formatted string is truncated the buffer size (count) is returned
  */
-#define snprintf  snprintf_
-#define vsnprintf vsnprintf_
-int  snprintf_(char* buffer, size_t count, const char* format, ...);
-int vsnprintf_(char* buffer, size_t count, const char* format, va_list va);
+// #define snprintf  snprintf_
+// #define vsnprintf vsnprintf_
+int  MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...);
+int MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va);
 
 
 /**
@@ -98,8 +106,8 @@ int vsnprintf_(char* buffer, size_t count, const char* format, va_list va);
  * \param va A value identifying a variable arguments list
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
-#define vprintf vprintf_
-int vprintf_(const char* format, va_list va);
+// #define vprintf vprintf_
+int MsgSContent_Vprintf(const char* format, va_list va);
 
 
 /**
@@ -110,10 +118,7 @@ int vprintf_(const char* format, va_list va);
  * \param format A string that specifies the format of the output
  * \return The number of characters that are sent to the output function, not counting the terminating null character
  */
-int fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...);
+int MsgSContent_fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...);
 
-
-// Internal Functions:
-int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
 
 #endif  // _PRINTF_H_

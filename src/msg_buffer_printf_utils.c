@@ -1,52 +1,10 @@
 #include "msg_buffer_printf_utils.h"
-#include "mod_globals.h"
+// #include "mod_globals.h"
 
 // import float.h for DBL_MAX
 #if defined(PRINTF_SUPPORT_FLOAT)
 #include "custom_includes/float.h"
 #endif
-
-void _putchar(char character) {
-    recomp_printf("%c", character);
-}
-
-
-
-// internal buffer output
-void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen)
-{
-    if (idx < maxlen) {
-        ((char*)buffer)[idx] = character;
-    }
-}
-
-
-// internal null output
-void _out_null(char character, void* buffer, size_t idx, size_t maxlen)
-{
-    (void)character; (void)buffer; (void)idx; (void)maxlen;
-}
-
-
-// internal _putchar wrapper
-void _out_char(char character, void* buffer, size_t idx, size_t maxlen)
-{
-    (void)buffer; (void)idx; (void)maxlen;
-    if (character) {
-        _putchar(character);
-    }
-}
-
-
-// internal output function wrapper
-void _out_fct(char character, void* buffer, size_t idx, size_t maxlen)
-{
-    (void)idx; (void)maxlen;
-    if (character) {
-        // buffer is the output fct pointer
-        ((out_fct_wrap_type*)buffer)->fct(character, ((out_fct_wrap_type*)buffer)->arg);
-    }
-}
 
 
 // internal secure strlen

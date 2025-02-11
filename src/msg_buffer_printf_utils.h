@@ -96,12 +96,7 @@ typedef struct {
  * This function is declared here only. You have to write your custom implementation somewhere
  * \param character Character to output
  */
-void _putchar(char character);
 
-void _out_buffer(char character, void* buffer, size_t idx, size_t maxlen);
-void _out_null(char character, void* buffer, size_t idx, size_t maxlen);
-void _out_char(char character, void* buffer, size_t idx, size_t maxlen);
-void _out_fct(char character, void* buffer, size_t idx, size_t maxlen);
 unsigned int _strnlen_s(const char* str, size_t maxsize);
 bool _is_digit(char ch);
 unsigned int _atoi(const char** str);
