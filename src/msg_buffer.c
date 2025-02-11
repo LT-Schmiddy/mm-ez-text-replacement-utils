@@ -80,6 +80,16 @@ void MsgBuffer_WriteDefaultHeader(MsgBuffer* buf) {
     MsgBuffer_SetSecondItemRupees(buf, EZTR_NO_VALUE);
 }
 
+void MsgBuffer_WriteHeader(MsgBuffer* buf, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees) {
+    MsgBuffer_SetTextBoxType(buf, text_box_type);
+    MsgBuffer_SetTextBoxYPos(buf, text_box_y_pos);
+    MsgBuffer_SetTextBoxDisplayIcon(buf, display_icon);
+    MsgBuffer_SetNextMsg(buf, next_message_id);
+    MsgBuffer_SetFirstItemRupees(buf, first_item_rupees);
+    MsgBuffer_SetSecondItemRupees(buf, second_item_rupees);
+}
+
 // Getters/Setters for the header:
 u8 MsgBuffer_GetTextBoxType(MsgBuffer* buf) {
     u8 retVal;

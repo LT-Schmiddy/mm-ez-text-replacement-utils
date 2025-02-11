@@ -18,6 +18,8 @@ u32 MsgBuffer_ContentLen(MsgBuffer* buf);
 u32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src);
 u32 MsgBuffer_WriteFromStr_PipeEscapeBytes(MsgBuffer* dst, char* src);
 void MsgBuffer_WriteDefaultHeader(MsgBuffer* buf);
+void MsgBuffer_WriteHeader(MsgBuffer* buf, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees);
 
 // Getters/Setters for the header:
 u8 MsgBuffer_GetTextBoxType(MsgBuffer* buf);

@@ -102,12 +102,7 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size
     bool main_should_quit = false;
     while (*format != MSG_ENDING_CHAR && !main_should_quit && (size_t)(format - start) < max_format_len) {
         // format specifier?  %[flags][width][.precision][length]
-        if (*format != '%') {
-            // no
-            out(*format, buffer, idx++, max_len);
-            format++;
-            continue;
-        }
+
         if (*format == PIPE_CHAR) {
             // Pipe-escaped byte;
             format++;
@@ -125,6 +120,12 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size
                     main_should_quit = true;
                 }
             }
+            continue;
+        }
+        if (*format != '%') {
+            // no
+            out(*format, buffer, idx++, max_len);
+            format++;
             continue;
         }
         // Insert Pipe Evaluation HERE:
