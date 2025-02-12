@@ -50,7 +50,6 @@ void MsgTable_SetBufferEmpty(MsgTable* table, u16 textId);
 void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback);
 bool MsgTable_RunCallback(MsgTable* table, u16 textId, PlayState* play);
 
-
 inline void splitTextId(u16 textId, u8* upperId, u8* lowerId) {
     *upperId = (0xFF00 & textId) >> 8;
     *lowerId = (0x00FF & textId);

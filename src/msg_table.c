@@ -130,7 +130,7 @@ void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     }
     
     MsgEntryCluster_SetBuffer(table->clusters[cl], textId, entry);
-    // recomp_printf("%sAdding Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)search->textId, (u32)search->textId);
+    recomp_printf("%Setting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
 }
 
 void MsgTable_SetBufferEmpty(MsgTable* table, u16 textId) {
