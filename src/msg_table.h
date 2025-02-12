@@ -11,12 +11,12 @@
 #define MSG_TABLE_START_SIZE 16
 #define LOG_HEADER "EZ Text Replacer: "
 
-typedef void (*MsgCallback)(PlayState* play, u16 textId, MsgBuffer* buf);
+typedef void (*MsgCallback)(MsgBuffer* buf, u16 textId, PlayState* play);
 
 typedef struct {
     u16 textId;
     MsgCallback callback;
-    MsgBuffer buf;
+    char* buf_store;
 } MsgEntry;
 
 typedef struct {
@@ -44,11 +44,11 @@ MsgTable* MsgTable_Create();
 void MsgTable_Destroy(MsgTable* tbl);
 MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id);
 MsgBuffer* MsgTable_GetBuffer(MsgTable* table, u16 id);
-s32 MsgTable_GetBufferLen(MsgTable* table, u16 id);
+u32 MsgTable_GetBufferLen(MsgTable* table, u16 id);
 void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry);
 void MsgTable_SetBufferEmpty(MsgTable* table, u16 textId);
 void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback);
-bool MsgTable_RunCallback(MsgTable* table, u16 textId, PlayState* play);
+MsgBuffer* MsgTable_RunBufferCallback(MsgTable* table, u16 textId, PlayState* play);
 
 inline void splitTextId(u16 textId, u8* upperId, u8* lowerId) {
     *upperId = (0xFF00 & textId) >> 8;

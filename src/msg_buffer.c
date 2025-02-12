@@ -4,8 +4,8 @@ MsgBuffer* MsgBuffer_Create() {
     return recomp_alloc(sizeof(MsgBuffer));
 }
 
-MsgBuffer_Destroy(MsgBuffer* buf) {
-    recomp_free(sizeof(MsgBuffer));
+void MsgBuffer_Destroy(MsgBuffer* buf) {
+    recomp_free(buf);
 }
 
 u32 MsgBuffer_StrCopy(char* dst, char* src) {
@@ -24,13 +24,13 @@ u32 MsgBuffer_StrCopy(char* dst, char* src) {
 
 MsgBuffer* MsgBuffer_Load(char* src) {
     MsgBuffer* buf = MsgBuffer_Create();
-    MsgBuffer_Copy(buf, src);
+    MsgBuffer_StrCopy((char*)buf, src);
     return buf;
 }
 char* MsgBuffer_Store(MsgBuffer* buf) {
     u32 store_len = MsgBuffer_Len(buf) + 1;
     char* retVal = recomp_alloc(store_len);
-    MsgBuffer_StrCopy(retVal, buf);
+    MsgBuffer_StrCopy(retVal, (char*)buf);
     return retVal;
 }
 

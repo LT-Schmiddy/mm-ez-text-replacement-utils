@@ -14,7 +14,7 @@ typedef union {
 } MsgBuffer;
 
 MsgBuffer* MsgBuffer_Create();
-MsgBuffer_Destroy(MsgBuffer* buf);
+void MsgBuffer_Destroy(MsgBuffer* buf);
 u32 MsgBuffer_StrCopy(char* dst, char* src);
 
 MsgBuffer* MsgBuffer_Load(char* src);

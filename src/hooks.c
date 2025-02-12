@@ -10,12 +10,12 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlaySta
         dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
     }
 
-    MsgBuffer* buf = MsgTable_GetBuffer(ETZR_mainTable, textId);
+    MsgBuffer* buf = MsgTable_RunBufferCallback(ETZR_mainTable, textId, play);
     IF_DEBUG recomp_printf("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
     // Handled text replacement
     if (buf != NULL) {
         recomp_printf("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
-        MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
+        // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
         IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
@@ -124,11 +124,11 @@ RECOMP_PATCH void func_801514B0(PlayState* play, u16 arg1, u8 arg2) {
         dump_buffer("Game", msgCtx->currentTextId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
     }
 
-    MsgBuffer* buf = MsgTable_GetBuffer(ETZR_mainTable, msgCtx->currentTextId);
+    MsgBuffer* buf = MsgTable_RunBufferCallback(ETZR_mainTable, msgCtx->currentTextId, play);
     if (buf != NULL) {
         recomp_printf("Replacing Text %d.\n", msgCtx->currentTextId);        
         // running Callbacks:
-        MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
+        // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
         for (int i = 0; i < msgCtx->msgLength; i++) {

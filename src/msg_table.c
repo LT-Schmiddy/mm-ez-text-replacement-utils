@@ -9,10 +9,12 @@ MsgEntry* MsgEntry_Create(u16 textId) {
     MsgEntry* retVal = recomp_alloc(sizeof(MsgEntry));
     retVal->callback = NULL;
     retVal->textId = textId;
+    retVal->buf_store = NULL;
     return retVal;
 }
 
 void MsgEntry_Destroy(MsgEntry* entry) {
+    recomp_free(entry->buf_store);
     recomp_free(entry);
 }
 
@@ -56,7 +58,7 @@ MsgBuffer* MsgEntryCluster_GetBuffer(MsgEntryCluster* cluster, u16 textId) {
     if (entry == NULL) {
         return NULL;
     }
-    return &entry->buf;
+    return MsgBuffer_Load(entry->buf_store);
 }
 
 
@@ -70,7 +72,8 @@ void MsgEntryCluster_SetBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer* 
         cluster->count++;
     }
 
-    memcpy(&cluster->entries[pos]->buf, entry, sizeof(MsgBuffer));
+    // memcpy(&cluster->entries[pos]->buf_store, entry, sizeof(MsgBuffer));
+    cluster->entries[pos]->buf_store = MsgBuffer_Store(entry);
 }
 
 // Table Functions:
@@ -114,13 +117,16 @@ MsgBuffer* MsgTable_GetBuffer(MsgTable* table, u16 textId) {
     return MsgEntryCluster_GetBuffer(table->clusters[cl], textId);
 }
 
-s32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
+u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
     MsgEntry* entry = MsgTable_GetEntry(table, textId);
     if (entry == NULL) {
         return -1;
     }
 
-    return MsgBuffer_Len(&entry->buf);
+    MsgBuffer* buf = MsgBuffer_Load(entry->buf_store);
+    u32 len =  MsgBuffer_Len(buf);
+    MsgBuffer_Destroy(buf);
+    return len;
 }
 
 void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
@@ -154,21 +160,19 @@ void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
     }
 }
 
-bool MsgTable_RunCallback(MsgTable* table, u16 textId, PlayState* play){
+MsgBuffer* MsgTable_RunBufferCallback(MsgTable* table, u16 textId, PlayState* play){
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
-        recomp_printf("ID FOUND\n");
+        MsgBuffer* buf = MsgBuffer_Load(search->buf_store);
+
         if (search->callback != NULL) {
-            recomp_printf("CALLBACK FOUND\n");
-            search->callback(play, textId, &search->buf);
-            return true;
+            recomp_printf("Running Callback for 0x%04x\n", textId);
+            search->callback(buf, textId, play);
         }
-        else {
-            recomp_printf("NO CALLBACK FOUND\n");
-        }
+        return buf;
     }
 
-    return false;
+    return NULL;
 }
 
 

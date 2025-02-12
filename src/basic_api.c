@@ -29,7 +29,7 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId, u8 text_box_type, u8 text_
         next_message_id, first_item_rupees, second_item_rupees, pipe_escape_bytes, content, NULL);
 }
 
-void test_callback(PlayState* play, u16 textId, MsgBuffer* buf) {
+void test_callback(MsgBuffer* buf, u16 textId, PlayState* play) {
     recomp_printf("Running Test Callback:\n");
     MsgSContent* content = MsgBuffer_GetContentPtr(buf);
     static int i = 0;
