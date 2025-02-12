@@ -22,7 +22,7 @@ RECOMP_DECLARE_EVENT(EZTR_OnInit());
     if (pipe_escape_bytes) {
         
         // MsgBuffer_WriteFromStr_PipeEscapeBytes(&buf, content);
-        MsgSContent_SprintfChar(cont, content);
+        MsgSContent_SprintfChar(cont, "%m\xBF", content);
     } else {
         MsgBuffer_WriteFromStr(&buf, content);
     }
@@ -60,7 +60,7 @@ RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
     ETZR_mainTable = MsgTable_Create();
     EZTR_OnInit();
 
-    EZTR_Basic_ReplaceText_Callback(0x0314, EZTR_WOODEN_SIGN_BACKGROUND, 32, EZTR_ICON_NO_ICON, EZTR_NO_VALUE, EZTR_NO_VALUE, 
-        EZTR_NO_VALUE, true, "|01This way to Snowhead.|00|11Beware of the slippery valley trail|11and the giant falling snowballs|BF", test_callback);
+    // EZTR_Basic_ReplaceText_Callback(0x0314, EZTR_WOODEN_SIGN_BACKGROUND, 32, EZTR_ICON_NO_ICON, EZTR_NO_VALUE, EZTR_NO_VALUE, 
+    //     EZTR_NO_VALUE, true, "|01This way to Snowhead.|00|11Beware of the slippery valley trail|11and the giant falling snowballs|BF", test_callback);
 
 }

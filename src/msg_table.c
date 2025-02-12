@@ -2,6 +2,9 @@
 #include "custom_includes/stdbool.h"
 #include "custom_includes/stdint.h"
 
+
+
+// Entry Functions:
 MsgEntry* MsgEntry_Create(u16 textId) {
     MsgEntry* retVal = recomp_alloc(sizeof(MsgEntry));
     retVal->callback = NULL;
@@ -13,15 +16,17 @@ void MsgEntry_Destroy(MsgEntry* entry) {
     recomp_free(entry);
 }
 
-
-MsgEntryCluster* MsgEntryCluster_Create() {
+// Cluster Functions:
+MsgEntryCluster* MsgEntryCluster_Create(u8 id) {
     MsgEntryCluster* retVal = recomp_alloc(sizeof(MsgEntryCluster));
+    retVal->id = id;
     retVal->count = 0;
     // Make sure all entries are null:
     for (int i = 0; i < UINT8_MAX; i++) {
-        retVal->entries[i] == NULL;
+        retVal->entries[i] = NULL;
     }
 
+    recomp_printf("%sCreating cluster with id 0x%02x (%u).\n", LOG_HEADER, (u32)id, (u32)id);
     return retVal;
 }
 
@@ -35,100 +40,82 @@ void MsgEntryCluster_Destroy(MsgEntryCluster* cluster) {
 }
 
 
+MsgEntry* MsgEntryCluster_GetEntry(MsgEntryCluster* cluster, u16 textId) {
+    SPLIT_TEXT_ID(textId, cl, pos);
+    MsgEntry* retVal = cluster->entries[pos];
+
+    if (retVal != NULL && retVal->textId != textId) {
+        return NULL;
+    }
+    return retVal;
+}
+
+MsgBuffer* MsgEntryCluster_GetBuffer(MsgEntryCluster* cluster, u16 textId) {    
+    MsgEntry* entry = MsgEntryCluster_GetEntry(cluster, textId);
+
+    if (entry == NULL) {
+        return NULL;
+    }
+    return &entry->buf;
+}
+
+
+
+void MsgEntryCluster_SetBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer* entry) {
+    SPLIT_TEXT_ID(textId, cl, pos);
+
+    if (cluster->entries[pos] == NULL) {
+        cluster->entries[pos] = MsgEntry_Create(textId);
+        cluster->entries[pos]->textId = textId;
+        cluster->count++;
+    }
+
+    memcpy(&cluster->entries[pos]->buf, entry, sizeof(MsgBuffer));
+}
+
+// Table Functions:
 MsgTable* MsgTable_Create() {
     MsgTable* retVal = recomp_alloc(sizeof(MsgTable));
     
-    // Setting Initial Values:
-    retVal->entries = recomp_alloc( MSG_TABLE_START_SIZE * sizeof(MsgEntry*));
-    retVal->count = 0;
-    retVal->capacity = MSG_TABLE_START_SIZE;
-    retVal->_automaticSorting = true;
-
+    // Setting all clusters to null:
+    for (int i = 0; i < UINT8_MAX; i++) {
+        retVal->clusters[i] = NULL;
+    }
+    retVal->cluster_count++;
     recomp_printf("%sMessage Table Created.\n", LOG_HEADER);
     return retVal;
 }
 
 void MsgTable_Destroy(MsgTable* table) {
-    for (int i = 0; i < table->count; i++) {
-        MsgEntry_Destroy(table->entries[i]);
+    for (int i = 0; i < UINT8_MAX; i++) {
+        if (table->clusters[i] != NULL) {
+            MsgEntryCluster_Destroy(table->clusters[i]);
+        }
     }
-    recomp_free(table->entries);
+    // recomp_free(table->entries);
     recomp_free(table);
 }
 
-void MsgTable_Expand(MsgTable* table) {
-    MsgTable_ExpandTo(table, table->capacity * 2);
-}
-
-void MsgTable_ExpandTo(MsgTable* table, u32 new_capacity) {
-    // Create the expanded table:
-    MsgEntry** new_entries = recomp_alloc(new_capacity * sizeof(MsgEntry*));
-    // Copy to it:
-    memcpy(new_entries, table->entries, table->count * sizeof(MsgEntry*));
-    // Trash the old table:
-    recomp_free(table->entries);
-    // Now use the new table:
-    table->entries = new_entries;
-    table->capacity = new_capacity;
-
-    recomp_printf("%sExpand MsgTable capacity to %d entries.\n", LOG_HEADER, table->capacity);
-}
-
-MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id) {
-    // Using Binary search. Thanks to the constant sorting, This should be faster than a linear search:
-    if (table->count == 0) {
-        IF_DEBUG recomp_printf("Empty Lookup:\n");
-        return NULL;
-    }    
-    
-    // To avoid bugs, don't use binary search until we've reached a minimum size.
-    if (table->count < START_USING_BINARY_LOOKUP) {
-        IF_DEBUG recomp_printf("Linear Lookup:\n");
-        for (s32 i = 0; i < table->count; i++) {
-            IF_DEBUG recomp_printf("\t0x%04X\n", table->entries[i]->textId);
-            if (table->entries[i]->textId == id) {
-                IF_DEBUG recomp_printf("FOUND ID\n");
-                return table->entries[i];
-            }
-        }
-        return NULL;
-    } else {
-        s32 low = 0;
-        s32 high = table->count - 1;
-        MsgEntry** entries = table->entries;
-        IF_DEBUG recomp_printf("Binary Lookup:\n");
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            IF_DEBUG recomp_printf("\tHigh: %d, Low: %d, Central Point: %d Center ID: 0x%04X\n", high, low, mid, (u32)entries[mid]->textId);
-        
-            if (entries[mid]->textId == id) {
-                IF_DEBUG recomp_printf("FOUND ID\n");
-                return entries[mid];
-                
-            }
-            else if (entries[mid]->textId < id) {
-                low = mid + 1;
-            }
-            else {
-                high = mid - 1;
-            }
-        }
-
-        return NULL;
-    }
-}
-
-MsgBuffer* MsgTable_GetBuffer(MsgTable* table, u16 id) {
-    MsgEntry* entry = MsgTable_GetEntry(table, id);
-    if (entry == NULL) {
+MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 textId) {
+    SPLIT_TEXT_ID(textId, cl, pos);
+    if (table->clusters[cl] == NULL) {
         return NULL;
     }
 
-    return &entry->buf;
+    return MsgEntryCluster_GetEntry(table->clusters[cl], textId);
 }
 
-s32 MsgTable_GetBufferLen(MsgTable* table, u16 id) {
-    MsgEntry* entry = MsgTable_GetEntry(table, id);
+MsgBuffer* MsgTable_GetBuffer(MsgTable* table, u16 textId) {
+    SPLIT_TEXT_ID(textId, cl, pos);
+    if (table->clusters[cl] == NULL) {
+        return NULL;
+    }
+
+    return MsgEntryCluster_GetBuffer(table->clusters[cl], textId);
+}
+
+s32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
+    MsgEntry* entry = MsgTable_GetEntry(table, textId);
     if (entry == NULL) {
         return -1;
     }
@@ -137,31 +124,13 @@ s32 MsgTable_GetBufferLen(MsgTable* table, u16 id) {
 }
 
 void MsgTable_SetBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
-    // Updating Existing Entry:
-    MsgEntry* search = MsgTable_GetEntry(table, textId);
-    if (search != NULL) {
-        memcpy(&search->buf, entry, sizeof(MsgBuffer));
-        return;
+    SPLIT_TEXT_ID(textId, cl, pos);
+    if (table->clusters[cl] == NULL) {
+        table->clusters[cl] = MsgEntryCluster_Create(cl);
     }
-
-    // Handle New Entry:
-    if (table->capacity <= table->count) {
-        MsgTable_Expand(table);
-    }
-    IF_DEBUG recomp_printf("correct size\n");
-    table->entries[table->count] = MsgEntry_Create(textId);
-    search = table->entries[table->count];
-    search->textId = textId;
-    memcpy(&search->buf, entry, sizeof(MsgBuffer));
-    table->count++;
     
-    IF_DEBUG recomp_printf("sorting\n");
-    if (table->_automaticSorting) {
-        MsgTable_BubbleSort(table);
-    }
-
-    IF_DEBUG recomp_printf("sorted\n");
-    recomp_printf("%sAdding Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)search->textId, (u32)search->textId);
+    MsgEntryCluster_SetBuffer(table->clusters[cl], textId, entry);
+    // recomp_printf("%sAdding Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)search->textId, (u32)search->textId);
 }
 
 void MsgTable_SetBufferEmpty(MsgTable* table, u16 textId) {
@@ -203,39 +172,3 @@ bool MsgTable_RunCallback(MsgTable* table, u16 textId, PlayState* play){
 }
 
 
-void MsgTable_BubbleSort(MsgTable* table) {
-    // Since we're always adding entried to the END of the table, going from greatest to least will be more efficient.
-    bool fully_sorted = false;
-
-    while(!fully_sorted) {
-        fully_sorted = true;
-        
-        for (int i = table->count - 1; i >= 1; i--) {
-            
-            // recomp_printf("Upper: %X (%i), Lower: %X (%i)\n", (u32)upper->textId, (u32)upper->textId, (u32)lower->textId, (u32)lower->textId);
-            if (table->entries[i]->textId < table->entries[i - 1]->textId) {
-                MsgTable_Swap(&table->entries[i], &table->entries[i - 1]);
-                IF_DEBUG recomp_printf("another_pass is needed\n");
-                fully_sorted = false;
-            }
-        }
-
-        IF_DEBUG {
-            //print state of list:
-            recomp_printf("Current Array: ");
-            for (int i = 0; i < table->count; i++) {
-                recomp_printf("0x%04X ", table->entries[i]->textId);
-            }
-            recomp_printf("\n");
-        }
-
-    }
-}
-
-void MsgTable_Swap(MsgEntry** a, MsgEntry** b) {
-    MsgEntry* t;
-    
-    t = *a;
-    *a = *b;
-    *b = t;
-}
