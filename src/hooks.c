@@ -130,7 +130,7 @@ RECOMP_PATCH void func_801514B0(PlayState* play, u16 arg1, u8 arg2) {
         // running Callbacks:
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
-        msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
+        msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
         for (int i = 0; i < msgCtx->msgLength; i++) {
             font->msgBuf.schar[i] = buf->schar[i];
         }

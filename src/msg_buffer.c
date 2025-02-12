@@ -10,7 +10,20 @@ void MsgBuffer_Destroy(MsgBuffer* buf) {
 
 u32 MsgBuffer_StrCopy(char* dst, char* src) {
     int i = 0;
-    for (; (dst[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE; i++) {
+    for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE; i++) {
+        dst[i] = src[i];
+    }
+    if (i < MSG_BUFFER_SIZE - 1) {
+        dst[i+1] = '\xBF';
+    }  else {
+        // Otherwise at the max index
+        dst[i] = '\xBF';
+    }
+    return i;
+}
+u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
+    u32 i = 0;
+    for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < len; i++) {
         dst[i] = src[i];
     }
     if (i < MSG_BUFFER_SIZE - 1) {
@@ -27,9 +40,18 @@ MsgBuffer* MsgBuffer_Load(char* src) {
     MsgBuffer_StrCopy((char*)buf, src);
     return buf;
 }
-char* MsgBuffer_Store(MsgBuffer* buf) {
-    u32 store_len = MsgBuffer_Len(buf) + 1;
-    char* retVal = recomp_alloc(store_len);
+
+MsgBuffer* MsgBuffer_LoadN(char* src, size_t len) {
+    MsgBuffer* buf = MsgBuffer_Create();
+    MsgBuffer_StrNCopy((char*)buf, src, len);
+    return buf;
+}
+
+char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
+    size_t store_len = MsgBuffer_Len(buf) + 10;
+    recomp_printf("Storage Size: %u\n", store_len);
+    char* retVal = recomp_alloc(sizeof(char) * store_len);
+    // char* retVal = recomp_alloc(sizeof(MsgBuffer));
     MsgBuffer_StrCopy(retVal, (char*)buf);
     return retVal;
 }

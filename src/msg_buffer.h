@@ -1,4 +1,4 @@
-#ifndef __MSG_BUFFER__
+ #ifndef __MSG_BUFFER__
 #define __MSG_BUFFER__
 
 #include "mod_globals.h"
@@ -16,9 +16,11 @@ typedef union {
 MsgBuffer* MsgBuffer_Create();
 void MsgBuffer_Destroy(MsgBuffer* buf);
 u32 MsgBuffer_StrCopy(char* dst, char* src);
+u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len);
 
 MsgBuffer* MsgBuffer_Load(char* src);
-char* MsgBuffer_Store(MsgBuffer* buf);
+MsgBuffer* MsgBuffer_LoadN(char* src, size_t len);
+char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf);
 
 u32 MsgBuffer_Len(MsgBuffer* buf);
 u32 MsgBuffer_ContentLen(MsgBuffer* buf);
