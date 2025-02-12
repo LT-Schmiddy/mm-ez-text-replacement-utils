@@ -36,6 +36,9 @@ void MsgEntry_Destroy(MsgEntry* entry);
 
 MsgEntryCluster* MsgEntryCluster_Create(u8 id);
 void MsgEntryCluster_Destroy(MsgEntryCluster* cluster);
+MsgEntry* MsgEntryCluster_GetEntry(MsgEntryCluster* cluster, u16 textId);
+MsgBuffer* MsgEntryCluster_GetBuffer(MsgEntryCluster* cluster, u16 textId);
+void MsgEntryCluster_SetBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer* entry);
 
 MsgTable* MsgTable_Create();
 void MsgTable_Destroy(MsgTable* tbl);
