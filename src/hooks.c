@@ -10,21 +10,23 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlaySta
         dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
     }
 
-    MsgBuffer* buf = MsgTable_RunBufferCallback(ETZR_mainTable, textId, play);
+    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, play);
     IF_DEBUG recomp_printf("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
     // Handled text replacement
     if (buf != NULL) {
         recomp_printf("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
-        msgCtx->msgLength = MsgBuffer_Len(buf) + 2;
-        IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
+        msgCtx->msgLength = MsgBuffer_Len(buf);
+        for (int i = 0; i < msgCtx->msgLength + 1; i++) {
+            font->msgBuf.schar[i] = buf->schar[i];
+        }
+        MsgBuffer_Destroy(buf);
+        // IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         
         // Not completely sure, but using memcpy causes issues if the message is too long.
         // We'll just copy char by char.
-        for (int i = 0; i < msgCtx->msgLength; i++) {
-            font->msgBuf.schar[i] = buf->schar[i];
-        }
+
 
         // print_buf(&font->msgBuf, entry->len);
         // Copied from Message_OpenText, processing for message header.
@@ -124,16 +126,19 @@ RECOMP_PATCH void func_801514B0(PlayState* play, u16 arg1, u8 arg2) {
         dump_buffer("Game", msgCtx->currentTextId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
     }
 
-    MsgBuffer* buf = MsgTable_RunBufferCallback(ETZR_mainTable, msgCtx->currentTextId, play);
+    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, msgCtx->currentTextId, play);
     if (buf != NULL) {
         recomp_printf("Replacing Text %d.\n", msgCtx->currentTextId);        
         // running Callbacks:
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
-        msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
-        for (int i = 0; i < msgCtx->msgLength; i++) {
+        // msgCtx->msgLength = MsgBuffer_StrCopy(font->msgBuf.schar, (char*)buf);
+        // msgCtx->msgLength = MsgBuffer_StrCopy(font->msgBuf.schar, (char*)buf);
+        msgCtx->msgLength = MsgBuffer_Len(buf);
+        for (int i = 0; i < msgCtx->msgLength + 1; i++) {
             font->msgBuf.schar[i] = buf->schar[i];
         }
+        MsgBuffer_Destroy(buf);
     }
 
     msgCtx->choiceNum = 0;

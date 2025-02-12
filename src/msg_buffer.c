@@ -9,29 +9,37 @@ void MsgBuffer_Destroy(MsgBuffer* buf) {
 }
 
 u32 MsgBuffer_StrCopy(char* dst, char* src) {
+    recomp_printf("StrCopying Message Data: %p -> %p : ", src, dst);
+    
     int i = 0;
     for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE; i++) {
         dst[i] = src[i];
     }
-    if (i < MSG_BUFFER_SIZE - 1) {
-        dst[i+1] = '\xBF';
+    if (i < MSG_BUFFER_SIZE) {
+        dst[i] = '\xBF';
     }  else {
         // Otherwise at the max index
-        dst[i] = '\xBF';
+        dst[i-1] = '\xBF';
     }
+    MsgSContent_Printf((MsgSContent*)"%m\xBF", dst);
+    recomp_printf("\n");
     return i;
 }
 u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
+    recomp_printf("StrNCopying Message Data: %p -> %p ", src, dst);
+
     u32 i = 0;
     for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < len; i++) {
         dst[i] = src[i];
     }
-    if (i < MSG_BUFFER_SIZE - 1) {
-        dst[i+1] = '\xBF';
+    if (i < MSG_BUFFER_SIZE) {
+        dst[i] = '\xBF';
     }  else {
         // Otherwise at the max index
-        dst[i] = '\xBF';
+        dst[i-1] = '\xBF';
     }
+    MsgSContent_Printf((MsgSContent*)"%m\xBF", dst);
+    recomp_printf("\n");
     return i;
 }
 
@@ -48,11 +56,15 @@ MsgBuffer* MsgBuffer_LoadN(char* src, size_t len) {
 }
 
 char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
-    size_t store_len = MsgBuffer_Len(buf) + 10;
-    recomp_printf("Storage Size: %u\n", store_len);
+    size_t store_len = MsgBuffer_Len(buf);
+    // The extra byte is to store the \xBF:
+    recomp_printf("Storage Size: %u\n", store_len + 1);
     char* retVal = recomp_alloc(sizeof(char) * store_len);
     // char* retVal = recomp_alloc(sizeof(MsgBuffer));
-    MsgBuffer_StrCopy(retVal, (char*)buf);
+    u32 copy_len = MsgBuffer_StrCopy(retVal, (char*)buf);
+    if (copy_len != store_len) {
+        recomp_printf("WARNING: STORAGE SIZE MISMATCH! Storage: %u, Length: %u\n", store_len, copy_len);
+    };
     return retVal;
 }
 

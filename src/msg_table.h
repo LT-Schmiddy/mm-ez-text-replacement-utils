@@ -49,7 +49,7 @@ u32 MsgTable_GetBufferLen(MsgTable* table, u16 id);
 void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry);
 void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId);
 void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback);
-MsgBuffer* MsgTable_RunBufferCallback(MsgTable* table, u16 textId, PlayState* play);
+MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* play);
 
 inline void splitTextId(u16 textId, u8* upperId, u8* lowerId) {
     *upperId = (0xFF00 & textId) >> 8;

@@ -61,7 +61,8 @@ MsgBuffer* MsgEntryCluster_LoadBuffer(MsgEntryCluster* cluster, u16 textId) {
     if (entry == NULL) {
         return NULL;
     }
-    return MsgBuffer_LoadN(entry->buf_store, entry->len);
+    // return MsgBuffer_LoadN(entry->buf_store, entry->len);
+    return MsgBuffer_Load(entry->buf_store);
 }
 
 void MsgEntryCluster_StoreBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer* entry) {
@@ -143,15 +144,16 @@ void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
 }
 
 void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId) {
-    MsgBuffer buf;
+    MsgBuffer* buf = MsgBuffer_Create();
     // Default Header.
-    MsgBuffer_WriteDefaultHeader(&buf);
+    MsgBuffer_WriteDefaultHeader(buf);
 
     // Empty Content:
-    MsgSContent_SetEmpty(MsgBuffer_GetContentPtr(&buf));
+    MsgSContent_SetEmpty(MsgBuffer_GetContentPtr(buf));
 
     // Copy to table:
-    MsgTable_StoreBuffer(table, textId, &buf);
+    MsgTable_StoreBuffer(table, textId, buf);
+    MsgBuffer_Destroy(buf);
 }
 
 void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
@@ -163,12 +165,13 @@ void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
     }
 }
 
-MsgBuffer* MsgTable_RunBufferCallback(MsgTable* table, u16 textId, PlayState* play) {
+MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* play) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
         recomp_printf("Loading Buffer for 0x%04x\n", textId);
         MsgBuffer* buf = MsgBuffer_Load(search->buf_store);
-
+        MsgSContent_Printf((MsgSContent*)"%m\xBF", buf);
+        recomp_printf("\n");
         if (search->callback != NULL) {
             recomp_printf("Running Callback for 0x%04x\n", textId);
             search->callback(buf, textId, play);
