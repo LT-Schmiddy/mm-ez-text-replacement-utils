@@ -45,7 +45,7 @@ void MsgEntryCluster_Destroy(MsgEntryCluster* cluster) {
 
 MsgEntry* MsgEntryCluster_GetEntry(MsgEntryCluster* cluster, u16 textId) {
     SPLIT_TEXT_ID(textId, cl, pos);
-    recomp_printf("Loading Entry for 0x%04x\n", textId);
+    IF_DEBUG recomp_printf("Loading Entry for 0x%04x\n", textId);
     MsgEntry* retVal = cluster->entries[pos];
 
     if (retVal != NULL && retVal->textId != textId) {
@@ -102,10 +102,10 @@ void MsgTable_Destroy(MsgTable* table) {
 }
 
 MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 textId) {
-    recomp_printf("Loading Cluster for 0x%04x\n", textId);
+    IF_DEBUG recomp_printf("Loading Cluster for 0x%04x\n", textId);
     SPLIT_TEXT_ID(textId, cl, pos);
     if (table->clusters[cl] == NULL) {
-        recomp_printf("Cluster for 0x%04x is NULL\n", textId);
+        IF_DEBUG recomp_printf("Cluster for 0x%04x is NULL\n", textId);
         return NULL;
     }
 
@@ -140,7 +140,7 @@ void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
     }
     
     MsgEntryCluster_StoreBuffer(table->clusters[cl], textId, entry);
-    recomp_printf("%sSetting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
+    IF_DEBUG recomp_printf("%sSetting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
 }
 
 void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId) {
@@ -168,12 +168,12 @@ void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
 MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* play) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
-        recomp_printf("Loading Buffer for 0x%04x\n", textId);
+        IF_DEBUG recomp_printf("Loading Buffer for 0x%04x\n", textId);
         MsgBuffer* buf = MsgBuffer_Load(search->buf_store);
         MsgSContent_Printf((MsgSContent*)"%m\xBF", buf);
         recomp_printf("\n");
         if (search->callback != NULL) {
-            recomp_printf("Running Callback for 0x%04x\n", textId);
+            IF_DEBUG recomp_printf("Running Callback for 0x%04x\n", textId);
             search->callback(buf, textId, play);
         }
         return buf;

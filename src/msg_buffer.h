@@ -4,7 +4,7 @@
 #include "mod_globals.h"
 #include "libc/string.h"
 #include "util.h"
-#include "enums.h"
+#include "api_enums.h"
 #include "msg_buffer_printf.h"
 
 typedef union {

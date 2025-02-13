@@ -1,6 +1,4 @@
-#include "basic_api.h"
-
-MsgTable* ETZR_mainTable;
+#include "api_basic.h"
 
 RECOMP_DECLARE_EVENT(EZTR_OnInit());
 
@@ -42,16 +40,3 @@ void test_callback(MsgBuffer* buf, u16 textId, PlayState* play) {
 
 }
 
-RECOMP_CALLBACK("*", recomp_on_init) void setup_table () {
-    ETZR_mainTable = MsgTable_Create();
-
-    // EZTR_OnInit();
-    // EZTR_Basic_ReplaceText_Callback(0x0314, EZTR_WOODEN_SIGN_BACKGROUND, 32, EZTR_ICON_NO_ICON, EZTR_NO_VALUE, EZTR_NO_VALUE, 
-    //     EZTR_NO_VALUE, true, "|01This way to Snowhead.|00|11Beware of the skinky valley trail|11and the giant falling snowballs|BF", test_callback);
-    
-    // EZTR_Basic_ReplaceText_Callback(0x0314, EZTR_WOODEN_SIGN_BACKGROUND, 32, EZTR_ICON_NO_ICON, EZTR_NO_VALUE, EZTR_NO_VALUE, 
-        // EZTR_NO_VALUE, true, "Hello Alex|BF", NULL);
-
-    // recomp_printf("EZTR Init Complete\n");
-
-}

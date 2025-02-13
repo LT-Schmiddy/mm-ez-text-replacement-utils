@@ -6,9 +6,7 @@
 #include "util.h"
 #include "msg_buffer.h"
 
-#define START_USING_BINARY_LOOKUP 3
-
-#define MSG_TABLE_START_SIZE 16
+#define MAXIMUM_VANILLA_TEXT_ID 0x354C
 #define LOG_HEADER "EZ Text Replacer: "
 
 typedef void (*MsgCallback)(MsgBuffer* buf, u16 textId, PlayState* play);

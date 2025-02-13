@@ -9,7 +9,7 @@ void MsgBuffer_Destroy(MsgBuffer* buf) {
 }
 
 u32 MsgBuffer_StrCopy(char* dst, char* src) {
-    recomp_printf("StrCopying Message Data: %p -> %p : ", src, dst);
+    IF_DEBUG recomp_printf("StrCopying Message Data: %p -> %p : ", src, dst);
     
     int i = 0;
     for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE; i++) {
@@ -26,7 +26,7 @@ u32 MsgBuffer_StrCopy(char* dst, char* src) {
     return i;
 }
 u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
-    recomp_printf("StrNCopying Message Data: %p -> %p ", src, dst);
+    IF_DEBUG recomp_printf("StrNCopying Message Data: %p -> %p ", src, dst);
 
     u32 i = 0;
     for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < len; i++) {

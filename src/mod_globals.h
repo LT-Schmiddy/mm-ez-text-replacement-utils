@@ -15,6 +15,7 @@ RECOMP_IMPORT("*", void recomp_free_config_string(char* str));
 
 #define DEBUG_LOGGING recomp_get_config_u32("debug_logging")
 #define TEXT_DUMPING recomp_get_config_u32("text_dumping")
+#define TEXT_DUMPING_FORMAT recomp_get_config_u32("text_dumping")
 
 #define IF_DEBUG if (DEBUG_LOGGING)
 
