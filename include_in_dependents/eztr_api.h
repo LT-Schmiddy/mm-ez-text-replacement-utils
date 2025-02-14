@@ -4,17 +4,13 @@
 #include "modding.h"
 #include "global.h"
 
-RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText(
-    u16 textId, 
-    u8 text_box_type, 
-    u8 text_box_y_pos, 
-    u8 display_icon, 
-    u16 next_message_id, 
-    u16 first_item_rupees, 
-    u16 second_item_rupees, 
-    bool pipe_escape_bytes, 
-    char* content
-));
+typedef union {
+        char schar[1280]; // msgBuf
+        u16 wchar[640];   // msgBufWide
+        u64 force_structure_alignment_msg;
+} MsgBuffer;
+
+typedef void (*MsgCallback)(MsgBuffer* buf, u16 textId, PlayState* play);
 
 #define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
 
@@ -296,6 +292,35 @@ typedef enum {
     EZTR_ICON_NOTHING_93 = 0xFD,
     EZTR_ICON_NO_ICON = 0xFE
 } EztrTextBoxIcon;
+
+
+RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText(
+    u16 textId, 
+    u8 text_box_type, 
+    u8 text_box_y_pos, 
+    u8 display_icon, 
+    u16 next_message_id, 
+    u16 first_item_rupees, 
+    u16 second_item_rupees, 
+    bool pipe_escape_bytes, 
+    char* content
+));
+
+RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText_WithCallback(
+    u16 textId, 
+    u8 text_box_type, 
+    u8 text_box_y_pos, 
+    u8 display_icon, 
+    u16 next_message_id, 
+    u16 first_item_rupees, 
+    u16 second_item_rupees, 
+    bool pipe_escape_bytes, 
+    char* content,
+    MsgCallback callback
+));
+
+
+RECOMP_EXPORT void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, MsgCallback callback);
 
 
 #endif
