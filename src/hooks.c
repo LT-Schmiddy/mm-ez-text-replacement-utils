@@ -1,8 +1,13 @@
 #include "hooks.h"
 
+PlayState* stored_play = NULL;
+RECOMP_HOOK("Message_OpenText") void handle_main_text_replacement(PlayState* play, u16 p_textId) {
+    stored_play = play;
+}
 
-RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlayState* play, u16 p_textId) {
-    MessageContext* msgCtx = &play->msgCtx;
+// RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlayState* play, u16 p_textId) {
+RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
+    MessageContext* msgCtx = &stored_play->msgCtx;
     Font* font = &msgCtx->font;
     u16 textId = msgCtx->currentTextId;
 
@@ -10,7 +15,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlaySta
         dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
     }
 
-    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, play);
+    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, stored_play);
     IF_DEBUG recomp_printf("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
     // Handled text replacement
     if (buf != NULL) {
@@ -51,7 +56,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlaySta
         msgCtx->itemId = 0xFE;
 
         if ((msgCtx->textBoxType == TEXTBOX_TYPE_5) || (msgCtx->textBoxType == TEXTBOX_TYPE_D) ||
-            (play->pauseCtx.bombersNotebookOpen)) {
+            (stored_play->pauseCtx.bombersNotebookOpen)) {
             msgCtx->unk120CE = msgCtx->unk120D0 = msgCtx->unk120D2 = 0;
         } else {
             msgCtx->unk120CE = msgCtx->unk120D0 = msgCtx->unk120D2 = 0xFF;
