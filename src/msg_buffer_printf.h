@@ -51,7 +51,7 @@
 
 #define MSG_ENDING_CHAR '\xBF'
 #define PIPE_CHAR '|'
-typedef char MsgSContent [MSG_CONTENT_SIZE];
+// typedef char MsgSContent [MSG_CONTENT_SIZE];
 
 // Internal Functions:
 // void _putchar(char character);
@@ -61,7 +61,7 @@ void _out_null(char character, void* buffer, size_t idx, size_t maxlen);
 void _out_char(char character, void* buffer, size_t idx, size_t maxlen);
 void _out_fct(char character, void* buffer, size_t idx, size_t maxlen);
 // int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
-int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer, const size_t max_len, const char* format, const size_t max_format_len, va_list va);
+int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t max_len, const char* format, const size_t max_format_len, va_list va);
 
 /**
  * Tiny printf implementation
@@ -72,8 +72,8 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer, const size_t m
  * \return The number of characters that are written into the array, not counting the terminating null character
  */
 // #define printf printf_
-int MsgSContent_PrintfChar(const char* format, ...);
-int MsgSContent_Printf(MsgSContent* format, ...);
+int MsgSContent_Printf(const char* format, ...);
+
 
 
 /**
@@ -84,8 +84,8 @@ int MsgSContent_Printf(MsgSContent* format, ...);
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
 // #define sprintf sprintf_
-int MsgSContent_SprintfChar(MsgSContent* buffer, const char* format, ...);
-int MsgSContent_Sprintf(MsgSContent* buffer, MsgSContent* format, ...);
+int MsgSContent_Sprintf(char* buffer, const char* format, ...);
+
 
 
 /**
@@ -99,8 +99,8 @@ int MsgSContent_Sprintf(MsgSContent* buffer, MsgSContent* format, ...);
  */
 // #define snprintf  snprintf_
 // #define vsnprintf vsnprintf_
-int  MsgSContent_Snprintf(MsgSContent* buffer, size_t count, const char* format, ...);
-int MsgSContent_Vsnprintf(MsgSContent* buffer, size_t count, const char* format, va_list va);
+int  MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...);
+int MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va);
 
 
 /**

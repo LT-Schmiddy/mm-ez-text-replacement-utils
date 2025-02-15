@@ -56,11 +56,8 @@ void dump_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf) {
 
     recomp_printf("\tContent: \"");
     // Printing Message Content:
-    MsgSContent* content = MsgBuffer_GetContentPtr(buf);
-    // MsgSContent_Printf("%m", content);
-    MsgSContent_Printf(content);
-
-     recomp_printf("\"\n\n");
+    MsgSContent_Printf("%m", buf->data.content);
+    recomp_printf("\"\n\n");
 }
 
 void dump_full_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf) {

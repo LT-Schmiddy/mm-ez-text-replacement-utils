@@ -89,7 +89,7 @@ void _out_fct(char character, void* buffer, size_t idx, size_t maxlen) {
 }
 
 // internal vsnprintf
-int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size_t max_len, const char* format, const size_t max_format_len, va_list va) {
+int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer_msg, const size_t max_len, const char* format, const size_t max_format_len, va_list va) {
     unsigned int flags, width, precision, n;
     size_t idx = 0U;
     char* buffer = (char*)buffer_msg;
@@ -356,9 +356,8 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size
             }
             // To Modify: Message Buffer flag:
             case 'm' : {
-                MsgSContent* m = pf_va_arg(va, MsgSContent*);
-                char* p = (char*)m;
-                unsigned int l = MIN(MsgSContent_Len(m), (precision ? precision : sizeof(MsgSContent)));
+                char* p = pf_va_arg(va, char*);
+                unsigned int l = MIN(MsgSContent_Len(p), (precision ? precision : MSG_CONTENT_SIZE));
                 // pre padding
                 if (flags & PF_FLAGS_PRECISION) {
                     l = (l < precision ? l : precision);
@@ -436,8 +435,6 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size
     out(MSG_ENDING_CHAR, buffer, idx < max_len ? idx : max_len - 1U, max_len);
 
     // termination
-
-
     // return written chars without terminating \0
     return (int)idx;
 }
@@ -445,43 +442,26 @@ int _MsgSContent_Vsnprintf(out_fct_type out, MsgSContent* buffer_msg, const size
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int MsgSContent_PrintfChar(const char* format, ...) {
+
+int MsgSContent_Printf(const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
-    const int ret = _MsgSContent_Vsnprintf(_out_char, (MsgSContent*)buffer, sizeof(MsgSContent), format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
 
-int MsgSContent_Printf(MsgSContent* format, ...) {
+int MsgSContent_Sprintf(char* buffer, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
-    char buffer[1];
-    const int ret = _MsgSContent_Vsnprintf(_out_char, (MsgSContent*)buffer, sizeof(MsgSContent), (const char*)format, sizeof(MsgSContent), va);
-    pf_va_end(va);
-    return ret;
-}
-
-int MsgSContent_SprintfChar(MsgSContent* buffer, const char* format, ...) {
-    va_list va;
-    pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, sizeof(MsgSContent), format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, MSG_CONTENT_SIZE, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
 
 
-int MsgSContent_Sprintf(MsgSContent* buffer, MsgSContent* format, ...) {
-    va_list va;
-    pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, sizeof(MsgSContent), (const char*)format, sizeof(MsgSContent), va);
-    pf_va_end(va);
-    return ret;
-}
-
-
-int MsgSContent_Snprintf(MsgSContent* buffer, size_t count, const char* format, ...) {
+int MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
@@ -492,11 +472,11 @@ int MsgSContent_Snprintf(MsgSContent* buffer, size_t count, const char* format, 
 
 int MsgSContent_Vprintf(const char* format, va_list va) {
     char buffer[1];
-    return _MsgSContent_Vsnprintf(_out_char, (MsgSContent*)buffer, (size_t)-1, format, (size_t)-1, va);
+    return _MsgSContent_Vsnprintf(_out_char, (char*)buffer, (size_t)-1, format, (size_t)-1, va);
 }
 
 
-int MsgSContent_Vsnprintf(MsgSContent* buffer, size_t count, const char* format, va_list va) {
+int MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va) {
     return _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
 }
 
@@ -505,7 +485,7 @@ int MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, con
     va_list va;
     pf_va_start(va, format);
     const out_fct_wrap_type out_fct_wrap = { out, arg };
-    const int ret = _MsgSContent_Vsnprintf(_out_fct, (MsgSContent*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_fct, (char*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }

@@ -21,7 +21,7 @@ u32 MsgBuffer_StrCopy(char* dst, char* src) {
         // Otherwise at the max index
         dst[i-1] = '\xBF';
     }
-    MsgSContent_Printf((MsgSContent*)"%m\xBF", dst);
+    MsgSContent_Printf("%m\xBF", dst);
     recomp_printf("\n");
     return i;
 }
@@ -38,7 +38,7 @@ u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
         // Otherwise at the max index
         dst[i-1] = '\xBF';
     }
-    MsgSContent_Printf((MsgSContent*)"%m\xBF", dst);
+    MsgSContent_Printf("%m\xBF", dst);
     recomp_printf("\n");
     return i;
 }
@@ -77,7 +77,7 @@ u32 MsgBuffer_Len(MsgBuffer* buf) {
 }
 
 u32 MsgBuffer_ContentLen(MsgBuffer* buf) {
-    return MsgSContent_Len(MsgBuffer_GetContentPtr(buf));
+    return MsgSContent_Len(buf->data.content);
 }
 
 u32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
@@ -183,22 +183,19 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 value) {
 }
 
 // Content Stuff
-MsgSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
-   return (MsgSContent*)MsgBuffer_GetContentCharPtr(buf);
-}
 
-char* MsgBuffer_GetContentCharPtr(MsgBuffer* buf) {
-   return &buf->schar[MSG_HEADER_SIZE];
-}
+// char* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
+//    return &buf->schar[MSG_HEADER_SIZE];
+// }
 
-void MsgSContent_SetEmpty(MsgSContent* cont) {
+void MsgSContent_SetEmpty(char* cont) {
     char* c = (char*)cont;
     for (int i = 0; i < MSG_CONTENT_SIZE; i++) {
         c[i] = MSG_ENDING_CHAR;
     }
 }
 
-u32 MsgSContent_Len(MsgSContent* cont) {
+u32 MsgSContent_Len(char* cont) {
     int i = 0;
     char* c = (char*)cont;
     while (c[i] != MSG_ENDING_CHAR && i < MSG_CONTENT_SIZE) {

@@ -1,4 +1,4 @@
- #ifndef __MSG_BUFFER__
+#ifndef __MSG_BUFFER__
 #define __MSG_BUFFER__
 
 #include "mod_globals.h"
@@ -7,10 +7,28 @@
 #include "api_enums.h"
 #include "msg_buffer_printf.h"
 
+typedef struct __attribute__((packed)) {
+    u8 text_box_type; 
+    u8 text_box_y_pos;
+    u8 display_icon; 
+    u16 next_message_id;
+    u16 first_item_rupees;
+    u16 second_item_rupees;
+    u16 padding;
+    char content[MSG_CONTENT_SIZE];
+} MsgData;
+
+typedef struct {
+    char header[MSG_HEADER_SIZE];
+    char content[MSG_CONTENT_SIZE];
+} MsgPartition;
+
 typedef union {
         char schar[1280]; // msgBuf
         u16 wchar[640];   // msgBufWide
         u64 force_structure_alignment_msg;
+        MsgData data;
+        MsgPartition partitions;
 } MsgBuffer;
 
 MsgBuffer* MsgBuffer_Create();
@@ -44,9 +62,8 @@ u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 
 // Msg Content:
-MsgSContent* MsgBuffer_GetContentPtr(MsgBuffer* buf);
-char* MsgBuffer_GetContentCharPtr(MsgBuffer* buf);
-void MsgSContent_SetEmpty(MsgSContent* cont);
-u32 MsgSContent_Len(MsgSContent* cont);
+// char* MsgBuffer_GetContentPtr(MsgBuffer* buf);
+void MsgSContent_SetEmpty(char* cont);
+u32 MsgSContent_Len(char* cont);
 
 #endif

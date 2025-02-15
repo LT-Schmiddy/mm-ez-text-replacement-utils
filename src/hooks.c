@@ -1,7 +1,7 @@
 #include "hooks.h"
 
 PlayState* stored_play = NULL;
-RECOMP_HOOK("Message_OpenText") void handle_main_text_replacement(PlayState* play, u16 p_textId) {
+RECOMP_HOOK("Message_OpenText") void before_handle_main_text_replacement(PlayState* play, u16 p_textId) {
     stored_play = play;
 }
 

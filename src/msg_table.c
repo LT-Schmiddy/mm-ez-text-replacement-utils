@@ -149,7 +149,7 @@ void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId) {
     MsgBuffer_WriteDefaultHeader(buf);
 
     // Empty Content:
-    MsgSContent_SetEmpty(MsgBuffer_GetContentPtr(buf));
+    MsgSContent_SetEmpty(buf->data.content);
 
     // Copy to table:
     MsgTable_StoreBuffer(table, textId, buf);
@@ -170,7 +170,7 @@ MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* p
     if (search != NULL) {
         IF_DEBUG recomp_printf("Loading Buffer for 0x%04x\n", textId);
         MsgBuffer* buf = MsgBuffer_Load(search->buf_store);
-        MsgSContent_Printf((MsgSContent*)"%m\xBF", buf);
+        MsgSContent_Printf("%m\xBF", buf);
         recomp_printf("\n");
         if (search->callback != NULL) {
             IF_DEBUG recomp_printf("Running Callback for 0x%04x\n", textId);
