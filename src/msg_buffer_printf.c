@@ -461,31 +461,31 @@ int MsgSContent_Sprintf(char* buffer, const char* format, ...) {
 }
 
 
-int MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...) {
-    va_list va;
-    pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
-    pf_va_end(va);
-    return ret;
-}
+// int MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...) {
+//     va_list va;
+//     pf_va_start(va, format);
+//     const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
+//     pf_va_end(va);
+//     return ret;
+// }
 
 
-int MsgSContent_Vprintf(const char* format, va_list va) {
-    char buffer[1];
-    return _MsgSContent_Vsnprintf(_out_char, (char*)buffer, (size_t)-1, format, (size_t)-1, va);
-}
+// int MsgSContent_Vprintf(const char* format, va_list va) {
+//     char buffer[1];
+//     return _MsgSContent_Vsnprintf(_out_char, (char*)buffer, (size_t)-1, format, (size_t)-1, va);
+// }
 
 
-int MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va) {
-    return _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
-}
+// int MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va) {
+//     return _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
+// }
 
 
-int MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...) {
-    va_list va;
-    pf_va_start(va, format);
-    const out_fct_wrap_type out_fct_wrap = { out, arg };
-    const int ret = _MsgSContent_Vsnprintf(_out_fct, (char*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
-    pf_va_end(va);
-    return ret;
-}
+// int MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...) {
+//     va_list va;
+//     pf_va_start(va, format);
+//     const out_fct_wrap_type out_fct_wrap = { out, arg };
+//     const int ret = _MsgSContent_Vsnprintf(_out_fct, (char*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
+//     pf_va_end(va);
+//     return ret;
+// }

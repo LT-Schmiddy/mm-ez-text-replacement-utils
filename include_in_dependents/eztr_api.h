@@ -1,16 +1,56 @@
 #ifndef __EZTR_API__
 #define __EZTR_API__
 
+/*! \file eztr_api.h
+    \brief The main header for EZTR
+*/
+
 #include "modding.h"
 #include "global.h"
+
+#define EZTR_MOD_ID_STR "MM_EZ_Text_Replacer_API"
+
+#ifndef DOXYGEN
+#define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
+#else
+#define EZTR_IMPORT(func) func
+#endif
+
+#define MSG_BUFFER_SIZE 1280
+#define MSG_HEADER_SIZE 11
+#define MSG_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
+
+#define MSG_ENDING_CHAR '\xBF'
+#define PIPE_CHAR '|'
+
+
+typedef struct __attribute__((packed)) {
+    u8 text_box_type; 
+    u8 text_box_y_pos;
+    u8 display_icon; 
+    u16 next_message_id;
+    u16 first_item_rupees;
+    u16 second_item_rupees;
+    u16 padding;
+    char content[MSG_CONTENT_SIZE];
+} EZTR_MsgData;
+
+
+typedef struct {
+    char header[MSG_HEADER_SIZE];
+    char content[MSG_CONTENT_SIZE];
+} EZTR_MsgPartition;
+
 
 typedef union {
         char schar[1280]; // msgBuf
         u16 wchar[640];   // msgBufWide
         u64 force_structure_alignment_msg;
-} MsgBuffer;
+        EZTR_MsgData data;
+        EZTR_MsgPartition partitions;
+} EZTR_MsgBuffer;
 
-typedef void (*MsgCallback)(MsgBuffer* buf, u16 textId, PlayState* play);
+typedef void (*EZTR_MsgCallback)(EZTR_MsgBuffer* buf, u16 textId, PlayState* play);
 
 #define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
 
@@ -33,7 +73,7 @@ typedef enum {
     EZTR_BOMBERS_NOTEBOOK = 0XD,
     EZTR_INVISIBLE_TEXT_BOX_VI = 0XE,
     EZTR_RED_TEXT_BOX_II = 0XF
-} EztrTextBoxType;
+} EZTR_TextBoxType;
 
 typedef enum {
     EZTR_ICON_NOTHING = 0x00,
@@ -291,10 +331,10 @@ typedef enum {
     EZTR_ICON_NOTHING_92 = 0xFC,
     EZTR_ICON_NOTHING_93 = 0xFD,
     EZTR_ICON_NO_ICON = 0xFE
-} EztrTextBoxIcon;
+} EZTR_TextBoxIcon;
 
 
-RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText(
+EZTR_IMPORT(void EZTR_Basic_ReplaceText(
     u16 textId, 
     u8 text_box_type, 
     u8 text_box_y_pos, 
@@ -306,7 +346,7 @@ RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText(
     char* content
 ));
 
-RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText_WithCallback(
+EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
     u16 textId, 
     u8 text_box_type, 
     u8 text_box_y_pos, 
@@ -316,11 +356,60 @@ RECOMP_IMPORT("MM_EZ_Text_Replacer_API", void EZTR_Basic_ReplaceText_WithCallbac
     u16 second_item_rupees, 
     bool pipe_escape_bytes, 
     char* content,
-    MsgCallback callback
+    EZTR_MsgCallback callback
 ));
 
 
-RECOMP_EXPORT void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, MsgCallback callback);
+EZTR_IMPORT(void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, EZTR_MsgCallback callback));
+
+
+EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_Create());
+
+/**
+ * @brief Creates an empty MsgBuffer on the heap, and copies 
+ * @param src 
+ * @return MsgBuffer* 
+ */
+EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStr(char* src));\
+
+
+EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStrN(char* src, size_t len));
+
+
+EZTR_IMPORT(void EZTR_MsgBuffer_Destroy(EZTR_MsgBuffer* buf));
+
+// Copy:
+EZTR_IMPORT(u32 EZTR_MsgBuffer_StrCopy(char* dst, char* src));
+EZTR_IMPORT(u32 EZTR_MsgBuffer_StrNCopy(char* dst, char* src, size_t len));
+EZTR_IMPORT(u32 EZTR_MsgBuffer_Len(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(u32 EZTR_MsgBuffer_ContentLen(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_WriteDefaultHeader(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_WriteHeader(EZTR_MsgBuffer* buf, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees));
+
+EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxType(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxType(EZTR_MsgBuffer* buf, u8 type));
+EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxYPos(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxYPos(EZTR_MsgBuffer* buf, u8 pos));
+EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxDisplayIcon(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxDisplayIcon(EZTR_MsgBuffer* buf, u8 icon));
+EZTR_IMPORT(u16 EZTR_MsgBuffer_GetNextMsg(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_SetNextMsg(EZTR_MsgBuffer* buf, u16 type));
+EZTR_IMPORT(u16 EZTR_MsgBuffer_GetFirstItemRupees(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_SetFirstItemRupees(EZTR_MsgBuffer* buf, u16 pos));
+EZTR_IMPORT(u16 EZTR_MsgBuffer_GetSecondItemRupees(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 pos));
+
+EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
+EZTR_IMPORT(void EZTR_MsgSContent_SetEmpty(char* cont));
+EZTR_IMPORT(u32 EZTR_MsgSContent_Len(char* cont));
+
+EZTR_IMPORT(int EZTR_MsgSContent_Printf(const char* format, ...));
+EZTR_IMPORT(int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...));
+EZTR_IMPORT(int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...));
+EZTR_IMPORT(int EZTR_MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va));
+EZTR_IMPORT(int EZTR_MsgSContent_Vprintf(const char* format, va_list va));
+EZTR_IMPORT(int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...));
 
 
 #endif

@@ -1,6 +1,6 @@
 #include "api_basic.h"
 
-
+#include "global.h"
 
 RECOMP_EXPORT void EZTR_Basic_ReplaceText_WithCallback(u16 textId, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, MsgCallback callback) {
@@ -25,11 +25,9 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText_WithCallback(u16 textId, u8 text_box_t
 
 RECOMP_EXPORT void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, MsgCallback callback) {
     MsgBuffer* buf = MsgBuffer_Create();
-    
     MsgBuffer_WriteDefaultHeader(buf);
-
     // char* cont = MsgBuffer_GetContentPtr(buf);
-    MsgSContent_Sprintf(&buf->data.content, "\xBF");
+    MsgSContent_Sprintf((char*)&buf->data.content, "\xBF");
 
     MsgTable_StoreBufferEmpty(ETZR_mainTable, textId);
     MsgTable_SetCallback(ETZR_mainTable, textId, callback);

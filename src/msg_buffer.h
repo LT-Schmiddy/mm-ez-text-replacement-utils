@@ -36,8 +36,8 @@ void MsgBuffer_Destroy(MsgBuffer* buf);
 u32 MsgBuffer_StrCopy(char* dst, char* src);
 u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len);
 
-MsgBuffer* MsgBuffer_Load(char* src);
-MsgBuffer* MsgBuffer_LoadN(char* src, size_t len);
+MsgBuffer* MsgBuffer_CreateFromStr(char* src);
+MsgBuffer* MsgBuffer_CreateFromStrN(char* src, size_t len);
 char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf);
 
 u32 MsgBuffer_Len(MsgBuffer* buf);
@@ -62,7 +62,7 @@ u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
 
 // Msg Content:
-// char* MsgBuffer_GetContentPtr(MsgBuffer* buf);
+char* MsgBuffer_GetContentPtr(MsgBuffer* buf);
 void MsgSContent_SetEmpty(char* cont);
 u32 MsgSContent_Len(char* cont);
 

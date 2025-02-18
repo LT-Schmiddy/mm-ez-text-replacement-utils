@@ -43,13 +43,13 @@ u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
     return i;
 }
 
-MsgBuffer* MsgBuffer_Load(char* src) {
+MsgBuffer* MsgBuffer_CreateFromStr(char* src) {
     MsgBuffer* buf = MsgBuffer_Create();
     MsgBuffer_StrCopy((char*)buf, src);
     return buf;
 }
 
-MsgBuffer* MsgBuffer_LoadN(char* src, size_t len) {
+MsgBuffer* MsgBuffer_CreateFromStrN(char* src, size_t len) {
     MsgBuffer* buf = MsgBuffer_Create();
     MsgBuffer_StrNCopy((char*)buf, src, len);
     return buf;
@@ -184,9 +184,9 @@ void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 value) {
 
 // Content Stuff
 
-// char* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
-//    return &buf->schar[MSG_HEADER_SIZE];
-// }
+char* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
+   return &buf->schar[MSG_HEADER_SIZE];
+}
 
 void MsgSContent_SetEmpty(char* cont) {
     char* c = (char*)cont;

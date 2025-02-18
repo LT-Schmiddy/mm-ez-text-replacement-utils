@@ -62,7 +62,7 @@ MsgBuffer* MsgEntryCluster_LoadBuffer(MsgEntryCluster* cluster, u16 textId) {
         return NULL;
     }
     // return MsgBuffer_LoadN(entry->buf_store, entry->len);
-    return MsgBuffer_Load(entry->buf_store);
+    return MsgBuffer_CreateFromStr(entry->buf_store);
 }
 
 void MsgEntryCluster_StoreBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer* entry) {
@@ -127,7 +127,7 @@ u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
         return -1;
     }
 
-    MsgBuffer* buf = MsgBuffer_Load(entry->buf_store);
+    MsgBuffer* buf = MsgBuffer_CreateFromStr(entry->buf_store);
     u32 len =  MsgBuffer_Len(buf);
     MsgBuffer_Destroy(buf);
     return len;
@@ -169,7 +169,7 @@ MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* p
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
         IF_DEBUG recomp_printf("Loading Buffer for 0x%04x\n", textId);
-        MsgBuffer* buf = MsgBuffer_Load(search->buf_store);
+        MsgBuffer* buf = MsgBuffer_CreateFromStr(search->buf_store);
         MsgSContent_Printf("%m\xBF", buf);
         recomp_printf("\n");
         if (search->callback != NULL) {
