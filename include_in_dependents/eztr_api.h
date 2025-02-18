@@ -8,23 +8,88 @@
 #include "modding.h"
 #include "global.h"
 
+/**
+ * @brief The mod id string for EZTR.
+ * 
+ * The `eztr_api.h` imports all the functions and events needed to for EZTR, 
+ * so you probably won't need to use this directly.
+ */
 #define EZTR_MOD_ID_STR "MM_EZ_Text_Replacer_API"
 
-#ifndef DOXYGEN
-#define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
-#else
+#ifdef DOXYGEN
 #define EZTR_IMPORT(func) func
+#define EZTR_PACK_STRUCT 
+#else
+#define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
+#define EZTR_PACK_STRUCT __attribute__((packed))
 #endif
 
-#define MSG_BUFFER_SIZE 1280
-#define MSG_HEADER_SIZE 11
-#define MSG_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
+/**
+ * @brief The the full size of message buffer, in bytes.
+ * Also equivalent to maximum length of buffer in single-byte characters (`char`).
+ */
+#define EZTR_MSG_BUFFER_SIZE 1280
 
-#define MSG_ENDING_CHAR '\xBF'
-#define PIPE_CHAR '|'
+/**
+ * @brief The maximum length of buffer in two-byte characters (`wchar`).
+ * 
+ * Not really used, but included for parity with the base game.
+ */
+#define EZTR_MSG_BUFFER_WIDE_SIZE 640
+
+/**
+ * @brief The size of the message buffer's header region, in bytes.
+ * 
+ * Also servers as the starting index of the message buffer's content region.
+ * 
+ */
+#define EZTR_MSG_HEADER_SIZE 11
+
+/**
+ * @brief The size of the message buffer's content region, in bytes.
+ * 
+ * Useful if you need to loop throught the buffer.
+ */
+ #define EZTR_MSG_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
+
+#define EZTR_MSG_ENDING_CHAR '\xBF'
+#define EZTR_PIPE_CHAR '|'
+
+/**
+ * @brief The message buffers type as defined in the Majora's Mask decompilation.
+ * 
+ * While you can edit messages by interacting with this struct directly, EZTR 
+ * offers much better ways of editing messages.
+ */
+typedef union {
+    char schar[EZTR_MSG_BUFFER_SIZE]; // msgBuf
+    u16 wchar[EZTR_MSG_BUFFER_WIDE_SIZE];   // msgBufWide
+    u64 force_structure_alignment_msg;
+} EZTR_MsgRaw;
 
 
-typedef struct __attribute__((packed)) {
+/**
+ * @brief The message buffer, but with the header and content regions defined as seperate arrays.
+ * 
+ * The `content` member can be passed to the `EZTR_MsgSContent_` functions for use in text operations.
+ * 
+ */
+typedef struct {
+    char header[EZTR_MSG_HEADER_SIZE];
+    char content[EZTR_MSG_CONTENT_SIZE];
+} EZTR_MsgPartition;
+
+
+/**
+ * @brief The message buffer, with the header represented as its individual members.
+ * 
+ * When compiled, this struct is marked with the `packed` attribute to ensure that it's members align
+ * to their proper locations within the buffer. 
+ * 
+ * The `content` member can be passed to the `EZTR_MsgSContent_` functions for use in text operations.
+ * 
+ */
+typedef struct EZTR_PACK_STRUCT {
     u8 text_box_type; 
     u8 text_box_y_pos;
     u8 display_icon; 
@@ -32,30 +97,79 @@ typedef struct __attribute__((packed)) {
     u16 first_item_rupees;
     u16 second_item_rupees;
     u16 padding;
-    char content[MSG_CONTENT_SIZE];
+    char content[EZTR_MSG_CONTENT_SIZE];
 } EZTR_MsgData;
 
-
-typedef struct {
-    char header[MSG_HEADER_SIZE];
-    char content[MSG_CONTENT_SIZE];
-} EZTR_MsgPartition;
-
-
+/**
+ * @brief The main message buffer type, and the primary struct for interacting with message data.
+ * 
+ * Each member of the union is a different way of representing the buffer in code.
+ * 
+ * * `raw` is the buffer as it exists in the Majora's Mask decomp.
+ * * `partitions` is the buffer, seperated into it's two primary regions (header and content).
+ * * `data` is the buffer, with it's header and content values listed as individual members.
+ * 
+ */
 typedef union {
-        char schar[1280]; // msgBuf
-        u16 wchar[640];   // msgBufWide
-        u64 force_structure_alignment_msg;
-        EZTR_MsgData data;
+        EZTR_MsgRaw raw;
         EZTR_MsgPartition partitions;
+        EZTR_MsgData data;
 } EZTR_MsgBuffer;
 
+
+/**
+ * @brief The function pointer type for message callbacks. 
+ * 
+ * To easily create functions that match this type, see the `EZTR_MSG_CALLBACK` macro.
+ * 
+ */
 typedef void (*EZTR_MsgCallback)(EZTR_MsgBuffer* buf, u16 textId, PlayState* play);
 
+/**
+ * @brief A macro to easily create message callback functions.
+ * 
+ * This macro can be used to create both the function definition and declaration (if one is needed);
+ * 
+ * * To create the definition, use `EZTR_MSG_CALLBACK(my_callback) {...}`
+ * * To create the declaration, use `EZTR_MSG_CALLBACK(my_callback);`
+ * 
+ * `my_callback` can then be passed to `EZTR_Basic_ReplaceText_WithCallback()` or 
+ * `EZTR_Basic_ReplaceText_EmptyWithCallback()` as the `callback argument.
+ * 
+ */
+#define EZTR_MSG_CALLBACK(fname) void fname(EZTR_MsgBuffer* buf, u16 textId, PlayState* play)
+
+/**
+ * @brief Used to declare a function that should run after EZTR has finished initializing.
+ * 
+ * This is where you should declare all of your text replacements. You don't want to declare them during a 
+ * `recomp_on_init` event, since EZTR may not have initialized itself yet, and attempting to declare text
+ * replacements before that will cause a crash. Additionally, declaring messaged here will ensure that mod 
+ * priority order is respected when declaring replacements.
+ * 
+ * Example: `EZTR_ON_INIT void declare_my_text() {...}`
+ * 
+ */
 #define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
 
+/**
+ * @brief Used by certain members of `EZTR_MsgData` (and the message header generally) to indicate that said member is not in use.
+ * 
+ * The header members in question are:
+ * 
+ * * `next_message_id`
+ * * `first_item_rupees`
+ * * `second_item_rupees`
+ * 
+ */
 #define EZTR_NO_VALUE 0xffff
 
+
+/**
+ * @brief Used by the `text_box_type` member of EZTR_MsgData (and the message header generally) to indicate the style of textbox used for the message.
+ * 
+ *
+ */
 typedef enum {
     EZTR_STANDARD_TEXT_BOX_I = 0X0,
     EZTR_WOODEN_SIGN_BACKGROUND = 0X1,
@@ -346,6 +460,11 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText(
     char* content
 ));
 
+/**
+ * @brief Creates a new message buffer.
+ * 
+ * @return MsgBuffer* 
+ */
 EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
     u16 textId, 
     u8 text_box_type, 
@@ -362,19 +481,11 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
 
 EZTR_IMPORT(void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, EZTR_MsgCallback callback));
 
-
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_Create());
 
-/**
- * @brief Creates an empty MsgBuffer on the heap, and copies 
- * @param src 
- * @return MsgBuffer* 
- */
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStr(char* src));\
 
-
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStrN(char* src, size_t len));
-
 
 EZTR_IMPORT(void EZTR_MsgBuffer_Destroy(EZTR_MsgBuffer* buf));
 

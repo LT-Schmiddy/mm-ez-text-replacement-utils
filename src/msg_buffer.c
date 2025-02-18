@@ -8,6 +8,18 @@ void MsgBuffer_Destroy(MsgBuffer* buf) {
     recomp_free(buf);
 }
 
+MsgBuffer* MsgBuffer_CreateFromStr(char* src) {
+    MsgBuffer* buf = MsgBuffer_Create();
+    MsgBuffer_StrCopy(buf->raw.schar, src);
+    return buf;
+}
+
+MsgBuffer* MsgBuffer_CreateFromStrN(char* src, size_t len) {
+    MsgBuffer* buf = MsgBuffer_Create();
+    MsgBuffer_StrNCopy(buf->raw.schar, src, len);
+    return buf;
+}
+
 u32 MsgBuffer_StrCopy(char* dst, char* src) {
     IF_DEBUG recomp_printf("StrCopying Message Data: %p -> %p : ", src, dst);
     
@@ -41,18 +53,6 @@ u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
     MsgSContent_Printf("%m\xBF", dst);
     recomp_printf("\n");
     return i;
-}
-
-MsgBuffer* MsgBuffer_CreateFromStr(char* src) {
-    MsgBuffer* buf = MsgBuffer_Create();
-    MsgBuffer_StrCopy((char*)buf, src);
-    return buf;
-}
-
-MsgBuffer* MsgBuffer_CreateFromStrN(char* src, size_t len) {
-    MsgBuffer* buf = MsgBuffer_Create();
-    MsgBuffer_StrNCopy(buf->raw.schar, src, len);
-    return buf;
 }
 
 char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {

@@ -15,6 +15,7 @@ patches.map
 assets_extracted/
 build/
 runtime/
+doxygen/
 .vscode/settings.json
 .vscode/launch.json
 .vscode/tasks.json
