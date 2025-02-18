@@ -119,6 +119,9 @@ def create_package():
     mod_file = package_dir.joinpath(bm.build_mod_nrm_file.name)
     fully_collected = fully_collected and copy_mod(bm.build_mod_nrm_file, mod_file)
     
+    print("Copying API Header...")
+    shutil.copy(bm.project_root.joinpath("./include_in_dependents/eztr_api.h"), package_dir.joinpath("eztr_api.h"))
+    
     if fully_collected:
         print("Fully collected. Zipping mod package.")
         create_archive(package_dir, bm.project_root.joinpath(f"{manifest["name"]}.thunderstore.zip"))

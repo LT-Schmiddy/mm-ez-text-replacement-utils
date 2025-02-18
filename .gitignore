@@ -16,6 +16,7 @@ assets_extracted/
 build/
 runtime/
 doxygen/
+thunderstore_package/**.h
 .vscode/settings.json
 .vscode/launch.json
 .vscode/tasks.json
