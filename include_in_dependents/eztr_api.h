@@ -26,6 +26,7 @@
 
 /**
  * @brief The the full size of message buffer, in bytes.
+ * 
  * Also equivalent to maximum length of buffer in single-byte characters (`char`).
  */
 #define EZTR_MSG_BUFFER_SIZE 1280
@@ -86,6 +87,8 @@ typedef struct {
  * When compiled, this struct is marked with the `packed` attribute to ensure that it's members align
  * to their proper locations within the buffer. 
  * 
+ * The `padding` member represents a section of the buffer that is unused, and should thus be ignored.
+ * 
  * The `content` member can be passed to the `EZTR_MsgSContent_` functions for use in text operations.
  * 
  */
@@ -134,7 +137,7 @@ typedef void (*EZTR_MsgCallback)(EZTR_MsgBuffer* buf, u16 textId, PlayState* pla
  * * To create the declaration, use `EZTR_MSG_CALLBACK(my_callback);`
  * 
  * `my_callback` can then be passed to `EZTR_Basic_ReplaceText_WithCallback()` or 
- * `EZTR_Basic_ReplaceText_EmptyWithCallback()` as the `callback argument.
+ * `EZTR_Basic_ReplaceText_EmptyWithCallback()` as the callback argument.
  * 
  */
 #define EZTR_MSG_CALLBACK(fname) void fname(EZTR_MsgBuffer* buf, u16 textId, PlayState* play)
@@ -166,29 +169,41 @@ typedef void (*EZTR_MsgCallback)(EZTR_MsgBuffer* buf, u16 textId, PlayState* pla
 
 
 /**
- * @brief Used by the `text_box_type` member of EZTR_MsgData (and the message header generally) to indicate the style of textbox used for the message.
+ * @brief Used in the message header to indicate the style of textbox used for the message.
  * 
- *
+ * You can set the text box type by assigning to the `text_box_type` member of EZTR_MsgData,
+ * or by using `EZTR_MsgBuffer_SetTextBoxType()`.
+ * 
  */
 typedef enum {
-    EZTR_STANDARD_TEXT_BOX_I = 0X0,
-    EZTR_WOODEN_SIGN_BACKGROUND = 0X1,
-    EZTR_TRANSLUSCENT_BLUE_TEXT_BOX = 0X2,
-    EZTR_OCARINA_STAFF = 0X3,
-    EZTR_INVISIBLE_TEXT_BOX_I = 0X4,
-    EZTR_INVISIBLE_TEXT_BOX_II = 0X5,
-    EZTR_STANDARD_TEXT_BOX_II = 0X6,
-    EZTR_INVISIBLE_TEXT_BOX = 0X7,
-    EZTR_BLUE_TEXT_BOX = 0X8,
-    EZTR_RED_TEXT_BOX_I = 0X9,
-    EZTR_INVISIBLE_TEXT_BOX_III = 0XA,
-    EZTR_INVISIBLE_TEXT_BOX_IV = 0XB,
-    EZTR_INVISIBLE_TEXT_BOX_V = 0XC,
-    EZTR_BOMBERS_NOTEBOOK = 0XD,
-    EZTR_INVISIBLE_TEXT_BOX_VI = 0XE,
-    EZTR_RED_TEXT_BOX_II = 0XF
+    EZTR_STANDARD_TEXT_BOX_I = 0X00,
+    EZTR_WOODEN_SIGN_BACKGROUND = 0X01,
+    EZTR_TRANSLUSCENT_BLUE_TEXT_BOX = 0X02,
+    EZTR_OCARINA_STAFF = 0X03,
+    EZTR_INVISIBLE_TEXT_BOX_I = 0X04,
+    EZTR_INVISIBLE_TEXT_BOX_II = 0X05,
+    EZTR_STANDARD_TEXT_BOX_II = 0X06,
+    EZTR_INVISIBLE_TEXT_BOX = 0X07,
+    EZTR_BLUE_TEXT_BOX = 0X08,
+    EZTR_RED_TEXT_BOX_I = 0X09,
+    EZTR_INVISIBLE_TEXT_BOX_III = 0X0A,
+    EZTR_INVISIBLE_TEXT_BOX_IV = 0X0B,
+    EZTR_INVISIBLE_TEXT_BOX_V = 0X0C,
+    EZTR_BOMBERS_NOTEBOOK = 0X0D,
+    EZTR_INVISIBLE_TEXT_BOX_VI = 0X0E,
+    EZTR_RED_TEXT_BOX_II = 0X0F
 } EZTR_TextBoxType;
 
+/**
+ * @brief Used in the message header to indicate a display icon for the message.
+ * 
+ * You can set the display icon by assigning to the `display_icon` member of EZTR_MsgData,
+ * or by using `EZTR_MsgBuffer_SetTextBoxDIsplayIcon()`.
+ * 
+ * Note that the value for not displaying an icon is `EZTR_ICON_NO_ICON`, and NOT 
+ * 
+ * `EZTR_ICON_NOTHING` or it's variants.
+ */
 typedef enum {
     EZTR_ICON_NOTHING = 0x00,
     EZTR_ICON_GREEN_RUPEE = 0x01,
@@ -447,7 +462,19 @@ typedef enum {
     EZTR_ICON_NO_ICON = 0xFE
 } EZTR_TextBoxIcon;
 
-
+/**
+ * @brief This is the mose basic function for declaring replacement text.
+ * 
+ * @param textId 
+ * @param text_box_type 
+ * @param text_box_y_pos 
+ * @param display_icon 
+ * @param next_message_id 
+ * @param first_item_rupees 
+ * @param second_item_rupees 
+ * @param pipe_escape_bytes 
+ * @param content 
+ */
 EZTR_IMPORT(void EZTR_Basic_ReplaceText(
     u16 textId, 
     u8 text_box_type, 
@@ -461,9 +488,18 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText(
 ));
 
 /**
- * @brief Creates a new message buffer.
+ * @brief 
  * 
- * @return MsgBuffer* 
+ * @param textId 
+ * @param text_box_type 
+ * @param text_box_y_pos 
+ * @param display_icon 
+ * @param next_message_id 
+ * @param first_item_rupees 
+ * @param second_item_rupees 
+ * @param pipe_escape_bytes 
+ * @param content 
+ * @param callback 
  */
 EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
     u16 textId, 
@@ -478,54 +514,333 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
     EZTR_MsgCallback callback
 ));
 
-
+/**
+ * @brief 
+ * 
+ * @param textId 
+ * @param callback 
+ */
 EZTR_IMPORT(void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, EZTR_MsgCallback callback));
 
+/**
+ * @brief Create msgBuffer
+ * 
+ * @return MsgBuffer* 
+ */
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_Create());
 
-EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStr(char* src));\
+/**
+ * @brief 
+ * 
+ * @param src 
+ * @return MsgBuffer* 
+ */
+EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStr(char* src));
 
+/**
+ * @brief 
+ * 
+ * @param src 
+ * @param len 
+ * @return MsgBuffer* 
+ */
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStrN(char* src, size_t len));
 
+/**
+ * @brief 
+ * 
+ * @param buf 
+ */
 EZTR_IMPORT(void EZTR_MsgBuffer_Destroy(EZTR_MsgBuffer* buf));
 
 // Copy:
-EZTR_IMPORT(u32 EZTR_MsgBuffer_StrCopy(char* dst, char* src));
-EZTR_IMPORT(u32 EZTR_MsgBuffer_StrNCopy(char* dst, char* src, size_t len));
+/**
+ * @brief 
+ * 
+ * @param dst 
+ * @param src 
+ * @return u32 
+ */
+EZTR_IMPORT(u32 EZTR_MsgBuffer_Copy(char* dst, char* src));
+
+/**
+ * @brief 
+ * 
+ * @param dst 
+ * @param src 
+ * @param len 
+ * @return u32 
+ */
+EZTR_IMPORT(u32 EZTR_MsgBuffer_NCopy(char* dst, char* src, size_t len));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u32 
+ */
 EZTR_IMPORT(u32 EZTR_MsgBuffer_Len(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u32 
+ */
 EZTR_IMPORT(u32 EZTR_MsgBuffer_ContentLen(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ */
 EZTR_IMPORT(void EZTR_MsgBuffer_WriteDefaultHeader(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @param text_box_type 
+ * @param text_box_y_pos 
+ * @param display_icon 
+ * @param next_message_id 
+ * @param first_item_rupees 
+ * @param second_item_rupees 
+ */
 EZTR_IMPORT(void EZTR_MsgBuffer_WriteHeader(EZTR_MsgBuffer* buf, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees));
 
+    /**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u8 
+ */
 EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxType(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @param type 
+ */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxType(EZTR_MsgBuffer* buf, u8 type));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u8 
+ */
 EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxYPos(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @param pos 
+ */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxYPos(EZTR_MsgBuffer* buf, u8 pos));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u8 
+ */
 EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxDisplayIcon(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @param icon 
+ */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxDisplayIcon(EZTR_MsgBuffer* buf, u8 icon));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u16 
+ */
 EZTR_IMPORT(u16 EZTR_MsgBuffer_GetNextMsg(EZTR_MsgBuffer* buf));
-EZTR_IMPORT(void EZTR_MsgBuffer_SetNextMsg(EZTR_MsgBuffer* buf, u16 type));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @param textId 
+ */
+EZTR_IMPORT(void EZTR_MsgBuffer_SetNextMsg(EZTR_MsgBuffer* buf, u16 textId));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u16 
+ */
 EZTR_IMPORT(u16 EZTR_MsgBuffer_GetFirstItemRupees(EZTR_MsgBuffer* buf));
-EZTR_IMPORT(void EZTR_MsgBuffer_SetFirstItemRupees(EZTR_MsgBuffer* buf, u16 pos));
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @param val 
+ */
+EZTR_IMPORT(void EZTR_MsgBuffer_SetFirstItemRupees(EZTR_MsgBuffer* buf, u16 val));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return u16 
+ */
 EZTR_IMPORT(u16 EZTR_MsgBuffer_GetSecondItemRupees(EZTR_MsgBuffer* buf));
-EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 pos));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @param val 
+ */
+EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 val));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ * @return char* 
+ */
 EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
 
+/**
+ * @brief 
+ * 
+ * @param cont 
+ */
 EZTR_IMPORT(void EZTR_MsgSContent_SetEmpty(char* cont));
+
+/**
+ * @brief 
+ * 
+ * @param cont 
+ * @return u32 
+ */
 EZTR_IMPORT(u32 EZTR_MsgSContent_Len(char* cont));
+
+/**
+ * @brief 
+ * 
+ * @param dst 
+ * @param src 
+ * @param len 
+ * @return u32 
+ */
 EZTR_IMPORT(u32 EZTR_MsgSContent_NCopy(char* dst, char* src, size_t len));
+
+/**
+ * @brief 
+ * 
+ * @param dst 
+ * @param src 
+ * @return u32 
+ */
 EZTR_IMPORT(u32 EZTR_MsgSContent_Copy(char* dst, char* src));
+
+/**
+ * @brief 
+ * 
+ * @param dst 
+ * @param src 
+ * @param len 
+ * @return u32 
+ */
 EZTR_IMPORT(char* EZTR_MsgSContent_NCat(char* dst, char* src, size_t len));
+/**
+ * @brief 
+ * 
+ * @param dst 
+ * @param src 
+ * @return char* 
+ */
 EZTR_IMPORT(char* EZTR_MsgSContent_Cat(char* dst, char* src));
+/**
+ * @brief 
+ * 
+ * @param str1 
+ * @param str2 
+ * @param len 
+ * @return s32 
+ */
 EZTR_IMPORT(s32 EZTR_MsgSContent_NCmp(char* str1, char* str2, size_t len));
+/**
+ * @brief 
+ * 
+ * @param str1 
+ * @param str2 
+ * @return s32 
+ */
 EZTR_IMPORT(s32 EZTR_MsgSContent_Cmp(char* str1, char* str2));
 
+/**
+ * @brief 
+ * 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
 EZTR_IMPORT(int EZTR_MsgSContent_Printf(const char* format, ...));
+
+/**
+ * @brief 
+ * 
+ * @param buffer 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
 EZTR_IMPORT(int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...));
+
+/**
+ * @brief 
+ * 
+ * @param buffer 
+ * @param count 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
 EZTR_IMPORT(int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...));
+
+/**
+ * @brief 
+ * 
+ * @param buffer 
+ * @param count 
+ * @param format 
+ * @param va 
+ * @return int 
+ */
 EZTR_IMPORT(int EZTR_MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va));
+
+/**
+ * @brief 
+ * 
+ * @param format 
+ * @param va 
+ * @return int 
+ */
 EZTR_IMPORT(int EZTR_MsgSContent_Vprintf(const char* format, va_list va));
+
+/**
+ * @brief 
+ * 
+ * @param out 
+ * @param arg 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
 EZTR_IMPORT(int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...));
 
 
