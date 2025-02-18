@@ -7,6 +7,12 @@
 #include "api_enums.h"
 #include "msg_buffer_printf.h"
 
+typedef union {
+    char schar[MSG_BUFFER_SIZE]; // msgBuf
+    u16 wchar[MSG_BUFFER_WIDE_SIZE];   // msgBufWide
+    u64 force_structure_alignment_msg;
+} MsgRaw;
+
 typedef struct __attribute__((packed)) {
     u8 text_box_type; 
     u8 text_box_y_pos;
@@ -24,9 +30,7 @@ typedef struct {
 } MsgPartition;
 
 typedef union {
-        char schar[1280]; // msgBuf
-        u16 wchar[640];   // msgBufWide
-        u64 force_structure_alignment_msg;
+        MsgRaw raw;
         MsgData data;
         MsgPartition partitions;
 } MsgBuffer;

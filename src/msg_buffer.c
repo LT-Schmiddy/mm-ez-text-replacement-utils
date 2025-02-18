@@ -51,7 +51,7 @@ MsgBuffer* MsgBuffer_CreateFromStr(char* src) {
 
 MsgBuffer* MsgBuffer_CreateFromStrN(char* src, size_t len) {
     MsgBuffer* buf = MsgBuffer_Create();
-    MsgBuffer_StrNCopy((char*)buf, src, len);
+    MsgBuffer_StrNCopy(buf->raw.schar, src, len);
     return buf;
 }
 
@@ -70,7 +70,7 @@ char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
 
 u32 MsgBuffer_Len(MsgBuffer* buf) {
     int i = 0;
-    while ((buf->schar[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE) { 
+    while ((buf->raw.schar[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE) { 
         i++;
     }
     return i;
@@ -87,7 +87,7 @@ u32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
     bool should_end = false;
     while (!should_end && i < MSG_CONTENT_SIZE) {
         IF_DEBUG recomp_printf( is_printable_char(src[i]) ? "%c" : "\\x%02X", src[i]);
-        dst->schar[i + MSG_HEADER_SIZE] = src[i];
+        dst->raw.schar[i + MSG_HEADER_SIZE] = src[i];
         i++;
         should_end = src[i] == MSG_ENDING_CHAR;
     }
@@ -119,73 +119,73 @@ void MsgBuffer_WriteHeader(MsgBuffer* buf, u8 text_box_type, u8 text_box_y_pos, 
 // Getters/Setters for the header:
 u8 MsgBuffer_GetTextBoxType(MsgBuffer* buf) {
     u8 retVal;
-    memcpy(&retVal, &buf->schar[0], sizeof(u8));
+    memcpy(&retVal, &buf->raw.schar[0], sizeof(u8));
     return retVal;
 }
 
 void MsgBuffer_SetTextBoxType(MsgBuffer* buf, u8 type) {
-    memcpy(&buf->schar[0], &type, sizeof(u8));
+    memcpy(&buf->raw.schar[0], &type, sizeof(u8));
 }
 
 
 u8 MsgBuffer_GetTextBoxYPos(MsgBuffer* buf) {
     u8 retVal;
-    memcpy(&retVal, &buf->schar[1], sizeof(u8));
+    memcpy(&retVal, &buf->raw.schar[1], sizeof(u8));
     return retVal;
 }
 
 void MsgBuffer_SetTextBoxYPos(MsgBuffer* buf, u8 pos) {
-    memcpy(&buf->schar[1], &pos, sizeof(u8));
+    memcpy(&buf->raw.schar[1], &pos, sizeof(u8));
 }
 
 
 u8 MsgBuffer_GetTextBoxDisplayIcon(MsgBuffer* buf) {
     u8 retVal;
-    memcpy(&retVal, &buf->schar[2], sizeof(u8));
+    memcpy(&retVal, &buf->raw.schar[2], sizeof(u8));
     return retVal;
 }
 
 void MsgBuffer_SetTextBoxDisplayIcon(MsgBuffer* buf, u8 icon) {
-    memcpy(&buf->schar[2], &icon, sizeof(u8));
+    memcpy(&buf->raw.schar[2], &icon, sizeof(u8));
 }
 
 
 u16 MsgBuffer_GetNextMsg(MsgBuffer* buf) {
     u16 retVal;
-    memcpy(&retVal, &buf->schar[3], sizeof(u16));
+    memcpy(&retVal, &buf->raw.schar[3], sizeof(u16));
     return retVal;
 }
 
 void MsgBuffer_SetNextMsg(MsgBuffer* buf, u16 nextId) {
-    memcpy(&buf->schar[3], &nextId, sizeof(u16));
+    memcpy(&buf->raw.schar[3], &nextId, sizeof(u16));
 }
 
 
 u16 MsgBuffer_GetFirstItemRupees(MsgBuffer* buf) {
     u16 retVal;
-    memcpy(&retVal, &buf->schar[5], sizeof(u16));
+    memcpy(&retVal, &buf->raw.schar[5], sizeof(u16));
     return retVal;
 }
 
 void MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 value) {
-    memcpy(&buf->schar[5], &value, sizeof(u16));
+    memcpy(&buf->raw.schar[5], &value, sizeof(u16));
 }
 
 
 u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf) {
     u16 retVal;
-    memcpy(&retVal, &buf->schar[7], sizeof(u16));
+    memcpy(&retVal, &buf->raw.schar[7], sizeof(u16));
     return retVal;
 }
 
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 value) {
-    memcpy(&buf->schar[7], &value, sizeof(u16));
+    memcpy(&buf->raw.schar[7], &value, sizeof(u16));
 }
 
 // Content Stuff
 
 char* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
-   return &buf->schar[MSG_HEADER_SIZE];
+   return &buf->raw.schar[MSG_HEADER_SIZE];
 }
 
 void MsgSContent_SetEmpty(char* cont) {

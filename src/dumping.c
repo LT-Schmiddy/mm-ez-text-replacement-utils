@@ -18,12 +18,12 @@ void dump_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf) {
     u16 first_item_rupees = 0xffff;
     u16 second_item_rupees = 0xffff;
 
-    memcpy(&text_box_type, &buf->schar[0], sizeof(u8));
-    memcpy(&text_box_y_pos, &buf->schar[1], sizeof(u8));
-    memcpy(&display_icon, &buf->schar[2], sizeof(u8));
-    memcpy(&next_message_id, &buf->schar[3], sizeof(u16));
-    memcpy(&first_item_rupees, &buf->schar[5], sizeof(u16));
-    memcpy(&second_item_rupees, &buf->schar[7], sizeof(u16));
+    memcpy(&text_box_type, &buf->raw.schar[0], sizeof(u8));
+    memcpy(&text_box_y_pos, &buf->raw.schar[1], sizeof(u8));
+    memcpy(&display_icon, &buf->raw.schar[2], sizeof(u8));
+    memcpy(&next_message_id, &buf->raw.schar[3], sizeof(u16));
+    memcpy(&first_item_rupees, &buf->raw.schar[5], sizeof(u16));
+    memcpy(&second_item_rupees, &buf->raw.schar[7], sizeof(u16));
 
     // Hex conversions:
     char id_str[5] ="0000";
@@ -70,12 +70,12 @@ void dump_full_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf)
     u16 first_item_rupees = 0xffff;
     u16 second_item_rupees = 0xffff;
 
-    memcpy(&text_box_type, &buf->schar[0], sizeof(u8));
-    memcpy(&text_box_y_pos, &buf->schar[1], sizeof(u8));
-    memcpy(&display_icon, &buf->schar[2], sizeof(u8));
-    memcpy(&next_message_id, &buf->schar[3], sizeof(u16));
-    memcpy(&first_item_rupees, &buf->schar[5], sizeof(u16));
-    memcpy(&second_item_rupees, &buf->schar[7], sizeof(u16));
+    memcpy(&text_box_type, &buf->raw.schar[0], sizeof(u8));
+    memcpy(&text_box_y_pos, &buf->raw.schar[1], sizeof(u8));
+    memcpy(&display_icon, &buf->raw.schar[2], sizeof(u8));
+    memcpy(&next_message_id, &buf->raw.schar[3], sizeof(u16));
+    memcpy(&first_item_rupees, &buf->raw.schar[5], sizeof(u16));
+    memcpy(&second_item_rupees, &buf->raw.schar[7], sizeof(u16));
 
     // Hex conversions:
     char id_str[5] ="0000";
@@ -109,7 +109,7 @@ void dump_full_buffer(const char* category, u16 textId, s32 len, MsgBuffer* buf)
     recomp_printf("\tContent: \"");
     // Printing Message Content:
     for (s32 i = 0; i < MSG_BUFFER_SIZE; i++) {
-        char c = buf->schar[i];
+        char c = buf->raw.schar[i];
 
         if (is_printable_char(c)) {
             recomp_printf("%c", c);

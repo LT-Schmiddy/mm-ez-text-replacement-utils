@@ -24,7 +24,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
 
         msgCtx->msgLength = MsgBuffer_Len(buf);
         for (int i = 0; i < msgCtx->msgLength + 1; i++) {
-            font->msgBuf.schar[i] = buf->schar[i];
+            font->msgBuf.schar[i] = buf->raw.schar[i];
         }
         MsgBuffer_Destroy(buf);
         // IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
@@ -141,7 +141,7 @@ RECOMP_PATCH void func_801514B0(PlayState* play, u16 arg1, u8 arg2) {
         // msgCtx->msgLength = MsgBuffer_StrCopy(font->msgBuf.schar, (char*)buf);
         msgCtx->msgLength = MsgBuffer_Len(buf);
         for (int i = 0; i < msgCtx->msgLength + 1; i++) {
-            font->msgBuf.schar[i] = buf->schar[i];
+            font->msgBuf.schar[i] = buf->raw.schar[i];
         }
         MsgBuffer_Destroy(buf);
     }
