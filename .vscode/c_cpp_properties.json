@@ -4,6 +4,7 @@
             "name": "Mod",
             "includePath": [
                 "${workspaceFolder}/include",
+                "${workspaceFolder}/include_in_dependents",
                 "${workspaceFolder}/include/dummy_headers",
                 "${workspaceFolder}/mm-decomp/include",
                 "${workspaceFolder}/mm-decomp/src",

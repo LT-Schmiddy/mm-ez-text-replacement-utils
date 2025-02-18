@@ -86,7 +86,8 @@ MsgTable* MsgTable_Create() {
     for (int i = 0; i < UINT8_MAX; i++) {
         retVal->clusters[i] = NULL;
     }
-    retVal->cluster_count++;
+    retVal->cluster_count = 0;
+    retVal->highest_msg_id = MSG_HIGHEST_ID;
     recomp_printf("%sMessage Table Created.\n", LOG_HEADER);
     return retVal;
 }

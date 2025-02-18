@@ -6,19 +6,16 @@
 
 // Lifetime:
 
-/**
- * @brief Create msgBuffer
- * 
- * @return MsgBuffer* 
- */
+
 MsgBuffer* EZTR_MsgBuffer_Create();
+
 MsgBuffer* EZTR_MsgBuffer_CreateFromStr(char* src);
 MsgBuffer* EZTR_MsgBuffer_CreateFromStrN(char* src, size_t len);
 void EZTR_MsgBuffer_Destroy(MsgBuffer* buf);
 
 // Copy:
-
 u32 EZTR_MsgBuffer_Copy(MsgBuffer* dst, char* src);
+u32 EZTR_MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len);
 u32 EZTR_MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len);
 u32 EZTR_MsgBuffer_Len(MsgBuffer* buf);
 u32 EZTR_MsgBuffer_ContentLen(MsgBuffer* buf);
@@ -42,13 +39,12 @@ char* EZTR_MsgBuffer_GetContentPtr(MsgBuffer* buf);
 
 void EZTR_MsgSContent_SetEmpty(char* cont);
 u32 EZTR_MsgSContent_Len(char* cont);
-u32 EZTR_MsgSContent_Copy(char* dst, char* src);
 u32 EZTR_MsgSContent_NCopy(char* dst, char* src, size_t len);
+u32 EZTR_MsgSContent_Copy(char* dst, char* src);
 char* EZTR_MsgSContent_NCat(char* dst, char* src, size_t len);
 char* EZTR_MsgSContent_Cat(char* dst, char* src);
 s32 EZTR_MsgSContent_NCmp(char* str1, char* str2, size_t len);
 s32 EZTR_MsgSContent_Cmp(char* str1, char* str2);
-
 
 int EZTR_MsgSContent_Printf(const char* format, ...);
 int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...);

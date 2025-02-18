@@ -116,8 +116,8 @@ def create_package():
     if not icon_file.is_file():
         fully_collected = fully_collected and copy_icon(bm.project_root.joinpath("thumb.png"), icon_file)
     
-    mod_file = package_dir.joinpath(bm.build_nrm_file.name)
-    fully_collected = fully_collected and copy_mod(bm.build_nrm_file, mod_file)
+    mod_file = package_dir.joinpath(bm.build_mod_nrm_file.name)
+    fully_collected = fully_collected and copy_mod(bm.build_mod_nrm_file, mod_file)
     
     if fully_collected:
         print("Fully collected. Zipping mod package.")

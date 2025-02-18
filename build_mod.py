@@ -6,13 +6,17 @@ USING_ASSETS_ARCHIVE = True
 project_root = pathlib.Path(__file__).parent
 
 mod_data = tomllib.loads(project_root.joinpath("mod.toml").read_text())
-mod_manifest_data = mod_data["manifest"]
-# print(mod_data)
-build_dir = project_root.joinpath(f"build")
-build_nrm_file = build_dir.joinpath(f"{mod_data['inputs']['mod_filename']}.nrm")
+tests_data = tomllib.loads(project_root.joinpath("tests.toml").read_text())
+
+build_mod_dir = project_root.joinpath(f"build/mod")
+build_mod_nrm_file = build_mod_dir.joinpath(f"{mod_data['inputs']['mod_filename']}.nrm")
+
+build_tests_dir = project_root.joinpath(f"build/tests")
+build_tests_nrm_file = build_tests_dir.joinpath(f"{tests_data['inputs']['mod_filename']}.nrm")
 
 runtime_mods_dir = project_root.joinpath("runtime/mods")
-runtime_nrm_file = runtime_mods_dir.joinpath(f"{mod_data['inputs']['mod_filename']}.nrm")
+runtime_mod_nrm_file = runtime_mods_dir.joinpath(f"{mod_data['inputs']['mod_filename']}.nrm")
+runtime_tests_nrm_file = runtime_mods_dir.joinpath(f"{tests_data['inputs']['mod_filename']}.nrm")
 
 assets_archive_path = project_root.joinpath("assets_archive.zip")
 assets_extract_path = project_root.joinpath("assets_extracted")
@@ -30,33 +34,54 @@ def run_build():
         print("N64Recomp tools not built. Building now...")
         bnt.rebuild_tools();
 
-    deps = bnt.deps
-
-    make_run = subprocess.run(
+    # Build Mods:
+    mod_make_run = subprocess.run(
         [
-            deps["make"],
+            bnt.deps["make"],
         ],
         cwd=pathlib.Path(__file__).parent
     )
-    if make_run.returncode != 0:
+    if mod_make_run.returncode != 0:
         raise RuntimeError("Make failed to build mod binaries.")
 
-    RecompModTool_run = subprocess.run(
+    mod_RecompModTool_run = subprocess.run(
         [
             bnt.get_RecompModTool_path(),
             "mod.toml",
-            "build"
+            "build/mod"
         ],
         cwd=pathlib.Path(__file__).parent
     )
-    if RecompModTool_run.returncode != 0:
+    if mod_RecompModTool_run.returncode != 0:
         raise RuntimeError("RecompModTool failed to build mod.")
 
+    # Build Tests:
+    tests_make_run = subprocess.run(
+        [
+            bnt.deps["make"],
+            "BUILD_MODE=TESTS"
+        ],
+        cwd=pathlib.Path(__file__).parent
+    )
+    if tests_make_run.returncode != 0:
+        raise RuntimeError("Make failed to build test binaries.")
 
-
+    tests_RecompModTool_run = subprocess.run(
+        [
+            bnt.get_RecompModTool_path(),
+            "tests.toml",
+            "build/tests"
+        ],
+        cwd=pathlib.Path(__file__).parent
+    )
+    if tests_RecompModTool_run.returncode != 0:
+        raise RuntimeError("RecompModTool failed to build tests.")
+    
+    
     # Copying files for debugging:
     os.makedirs(runtime_mods_dir, exist_ok=True)
-    shutil.copy(build_nrm_file, runtime_nrm_file)
+    shutil.copy(build_mod_nrm_file, runtime_mod_nrm_file)
+    shutil.copy(build_tests_nrm_file, runtime_tests_nrm_file)
 
 if __name__ == '__main__':
     run_build()

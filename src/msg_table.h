@@ -26,6 +26,7 @@ typedef struct {
 
 typedef struct {
     u8 cluster_count;
+    u16 highest_msg_id;
     MsgEntryCluster* clusters[UINT8_MAX];
 } MsgTable;
 

@@ -5,22 +5,24 @@
 
 # Unique ID of this mod. Pick something long enough that it'll never be the same as any other mod.
 # The name displayed in the mod management menu is separate from this so this doesn't need to be human readable.
-id = "MM_EZ_Text_Replacer_API"
+id = "Tests_For_MM_EZ_Text_Replacer_API"
 
 # Version of this mod.
 version = "2.0.0"
 
 # The name that will show up for this mod in the mod menu. This should be human readable.
-display_name = "EZ Text Replacer API"
+display_name = "Tests For EZ Text Replacer API"
 
 # The description that will show up when this mod is displayed in the mod menu. This should be human readable.
 description =  """
-This is an API for modders that enables easily replacing in-game text and dialog.
+EZ Text Replacer API Test Code<br/>
+<br/>
+Check console for results.
 """
 
 # A short description that will show up in this mod's entry in the mod list. This should be human readable and kept short
 # to prevent it from being cut off due to the limited space.
-short_description = "Helps modders with text replacement."
+short_description = "EZ Text Replacer API Test Code"
 
 # Authors of this mod.
 authors = [ "LT_Schmiddy" ]
@@ -34,7 +36,7 @@ minimum_recomp_version = "1.2.0"
 # Dependency mods. Each entry is the mod's ID and then an optional minimum version of the dependency mod.
 dependencies = [
 # Example dependency:
-#    "modname:1.0.0"
+   "MM_EZ_Text_Replacer_API:2.0.0"
 ]
 
 # Native libraries (e.g. DLLs) and the functions they export.
@@ -47,10 +49,10 @@ native_libraries = [
 [inputs]
 
 # Input elf file to generate a mod from.
-elf_path = "build/mod/mod.elf"
+elf_path = "build/tests/tests.elf"
 
 # Output mod filename.
-mod_filename = "MM_EZ_Text_Replacer_API_2.0.0"
+mod_filename = "Tests_For_MM_EZ_Text_Replacer_API_2.0.0"
 
 # Reference symbol files.
 func_reference_syms_file = "Zelda64RecompSyms/mm.us.rev1.syms.toml"
@@ -60,32 +62,3 @@ data_reference_syms_files = [ "Zelda64RecompSyms/mm.us.rev1.datasyms.toml", "Zel
 additional_files = [
     "thumb.dds"
 ]
-
-
-## Config options:
-
-[[manifest.config_options]]
-id = "debug_logging"
-name = "Debug Logging"
-description = "Log additional information to the console for debugging."
-type = "Enum"
-options = [ "Off", "On" ]
-default = "Off"
-
-[[manifest.config_options]]
-id = "text_dumping"
-name = "Text Dumping"
-description = "Print information to console on each message as it's loaded, and before any text replacement happens. Useful for creating your own text replacements."
-type = "Enum"
-options = [ "Off", "On" ]
-default = "Off"
-
-[[manifest.config_options]]
-id = "text_dumping_byte_format"
-name = "Text Dumping Byte Format"
-description = "How non-printable bytes are dumped, with _ representing hexadecimal digits."
-type = "Enum"
-options = [ "Pipes (|__)", "Escapes (\\x__)" ]
-default = "Pipes (|__)"
-
-
