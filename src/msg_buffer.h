@@ -38,8 +38,8 @@ typedef union {
 
 MsgBuffer* MsgBuffer_Create();
 void MsgBuffer_Destroy(MsgBuffer* buf);
-u32 MsgBuffer_StrCopy(char* dst, char* src);
-u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len);
+u32 MsgBuffer_Copy(MsgBuffer* dst, char* src);
+u32 MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len);
 
 MsgBuffer* MsgBuffer_CreateFromStr(char* src);
 MsgBuffer* MsgBuffer_CreateFromStrN(char* src, size_t len);
@@ -65,10 +65,16 @@ u16 MsgBuffer_GetFirstItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 pos);
 u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
-
-// Msg Content:
 char* MsgBuffer_GetContentPtr(MsgBuffer* buf);
+// Msg Content:
+
 void MsgSContent_SetEmpty(char* cont);
 u32 MsgSContent_Len(char* cont);
+u32 MsgSContent_NCopy(char* dst, char* src, size_t len);
+u32 MsgSContent_Copy(char* dst, char* src);
+char* MsgSContent_NCat(char* dst, char* src, size_t len);
+char* MsgSContent_Cat(char* dst, char* src);
+s32 MsgSContent_NCmp(char* str1, char* str2, size_t len);
+s32 MsgSContent_Cmp(char* str1, char* str2);
 
 #endif

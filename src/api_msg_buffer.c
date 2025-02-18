@@ -24,11 +24,11 @@ RECOMP_EXPORT void EZTR_MsgBuffer_Destroy(MsgBuffer* buf) {
 }
 
 // Copy:
-RECOMP_EXPORT u32 EZTR_MsgBuffer_StrCopy(char* dst, char* src) {
-    return MsgBuffer_StrCopy(dst, src);
+RECOMP_EXPORT u32 EZTR_MsgBuffer_Copy(MsgBuffer* dst, char* src) {
+    return MsgBuffer_Copy(dst, src);
 }
-RECOMP_EXPORT u32 EZTR_MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
-    return MsgBuffer_StrNCopy(dst, src, len);
+RECOMP_EXPORT u32 EZTR_MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len) {
+    return MsgBuffer_NCopy(dst, src, len);
 }
 RECOMP_EXPORT u32 EZTR_MsgBuffer_Len(MsgBuffer* buf) {
     return MsgBuffer_Len(buf);
@@ -90,6 +90,25 @@ RECOMP_EXPORT void EZTR_MsgSContent_SetEmpty(char* cont) {
 }
 RECOMP_EXPORT u32 EZTR_MsgSContent_Len(char* cont) {
     return MsgSContent_Len(cont);
+}
+
+RECOMP_EXPORT u32 EZTR_MsgSContent_Copy(char* dst, char* src) {
+    return MsgSContent_Copy(dst, src);
+}
+RECOMP_EXPORT u32 EZTR_MsgSContent_NCopy(char* dst, char* src, size_t len) {
+    return MsgSContent_NCopy(dst, src, len);
+}
+RECOMP_EXPORT char* EZTR_MsgSContent_NCat(char* dst, char* src, size_t len) {
+    return MsgSContent_NCat(dst, src, len);
+}
+RECOMP_EXPORT char* EZTR_MsgSContent_Cat(char* dst, char* src) {
+    return MsgSContent_Cat(dst, src);
+}
+RECOMP_EXPORT s32 EZTR_MsgSContent_NCmp(char* str1, char* str2, size_t len) {
+    return MsgSContent_NCmp(str1, str2, len);
+}
+RECOMP_EXPORT s32 EZTR_MsgSContent_Cmp(char* str1, char* str2) {
+    return MsgSContent_Cmp(str1, str2);
 }
 
 // Can't really pass the extended args. Gotta reimplement here.

@@ -10,58 +10,45 @@ void MsgBuffer_Destroy(MsgBuffer* buf) {
 
 MsgBuffer* MsgBuffer_CreateFromStr(char* src) {
     MsgBuffer* buf = MsgBuffer_Create();
-    MsgBuffer_StrCopy(buf->raw.schar, src);
+    MsgBuffer_Copy(buf, src);
     return buf;
 }
 
 MsgBuffer* MsgBuffer_CreateFromStrN(char* src, size_t len) {
     MsgBuffer* buf = MsgBuffer_Create();
-    MsgBuffer_StrNCopy(buf->raw.schar, src, len);
+    MsgBuffer_NCopy(buf, src, len);
     return buf;
 }
 
-u32 MsgBuffer_StrCopy(char* dst, char* src) {
-    IF_DEBUG recomp_printf("StrCopying Message Data: %p -> %p : ", src, dst);
-    
-    int i = 0;
-    for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE; i++) {
-        dst[i] = src[i];
-    }
-    if (i < MSG_BUFFER_SIZE) {
-        dst[i] = '\xBF';
-    }  else {
-        // Otherwise at the max index
-        dst[i-1] = '\xBF';
-    }
-    MsgSContent_Printf("%m\xBF", dst);
-    recomp_printf("\n");
-    return i;
+u32 MsgBuffer_Copy(MsgBuffer* dst, char* src) {
+    return MsgBuffer_NCopy(dst, src, MSG_BUFFER_SIZE);
 }
-u32 MsgBuffer_StrNCopy(char* dst, char* src, size_t len) {
+u32 MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len) {
     IF_DEBUG recomp_printf("StrNCopying Message Data: %p -> %p ", src, dst);
 
     u32 i = 0;
     for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < len; i++) {
-        dst[i] = src[i];
+        dst->raw.schar[i] = src[i];
     }
-    if (i < MSG_BUFFER_SIZE) {
-        dst[i] = '\xBF';
+    if (i < len) {
+        dst->raw.schar[i] = '\xBF';
     }  else {
         // Otherwise at the max index
-        dst[i-1] = '\xBF';
+        dst->raw.schar[i-1] = '\xBF';
     }
-    MsgSContent_Printf("%m\xBF", dst);
-    recomp_printf("\n");
+    IF_DEBUG MsgSContent_Printf("%m\xBF", dst->data.content);
+    IF_DEBUG recomp_printf("\n");
     return i;
 }
 
 char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
     size_t store_len = MsgBuffer_Len(buf);
     // The extra byte is to store the \xBF:
-    recomp_printf("Storage Size: %u\n", store_len + 1);
+    recomp_printf("Storage Size: %u\n", store_len);
     char* retVal = recomp_alloc(sizeof(char) * store_len);
-    // char* retVal = recomp_alloc(sizeof(MsgBuffer));
-    u32 copy_len = MsgBuffer_StrCopy(retVal, (char*)buf);
+    
+    // Not really meant for this, but it's fine.
+    u32 copy_len = MsgBuffer_NCopy((MsgBuffer*)retVal, (char*)buf, store_len);
     if (copy_len != store_len) {
         recomp_printf("WARNING: STORAGE SIZE MISMATCH! Storage: %u, Length: %u\n", store_len, copy_len);
     };
@@ -69,7 +56,7 @@ char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
 }
 
 u32 MsgBuffer_Len(MsgBuffer* buf) {
-    int i = 0;
+    u32 i = 0;
     while ((buf->raw.schar[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < MSG_BUFFER_SIZE) { 
         i++;
     }
@@ -190,17 +177,79 @@ char* MsgBuffer_GetContentPtr(MsgBuffer* buf) {
 
 void MsgSContent_SetEmpty(char* cont) {
     char* c = (char*)cont;
-    for (int i = 0; i < MSG_CONTENT_SIZE; i++) {
-        c[i] = MSG_ENDING_CHAR;
-    }
+    *c = '\xBF';
+    // for (int i = 0; i < MSG_CONTENT_SIZE; i++) {
+    //     c[i] = MSG_ENDING_CHAR;
+    // }
 }
 
+
+// MsgSConetent Functions - Parallel to C String Functions.
 u32 MsgSContent_Len(char* cont) {
-    int i = 0;
+    u32 i = 0;
     char* c = (char*)cont;
     while (c[i] != MSG_ENDING_CHAR && i < MSG_CONTENT_SIZE) {
         i++;
     }
-
     return i;
+}
+
+u32 MsgSContent_NCopy(char* dst, char* src, size_t len) {
+    IF_DEBUG recomp_printf("StrNCopying Message Content: %p -> %p ", src, dst);
+
+    u32 i = 0;
+    for (; (src[i] != MSG_ENDING_CHAR) && i < len; i++) {
+        dst[i] = src[i];
+    }
+    if (i < len) {
+        dst[i] = '\xBF';
+    }  else {
+        // Otherwise at the max index
+        dst[i-1] = '\xBF';
+    }
+    IF_DEBUG MsgSContent_Printf("%m\xBF", dst);
+    IF_DEBUG recomp_printf("\n");
+    return i;
+}
+
+u32 MsgSContent_Copy(char* dst, char* src) {
+    return MsgSContent_NCopy(dst, src, MSG_CONTENT_SIZE);
+}
+
+char* MsgSContent_NCat(char* dst, char* src, size_t len) {
+    u32 slen = MsgSContent_Len(dst);
+    u32 copy_size = MSG_CONTENT_SIZE - slen;
+    MsgSContent_NCopy(&dst[slen], src, MIN(copy_size, len));
+
+    return dst;
+}
+
+char* MsgSContent_Cat(char* dst, char* src) {
+    return MsgSContent_NCat(dst, src, MSG_CONTENT_SIZE);
+}
+
+s32 MsgSContent_NCmp(char* str1, char* str2, size_t len) {
+    size_t slen1 = MIN(MsgSContent_Len(str1), len);
+    size_t slen2 = MIN(MsgSContent_Len(str2), len);
+
+    if (slen1 > slen2) {
+        return 1;
+    } else if ( slen1 < slen2) {
+        return -1;
+    }
+
+    // Strings have equal lentgh, so slen1 and slen2 are interchangable:
+    for (u32 i = 0; i < slen1; i++) {
+        s32 diff = str1[i] - str2[i];
+        if (diff != 0) {
+            // Found a mismatch:
+            return diff / ABS(diff);
+        }
+    }
+
+    return 0;
+}
+
+s32 MsgSContent_Cmp(char* str1, char* str2) {
+    return MsgSContent_NCmp(str1, str2, MSG_CONTENT_SIZE);
 }

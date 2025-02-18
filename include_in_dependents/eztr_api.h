@@ -510,10 +510,16 @@ EZTR_IMPORT(u16 EZTR_MsgBuffer_GetFirstItemRupees(EZTR_MsgBuffer* buf));
 EZTR_IMPORT(void EZTR_MsgBuffer_SetFirstItemRupees(EZTR_MsgBuffer* buf, u16 pos));
 EZTR_IMPORT(u16 EZTR_MsgBuffer_GetSecondItemRupees(EZTR_MsgBuffer* buf));
 EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 pos));
-
 EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
+
 EZTR_IMPORT(void EZTR_MsgSContent_SetEmpty(char* cont));
 EZTR_IMPORT(u32 EZTR_MsgSContent_Len(char* cont));
+EZTR_IMPORT(u32 EZTR_MsgSContent_NCopy(char* dst, char* src, size_t len));
+EZTR_IMPORT(u32 EZTR_MsgSContent_Copy(char* dst, char* src));
+EZTR_IMPORT(char* EZTR_MsgSContent_NCat(char* dst, char* src, size_t len));
+EZTR_IMPORT(char* EZTR_MsgSContent_Cat(char* dst, char* src));
+EZTR_IMPORT(s32 EZTR_MsgSContent_NCmp(char* str1, char* str2, size_t len));
+EZTR_IMPORT(s32 EZTR_MsgSContent_Cmp(char* str1, char* str2));
 
 EZTR_IMPORT(int EZTR_MsgSContent_Printf(const char* format, ...));
 EZTR_IMPORT(int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...));
