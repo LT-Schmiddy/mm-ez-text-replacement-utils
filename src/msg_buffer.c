@@ -2,7 +2,11 @@
 #include "util.h"
 
 MsgBuffer* MsgBuffer_Create() {
-    return recomp_alloc(sizeof(MsgBuffer));
+    MsgBuffer* retVal = recomp_alloc(sizeof(MsgBuffer));
+    MsgBuffer_WriteDefaultHeader(retVal);
+    MsgSContent_SetEmpty(retVal->data.content);
+
+    return retVal;
 }
 
 void MsgBuffer_Destroy(MsgBuffer* buf) {
@@ -87,7 +91,7 @@ u32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
 
 void MsgBuffer_WriteDefaultHeader(MsgBuffer* buf) {
     MsgBuffer_SetTextBoxType(buf, EZTR_STANDARD_TEXT_BOX_I);
-    MsgBuffer_SetTextBoxYPos(buf, 1);
+    MsgBuffer_SetTextBoxYPos(buf, 0);
     MsgBuffer_SetTextBoxDisplayIcon(buf, EZTR_ICON_NO_ICON);
     MsgBuffer_SetNextMsg(buf, EZTR_NO_VALUE);
     MsgBuffer_SetFirstItemRupees(buf, EZTR_NO_VALUE);
