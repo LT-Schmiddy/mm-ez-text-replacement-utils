@@ -36,7 +36,7 @@
 
 #include "modding.h"
 #include "msg_buffer_printf.h"
-
+#include "util.h"
 #include "msg_buffer.h"
 
 
@@ -61,21 +61,9 @@ void _out_null(char character, void* buffer, size_t idx, size_t maxlen) {
 // internal _putchar wrapper
 void _out_char(char character, void* buffer, size_t idx, size_t maxlen) {
     (void)buffer; (void)idx; (void)maxlen;
-    if (character) {
-        if (is_printable_char(character)) {
-            recomp_printf("%c", character);
-        } else {
-            if (recomp_get_config_u32("text_dumping_byte_format")) {
-                char out_str[5] = "\\x00";
-                write_byte_to_hex(character,&out_str[2]);
-                recomp_printf("%s", out_str);
-            } else {
-                char out_str[4] = "|00";
-                write_byte_to_hex(character,&out_str[1]);
-                recomp_printf("%s", out_str);
-            }
-        }
-    }
+
+    print_char(character);
+    
 }
 
 

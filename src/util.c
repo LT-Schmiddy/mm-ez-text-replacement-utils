@@ -53,3 +53,28 @@ void write_byte_to_hex(u8 byte, char* out_str) {
     out_str[0] = _hex[upper];
     out_str[1] = _hex[lower];
 }
+
+void message_id_as_hex(u16 id, char* out_str) {
+    u8 id_parts[2];
+    memcpy(&id_parts, &id, sizeof(u16));
+    
+    write_byte_to_hex(id_parts[0], &out_str[0]);
+    write_byte_to_hex(id_parts[1], &out_str[2]);
+}
+
+
+void print_char(char character) {
+    if (is_printable_char(character)) {
+        recomp_printf("%c", character);
+    } else {
+        if (recomp_get_config_u32("text_dumping_byte_format")) {
+            char out_str[5] = "\\x00";
+            write_byte_to_hex(character,&out_str[2]);
+            recomp_printf("%s", out_str);
+        } else {
+            char out_str[4] = "|00";
+            write_byte_to_hex(character,&out_str[1]);
+            recomp_printf("%s", out_str);
+        }
+    }
+}

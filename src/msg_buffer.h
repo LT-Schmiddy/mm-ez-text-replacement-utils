@@ -7,6 +7,9 @@
 #include "api_enums.h"
 #include "msg_buffer_printf.h"
 
+extern const char* eztr_textbox_names[];
+extern const char* eztr_icon_names[];
+
 typedef union {
     char schar[MSG_BUFFER_SIZE]; // msgBuf
     u16 wchar[MSG_BUFFER_WIDE_SIZE];   // msgBufWide
@@ -65,6 +68,8 @@ u16 MsgBuffer_GetFirstItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 pos);
 u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
+void MsgBuffer_Print(MsgBuffer* buf);
+void MsgBuffer_PrintFull(MsgBuffer* buf);
 char* MsgBuffer_GetContentPtr(MsgBuffer* buf);
 // Msg Content:
 

@@ -709,6 +709,20 @@ EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 val
  * @brief 
  * 
  * @param buf 
+ */
+EZTR_IMPORT(void EZTR_MsgBuffer_Print(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
+ */
+EZTR_IMPORT(void EZTR_MsgBuffer_PrintFull(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief 
+ * 
+ * @param buf 
  * @return char* 
  */
 EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
