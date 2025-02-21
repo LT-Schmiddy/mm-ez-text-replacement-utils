@@ -15,6 +15,8 @@ typedef struct {
     u16 textId;
     MsgCallback callback;
     size_t len;
+    char* mod_id;
+    char* msg_id;
     char* buf_store;
 } MsgEntry;
 

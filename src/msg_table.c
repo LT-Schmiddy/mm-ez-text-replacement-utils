@@ -10,6 +10,8 @@ MsgEntry* MsgEntry_Create(u16 textId) {
     retVal->callback = NULL;
     retVal->textId = textId;
     retVal->len = 0;
+    retVal->mod_id = NULL;
+    retVal->msg_id = NULL;
     retVal->buf_store = NULL;
     return retVal;
 }
