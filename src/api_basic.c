@@ -8,7 +8,6 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText_WithCallback(u16 textId, u8 text_box_t
     
     MsgBuffer_WriteHeader(buf, text_box_type, text_box_y_pos, display_icon, next_message_id, first_item_rupees, second_item_rupees);
 
-    
     if (pipe_escape_bytes) {
         
         MsgSContent_Sprintf(buf->data.content, "%m\xBF", content);
@@ -17,9 +16,9 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText_WithCallback(u16 textId, u8 text_box_t
     }
     ptrdiff_t u;
 
-    MsgTable_StoreBuffer(ETZR_mainTable, textId, buf);
-    MsgTable_SetCallback(ETZR_mainTable, textId, callback);
-    recomp_printf("Buffer Added for 0x%04X\n", (u32)textId);
+    MsgTable_StoreBuffer(ETZR_mainTable, textId, buf, callback);
+    IF_DEBUG recomp_printf("Buffer Added for 0x%04X\n", (u32)textId);
+
     MsgBuffer_Destroy(buf);
 }
 
@@ -29,8 +28,7 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, MsgCallb
     // char* cont = MsgBuffer_GetContentPtr(buf);
     MsgSContent_Sprintf((char*)&buf->data.content, "\xBF");
 
-    MsgTable_StoreBufferEmpty(ETZR_mainTable, textId);
-    MsgTable_SetCallback(ETZR_mainTable, textId, callback);
+    MsgTable_StoreBufferEmpty(ETZR_mainTable, textId, callback);
     IF_DEBUG recomp_printf("Empty Buffer Added for 0x%04X\n", (u32)textId);
     MsgBuffer_Destroy(buf);
 }

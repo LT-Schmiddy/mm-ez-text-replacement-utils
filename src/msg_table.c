@@ -10,8 +10,6 @@ MsgEntry* MsgEntry_Create(u16 textId) {
     retVal->callback = NULL;
     retVal->textId = textId;
     retVal->len = 0;
-    retVal->mod_id = NULL;
-    retVal->msg_id = NULL;
     retVal->buf_store = NULL;
     return retVal;
 }
@@ -67,7 +65,7 @@ MsgBuffer* MsgEntryCluster_LoadBuffer(MsgEntryCluster* cluster, u16 textId) {
     return MsgBuffer_CreateFromStr(entry->buf_store);
 }
 
-void MsgEntryCluster_StoreBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer* entry) {
+void MsgEntryCluster_StoreBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer* entry, MsgCallback callback) {
     SPLIT_TEXT_ID(textId, cl, pos);
 
     if (cluster->entries[pos] == NULL) {
@@ -78,6 +76,7 @@ void MsgEntryCluster_StoreBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer
 
     cluster->entries[pos]->len = MsgBuffer_Len(entry);
     cluster->entries[pos]->buf_store = MsgBuffer_ShrinkForStorage(entry);
+    cluster->entries[pos]->callback = callback;
 }
 
 // Table Functions:
@@ -92,6 +91,23 @@ MsgTable* MsgTable_Create() {
     retVal->highest_msg_id = MSG_HIGHEST_ID;
     recomp_printf("%sMessage Table Created.\n", LOG_HEADER);
     return retVal;
+}
+
+void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCallback callback) {
+    SPLIT_TEXT_ID(textId, cl, pos);
+    if (table->clusters[cl] == NULL) {
+        table->clusters[cl] = MsgEntryCluster_Create(cl);
+    }
+    
+    MsgEntryCluster_StoreBuffer(table->clusters[cl], textId, entry, callback);
+    IF_DEBUG recomp_printf("%sSetting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
+}
+
+void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback) {
+    MsgBuffer* buf = MsgBuffer_Create();
+    // Copy to table:
+    MsgTable_StoreBuffer(table, textId, buf, callback);
+    MsgBuffer_Destroy(buf);
 }
 
 void MsgTable_Destroy(MsgTable* table) {
@@ -136,30 +152,7 @@ u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
     return len;
 }
 
-void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry) {
-    SPLIT_TEXT_ID(textId, cl, pos);
-    if (table->clusters[cl] == NULL) {
-        table->clusters[cl] = MsgEntryCluster_Create(cl);
-    }
-    
-    MsgEntryCluster_StoreBuffer(table->clusters[cl], textId, entry);
-    IF_DEBUG recomp_printf("%sSetting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
-}
-
-void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId) {
-    MsgBuffer* buf = MsgBuffer_Create();
-    // Default Header.
-    MsgBuffer_WriteDefaultHeader(buf);
-
-    // Empty Content:
-    MsgSContent_SetEmpty(buf->data.content);
-
-    // Copy to table:
-    MsgTable_StoreBuffer(table, textId, buf);
-    MsgBuffer_Destroy(buf);
-}
-
-void MsgTable_SetCallback(MsgTable* table, u16 textId, MsgCallback callback) {
+void MsgTable_ChangeCallback(MsgTable* table, u16 textId, MsgCallback callback) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
         search->callback = callback;

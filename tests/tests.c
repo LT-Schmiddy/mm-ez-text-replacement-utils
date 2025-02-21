@@ -29,9 +29,11 @@ EZTR_ON_INIT void run_tests() {
     recomp_printf("Running EZTR Tests:\n");
 
     EZTR_MsgBuffer* buf1 = EZTR_MsgBuffer_Create();
-    recomp_printf("This buffer should have default values and no content.\n");
+    recomp_printf("USER_CHECK: This buffer should have default values and no content.\n");
     EZTR_MsgBuffer_Print(buf1);
 
+
+    // Testing Header Stuff:
     EZTR_MsgBuffer_SetTextBoxType(buf1, EZTR_BLUE_TEXT_BOX);
     EZTR_MsgBuffer_SetTextBoxYPos(buf1, 1);
     EZTR_MsgBuffer_SetTextBoxDisplayIcon(buf1, EZTR_ICON_ADULT_WALLET);
@@ -39,7 +41,7 @@ EZTR_ON_INIT void run_tests() {
     EZTR_MsgBuffer_SetFirstItemRupees(buf1, 0x000F);
     EZTR_MsgBuffer_SetSecondItemRupees(buf1, 0x000F);
     
-    recomp_printf("This buffer should have values set above and no content. Values to look for:\n");
+    recomp_printf("USER_CHECK: This buffer should have values set above and no content. Values to look for:\n");
     recomp_printf("\tEZTR_BLUE_TEXT_BOX\n");
     recomp_printf("\t1\n");
     recomp_printf("\tEZTR_ICON_ADULT_WALLET\n");
@@ -64,6 +66,43 @@ EZTR_ON_INIT void run_tests() {
     validate("buf1->data.first_item_rupees", buf1->data.first_item_rupees == 0x000F);
     validate("buf1->data.second_item_rupees", buf1->data.second_item_rupees == 0x000F);
 
+    recomp_printf("\nTesting MsgSContent retrieval operations:\n");
+    validate("uf1->data.content == buf1->partitions.content", buf1->data.content == buf1->partitions.content);
+    validate("uf1->data.content == EZTR_MsgBuffer_GetContentPtr", buf1->data.content == EZTR_MsgBuffer_GetContentPtr(buf1));
+
+
+    // Testing Buffer Stuff:
+    recomp_printf("\nTesting MsgBuffer operations:\n");
+    EZTR_MsgBuffer* buf2 = EZTR_MsgBuffer_Create();
+    EZTR_MsgBuffer* buf3 = EZTR_MsgBuffer_Create();
+
+    validate("EZTR_MsgSContent_Cmp: Equality (Empty Content)", EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content) == 0);
+    buf2->data.text_box_y_pos = 1;
+    validate("EZTR_MsgSContent_NCmp: Inequality (buf2 has a higher textbox pos)", 1 == EZTR_MsgSContent_NCmp(buf2->raw.schar, buf3->raw.schar, EZTR_MSG_HEADER_SIZE));
+    
+    buf2->data.text_box_y_pos = 0;
+    u32 b2count = EZTR_MsgSContent_Copy(buf2->data.content, "Hello Alex\xBF");
+    // recomp_printf("b2count = %u\n", b2count);
+    validate("Count == 10", b2count == 10);
+
+    EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex\xBF");
+
+    recomp_printf("USER_CHECK: These two buffers should have the same values.");
+    EZTR_MsgBuffer_Print(buf2);
+    EZTR_MsgBuffer_Print(buf3);
+
+    validate("EZTR_MsgSContent_Cmp: Equality (Content)", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex Schmid\xBF");
+    validate("EZTR_MsgSContent_Cmp: Equality (buf3 is longer)", -1 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    validate("EZTR_MsgSContent_Cat", 0 == EZTR_MsgSContent_Cmp(EZTR_MsgSContent_Cat(buf2->data.content, " Schmid\xBF"), buf3->data.content));
+
+    // At this point, we'll consider that EZTR_MsgSContent_Cmp works as intended.
+    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %m\xBF", "Schmid\xBF");
+    validate("EZTR_MsgSContent_Sprintf", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+
+
     EZTR_MsgBuffer_Destroy(buf1);
+    EZTR_MsgBuffer_Destroy(buf2);
+    EZTR_MsgBuffer_Destroy(buf3);
     recomp_printf("Passed %i out of %i cases.\n", cases_passed, cases);
 }
