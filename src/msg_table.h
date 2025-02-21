@@ -9,17 +9,19 @@
 #define MSG_HIGHEST_ID 0x354C
 #define LOG_HEADER "EZ Text Replacer: "
 
-#define CUSTOM_MSG_HANDLE(name) EZTR_CustomMsgHandle_##name
+#define CUSTOM_MSG_HANDLE_NAME(name) EZTR_CustomMsgHandle_##name
 
-
-
-#define DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT CUSTOM_MSG_HANDLE_NO_EXPORT(name)
 #define DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
-    u16 CUSTOM_MSG_HANDLE(name)(u16* new_id) \
-    { static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
+u16 CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
+{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
 
-    #define EXTERN_CUSTOM_MSG_HANDLE(name) u16 CUSTOM_MSG_HANDLE(name)(u16* new_id)
-#define CUSTOM_MSG_ID(name) CUSTOM_MSG_HANDLE(name)(NULL)
+#define DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
+u16 CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
+{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
+
+#define EXTERN_CUSTOM_MSG_HANDLE(name) u16 CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id)
+#define GET_CUSTOM_MSG_ID_FROM_NAME(name) CUSTOM_MSG_HANDLE_NAME(name)(NULL)
+#define GET_CUSTOM_MSG_ID(handle) handle(NULL)
 
 // Type of the custom message handle:
 typedef u16 (*CustomMsgHandle)(u16* new_id);
@@ -58,10 +60,12 @@ void MsgEntryCluster_StoreBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer
 
 MsgTable* MsgTable_Create();
 void MsgTable_Destroy(MsgTable* tbl);
-void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCallback callback);
-void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback);
 MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 id);
 MsgBuffer* MsgTable_LoadBuffer(MsgTable* table, u16 id);
+void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCallback callback);
+void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback);
+void MsgTable_StoreCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback);
+void MsgTable_StoreCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback);
 u32 MsgTable_GetBufferLen(MsgTable* table, u16 id);
 void MsgTable_ChangeCallback(MsgTable* table, u16 textId, MsgCallback callback);
 MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* play);

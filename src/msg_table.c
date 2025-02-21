@@ -93,23 +93,6 @@ MsgTable* MsgTable_Create() {
     return retVal;
 }
 
-void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCallback callback) {
-    SPLIT_TEXT_ID(textId, cl, pos);
-    if (table->clusters[cl] == NULL) {
-        table->clusters[cl] = MsgEntryCluster_Create(cl);
-    }
-    
-    MsgEntryCluster_StoreBuffer(table->clusters[cl], textId, entry, callback);
-    IF_DEBUG recomp_printf("%sSetting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
-}
-
-void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback) {
-    MsgBuffer* buf = MsgBuffer_Create();
-    // Copy to table:
-    MsgTable_StoreBuffer(table, textId, buf, callback);
-    MsgBuffer_Destroy(buf);
-}
-
 void MsgTable_Destroy(MsgTable* table) {
     for (int i = 0; i < UINT8_MAX; i++) {
         if (table->clusters[i] != NULL) {
@@ -138,6 +121,35 @@ MsgBuffer* MsgTable_LoadBuffer(MsgTable* table, u16 textId) {
     }
 
     return MsgEntryCluster_LoadBuffer(table->clusters[cl], textId);
+}
+
+void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCallback callback) {
+    SPLIT_TEXT_ID(textId, cl, pos);
+    if (table->clusters[cl] == NULL) {
+        table->clusters[cl] = MsgEntryCluster_Create(cl);
+    }
+    
+    MsgEntryCluster_StoreBuffer(table->clusters[cl], textId, entry, callback);
+    IF_DEBUG recomp_printf("%sSetting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
+}
+
+void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback) {
+    MsgBuffer* buf = MsgBuffer_Create();
+    // Copy to table:
+    MsgTable_StoreBuffer(table, textId, buf, callback);
+    MsgBuffer_Destroy(buf);
+}
+
+void MsgTable_StoreCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback) {
+    u16 new_id = ++(table->highest_msg_id);
+    MsgTable_StoreBuffer(table, new_id, entry, callback);
+    handle(&new_id);
+}
+
+void MsgTable_StoreCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback) {
+    u16 new_id = ++(table->highest_msg_id);
+    MsgTable_StoreBufferEmpty(table, new_id, callback);
+    handle(&new_id);
 }
 
 u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {

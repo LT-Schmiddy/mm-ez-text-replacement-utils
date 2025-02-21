@@ -23,7 +23,7 @@
 #define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
 #define EZTR_PACK_STRUCT __attribute__((packed))
 #endif
-
+#define EZTR_MSG_HIGHEST_ID 0x354C
 /**
  * @brief The the full size of message buffer, in bytes.
  * 
@@ -119,6 +119,56 @@ typedef union {
         EZTR_MsgData data;
 } EZTR_MsgBuffer;
 
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_CUSTOM_MSG_HANDLE_NAME(name) EZTR_CustomMsgHandle_##name
+
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
+u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
+{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
+
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
+u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
+{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
+
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_EXTERN_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id)
+
+
+#define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name) RECOMP_IMPORT(mod_str, u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id))
+
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_GET_CUSTOM_MSG_ID_FROM_NAME(name) EZTR_CUSTOM_MSG_HANDLE_NAME(name)(NULL)
+
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_GET_CUSTOM_MSG_ID(handle) handle(NULL)
+
+// Shorthand:
+#define EZTR_HANDLE_NAME(handle) EZTR_CUSTOM_MSG_HANDLE_NAME(handle)
+#define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
+#define EZTR_GET_ID_N(handle) EZTR_GET_CUSTOM_MSG_ID_FROM_NAME(handle)
+
+// Type of the custom message handle:
+typedef u16 (*EZTR_CustomMsgHandle)(u16* new_id);
 
 /**
  * @brief The function pointer type for message callbacks. 
@@ -521,6 +571,14 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
  * @param callback 
  */
 EZTR_IMPORT(void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, EZTR_MsgCallback callback));
+
+EZTR_IMPORT(void EZTR_Basic_CustomText_WithCallback(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
+
+EZTR_IMPORT(void EZTR_Basic_CustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content));
+
+EZTR_IMPORT(void EZTR_Basic_CustomText_EmptyWithCallback(EZTR_CustomMsgHandle handle, EZTR_MsgCallback callback));
 
 /**
  * @brief Create msgBuffer
