@@ -119,6 +119,8 @@ typedef union {
         EZTR_MsgData data;
 } EZTR_MsgBuffer;
 
+#define __EZTR_CUSTOM_MSG_HANDLE_BODY { static u16 id; static u8 is_set = 0; if (!is_set && new_id != NULL) { id = *new_id; is_set = 1; } return id; }
+
 /**
  * @brief 
  * 
@@ -132,7 +134,7 @@ typedef union {
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
 u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; static u8 is_set = 0; if (!is_set && new_id != NULL) { id = *new_id; is_set = 1 } return id; }
+__EZTR_CUSTOM_MSG_HANDLE_BODY
 
 /**
  * @brief 
@@ -140,7 +142,7 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
 u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; static u8 is_set = 0; if (!is_set && new_id != NULL) { id = *new_id; is_set = 1 } return id; } 
+__EZTR_CUSTOM_MSG_HANDLE_BODY
 
 /**
  * @brief 
@@ -160,11 +162,6 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
  */
 #define EZTR_GET_CUSTOM_MSG_ID(handle) handle(NULL)
 
-/**
- * @brief 
- * 
- */
-#define EZTR_SET_CUSTOM_MSG_ID(handle) { u16 new_id; handle(&NULL); }
 
 // Shorthand:
 /**
