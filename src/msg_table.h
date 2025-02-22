@@ -5,26 +5,10 @@
 #include "libc/string.h"
 #include "util.h"
 #include "msg_buffer.h"
+#include "msg_table_custom_handles.h"
 
-#define MSG_HIGHEST_ID 0x354C
 #define LOG_HEADER "EZ Text Replacer: "
 
-#define CUSTOM_MSG_HANDLE_NAME(name) EZTR_CustomMsgHandle_##name
-
-#define DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
-u16 CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
-
-#define DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
-u16 CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
-
-#define EXTERN_CUSTOM_MSG_HANDLE(name) u16 CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id)
-#define GET_CUSTOM_MSG_ID_FROM_NAME(name) CUSTOM_MSG_HANDLE_NAME(name)(NULL)
-#define GET_CUSTOM_MSG_ID(handle) handle(NULL)
-
-// Type of the custom message handle:
-typedef u16 (*CustomMsgHandle)(u16* new_id);
 
 // Runtime callback:
 typedef void (*MsgCallback)(MsgBuffer* buf, u16 textId, PlayState* play);

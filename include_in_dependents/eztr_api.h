@@ -123,7 +123,8 @@ typedef union {
  * @brief 
  * 
  */
-#define EZTR_CUSTOM_MSG_HANDLE_NAME(name) EZTR_CustomMsgHandle_##name
+// #define EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix) EZTR_CustomMsgHandle_##name_suffix
+#define EZTR_CUSTOM_MSG_HANDLE_NAME(name) name
 
 /**
  * @brief 
@@ -131,7 +132,7 @@ typedef union {
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
 u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
+{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; } \
 
 /**
  * @brief 
@@ -139,22 +140,19 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
 u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; }
+{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; } \
 
 /**
  * @brief 
  * 
  */
-#define EZTR_EXTERN_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id)
+#define EZTR_DECLARE_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id)
 
-
+/**
+ * @brief 
+ * 
+ */
 #define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name) RECOMP_IMPORT(mod_str, u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id))
-
-/**
- * @brief 
- * 
- */
-#define EZTR_GET_CUSTOM_MSG_ID_FROM_NAME(name) EZTR_CUSTOM_MSG_HANDLE_NAME(name)(NULL)
 
 /**
  * @brief 
@@ -162,12 +160,36 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
  */
 #define EZTR_GET_CUSTOM_MSG_ID(handle) handle(NULL)
 
-// Shorthand:
-#define EZTR_HANDLE_NAME(handle) EZTR_CUSTOM_MSG_HANDLE_NAME(handle)
-#define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
-#define EZTR_GET_ID_N(handle) EZTR_GET_CUSTOM_MSG_ID_FROM_NAME(handle)
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_SET_CUSTOM_MSG_ID(handle) { u16 new_id; handle(&NULL); }
 
-// Type of the custom message handle:
+// Shorthand:
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_HNAME(name_suffix) EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix)
+
+/**
+ * @brief 
+ * 
+ */
+#define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
+
+/**
+ * @brief 
+ * 
+ */
+
+#define EZTR_SET_ID(handle) EZTR_SET_CUSTOM_MSG_ID(handle)
+
+/**
+ * @brief 
+ * 
+ */
 typedef u16 (*EZTR_CustomMsgHandle)(u16* new_id);
 
 /**
