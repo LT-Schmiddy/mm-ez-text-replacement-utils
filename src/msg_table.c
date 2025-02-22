@@ -140,13 +140,13 @@ void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback
     MsgBuffer_Destroy(buf);
 }
 
-void MsgTable_StoreCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback) {
+void MsgTable_StoreNewCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback) {
     u16 new_id = ++(table->highest_msg_id);
     MsgTable_StoreBuffer(table, new_id, entry, callback);
     handle(&new_id);
 }
 
-void MsgTable_StoreCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback) {
+void MsgTable_StoreNewCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback) {
     u16 new_id = ++(table->highest_msg_id);
     MsgTable_StoreBufferEmpty(table, new_id, callback);
     handle(&new_id);
