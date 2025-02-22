@@ -127,6 +127,16 @@ RECOMP_EXPORT int EZTR_MsgSContent_Printf(const char* format, ...) {
     return ret;
 }
 
+RECOMP_EXPORT int EZTR_MsgSContent_PrintfLine(const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    recomp_printf("\n");
+    pf_va_end(va);
+    return ret;
+}
+
 RECOMP_EXPORT int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);

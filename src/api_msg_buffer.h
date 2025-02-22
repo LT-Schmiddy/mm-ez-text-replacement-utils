@@ -48,6 +48,7 @@ char* EZTR_MsgSContent_Cat(char* dst, char* src);
 s32 EZTR_MsgSContent_NCmp(char* str1, char* str2, size_t len);
 s32 EZTR_MsgSContent_Cmp(char* str1, char* str2);
 
+int EZTR_MsgSContent_PrintfLine(const char* format, ...);
 int EZTR_MsgSContent_Printf(const char* format, ...);
 int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...);
 int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...);
