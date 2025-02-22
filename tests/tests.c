@@ -102,11 +102,14 @@ EZTR_ON_INIT void run_tests() {
     EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %m\xBF", "Schmid\xBF");
     validate("EZTR_MsgSContent_Sprintf", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
-
-    EZTR_Basic_CustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
-        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX\xBF");
+    // Custom Message Stuff:
+    EZTR_Basic_AddCustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX\xBF", NULL);
 
     validate("my_message id = 0x354D", EZTZ_test_message(NULL) == 0x354D);
+
+    EZTR_Basic_AddCustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 2\xBF", NULL);
 
     EZTR_MsgBuffer_Destroy(buf1);
     EZTR_MsgBuffer_Destroy(buf2);

@@ -8,6 +8,9 @@ RECOMP_IMPORT("*", int recomp_printf(const char* fmt, ...));
 
 EZTR_DECLARE_CUSTOM_MSG_HANDLE(EZTZ_test_message);
 
+// The whole purpose of this file is make the game try to load a textId that's
+// outside of the vanilla range. Used to test custom messages:
+
 Actor* store_actor;
 PlayState* store_play;
 RECOMP_HOOK("EnTalk_Init") void EnTalk_Init_Before(Actor* thisx, PlayState* play) {
