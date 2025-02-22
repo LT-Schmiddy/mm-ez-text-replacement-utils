@@ -132,7 +132,7 @@ typedef union {
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
 u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; } \
+{ static u16 id; static u8 is_set = 0; if (!is_set && new_id != NULL) { id = *new_id; is_set = 1 } return id; }
 
 /**
  * @brief 
@@ -140,7 +140,7 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
 u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
-{ static u16 id; if (new_id != NULL) { id = *new_id; } return id; } \
+{ static u16 id; static u8 is_set = 0; if (!is_set && new_id != NULL) { id = *new_id; is_set = 1 } return id; } 
 
 /**
  * @brief 
