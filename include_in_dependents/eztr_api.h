@@ -534,30 +534,7 @@ typedef enum {
     EZTR_ICON_NO_ICON = 0xFE
 } EZTR_TextBoxIcon;
 
-/**
- * @brief This is the mose basic function for declaring replacement text.
- * 
- * @param textId 
- * @param text_box_type 
- * @param text_box_y_pos 
- * @param display_icon 
- * @param next_message_id 
- * @param first_item_rupees 
- * @param second_item_rupees 
- * @param pipe_escape_bytes 
- * @param content 
- */
-EZTR_IMPORT(void EZTR_Basic_ReplaceText(
-    u16 textId, 
-    u8 text_box_type, 
-    u8 text_box_y_pos, 
-    u8 display_icon, 
-    u16 next_message_id, 
-    u16 first_item_rupees, 
-    u16 second_item_rupees, 
-    bool pipe_escape_bytes, 
-    char* content
-));
+EZTR_IMPORT(void EZTR_Basic_ReplaceBuffer(u16 textId, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
 
 /**
  * @brief 
@@ -573,7 +550,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText(
  * @param content 
  * @param callback 
  */
-EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
+EZTR_IMPORT(void EZTR_Basic_ReplaceText(
     u16 textId, 
     u8 text_box_type, 
     u8 text_box_y_pos, 
@@ -592,15 +569,22 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
  * @param textId 
  * @param callback 
  */
-EZTR_IMPORT(void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, EZTR_MsgCallback callback));
+EZTR_IMPORT(void EZTR_Basic_ReplaceWithEmpty(u16 textId, EZTR_MsgCallback callback));
 
-EZTR_IMPORT(void EZTR_Basic_AddCustomText_WithCallback(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+EZTR_IMPORT(void EZTR_Basic_AddCustomBuffer(EZTR_CustomMsgHandle handle, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
+
+EZTR_IMPORT(void EZTR_Basic_AddCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
 
-EZTR_IMPORT(void EZTR_Basic_CustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
-    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content));
+EZTR_IMPORT(void EZTR_Basic_AddCustomTextEmpty(EZTR_CustomMsgHandle handle, EZTR_MsgCallback callback));
 
-EZTR_IMPORT(void EZTR_Basic_CustomText_EmptyWithCallback(EZTR_CustomMsgHandle handle, EZTR_MsgCallback callback));
+
+EZTR_IMPORT(void EZTR_Basic_ReplaceCustomBuffer(EZTR_CustomMsgHandle handle, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
+
+EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
+
+EZTR_IMPORT(void EZTR_Basic_ReplaceCustomTextEmpty(EZTR_CustomMsgHandle handle, EZTR_MsgCallback callback));
 
 /**
  * @brief Create msgBuffer
