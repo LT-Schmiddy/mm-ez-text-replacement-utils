@@ -594,7 +594,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText_WithCallback(
  */
 EZTR_IMPORT(void EZTR_Basic_ReplaceText_EmptyWithCallback(u16 textId, EZTR_MsgCallback callback));
 
-EZTR_IMPORT(void EZTR_Basic_CustomText_WithCallback(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+EZTR_IMPORT(void EZTR_Basic_AddCustomText_WithCallback(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
 
 EZTR_IMPORT(void EZTR_Basic_CustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
