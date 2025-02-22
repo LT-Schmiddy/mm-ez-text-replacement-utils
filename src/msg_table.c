@@ -178,8 +178,8 @@ MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* p
     if (search != NULL) {
         IF_DEBUG recomp_printf("Loading Buffer for 0x%04x\n", textId);
         MsgBuffer* buf = MsgBuffer_CreateFromStr(search->buf_store);
-        MsgSContent_Printf("%m\xBF", buf);
-        recomp_printf("\n");
+        IF_DEBUG MsgSContent_Printf("%m\xBF", buf);
+        IF_DEBUG recomp_printf("\n");
         if (search->callback != NULL) {
             IF_DEBUG recomp_printf("Running Callback for 0x%04x\n", textId);
             search->callback(buf, textId, play);

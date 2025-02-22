@@ -22,10 +22,12 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
         recomp_printf("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
-        msgCtx->msgLength = MsgBuffer_Len(buf);
-        for (int i = 0; i < msgCtx->msgLength + 1; i++) {
-            font->msgBuf.schar[i] = buf->raw.schar[i];
-        }
+        msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
+        // for (int i = 0; i < msgCtx->msgLength+1; i++) {
+        //     font->msgBuf.schar[i] = buf->raw.schar[i];
+        // }
+        MsgBuffer_Copy((MsgBuffer*)&font->msgBuf, buf->raw.schar);
+        // MsgBuffer_Print((MsgBuffer*)&font->msgBuf);
         MsgBuffer_Destroy(buf);
         // IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         

@@ -12,7 +12,7 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText_WithCallback(u16 textId, u8 text_box_t
         
         MsgSContent_Sprintf(buf->data.content, "%m\xBF", content);
     } else {
-        MsgBuffer_WriteFromStr(buf, content);
+        MsgSContent_Copy(buf->data.content, content);
     }
     ptrdiff_t u;
 
@@ -50,7 +50,7 @@ RECOMP_EXPORT void EZTR_Basic_CustomText_WithCallback(CustomMsgHandle handle, u8
         
         MsgSContent_Sprintf(buf->data.content, "%m\xBF", content);
     } else {
-        MsgBuffer_WriteFromStr(buf, content);
+        MsgSContent_Copy(buf->data.content, content);
     }
     ptrdiff_t u;
 

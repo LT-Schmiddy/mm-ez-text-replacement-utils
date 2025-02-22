@@ -47,13 +47,13 @@ u32 MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len) {
 }
 
 char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
-    size_t store_len = MsgBuffer_Len(buf);
+    size_t store_len = MsgBuffer_Len(buf)+1;
     // The extra byte is to store the \xBF:
     recomp_printf("Storage Size: %u\n", store_len);
     char* retVal = recomp_alloc(sizeof(char) * store_len);
     
     // Not really meant for this, but it's fine.
-    u32 copy_len = MsgBuffer_NCopy((MsgBuffer*)retVal, (char*)buf, store_len);
+    u32 copy_len = MsgBuffer_NCopy((MsgBuffer*)retVal, (char*)buf, store_len)+1;
     if (copy_len != store_len) {
         recomp_printf("WARNING: STORAGE SIZE MISMATCH! Storage: %u, Length: %u\n", store_len, copy_len);
     };
@@ -70,23 +70,6 @@ u32 MsgBuffer_Len(MsgBuffer* buf) {
 
 u32 MsgBuffer_ContentLen(MsgBuffer* buf) {
     return MsgSContent_Len(buf->data.content);
-}
-
-u32 MsgBuffer_WriteFromStr(MsgBuffer* dst, char* src) {
-    IF_DEBUG recomp_printf("Copying: ");
-    u32 i = 0;
-
-    bool should_end = false;
-    while (!should_end && i < MSG_CONTENT_SIZE) {
-        IF_DEBUG recomp_printf( is_printable_char(src[i]) ? "%c" : "\\x%02X", src[i]);
-        dst->raw.schar[i + MSG_HEADER_SIZE] = src[i];
-        i++;
-        should_end = src[i] == MSG_ENDING_CHAR;
-    }
-    
-    IF_DEBUG recomp_printf(" -> %i\n", i); 
-    // Add 1 to go from index to length. 
-    return i + 1;
 }
 
 void MsgBuffer_WriteDefaultHeader(MsgBuffer* buf) {
