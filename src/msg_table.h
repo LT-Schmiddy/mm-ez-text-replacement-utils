@@ -7,7 +7,7 @@
 #include "msg_buffer.h"
 #include "msg_table_custom_handles.h"
 
-#define LOG_HEADER "EZ Text Replacer: "
+// #define LOG_HEADER "EZ Text Replacer: "
 
 
 // Runtime callback:

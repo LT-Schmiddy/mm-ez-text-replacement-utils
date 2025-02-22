@@ -111,6 +111,10 @@ EZTR_ON_INIT void run_tests() {
     EZTR_Basic_AddCustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 2\xBF", NULL);
 
+    EZTR_Basic_ReplaceCustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+            EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 3\xBF", NULL);
+    
+
     EZTR_MsgBuffer_Destroy(buf1);
     EZTR_MsgBuffer_Destroy(buf2);
     EZTR_MsgBuffer_Destroy(buf3);

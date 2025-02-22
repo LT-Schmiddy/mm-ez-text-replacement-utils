@@ -6,7 +6,7 @@
 // Replacing Vanilla Text:
 RECOMP_EXPORT void EZTR_Basic_ReplaceBuffer(u16 textId, MsgBuffer* buf, MsgCallback callback) {
     MsgTable_StoreBuffer(ETZR_mainTable, textId, buf, callback);
-    IF_DEBUG recomp_printf("Buffer Added for 0x%04X\n", (u32)textId);
+    LOGI_F("Buffer Added for 0x%04X", (u32)textId);
 }
 
 RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
@@ -24,7 +24,7 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId, u8 text_box_type, u8 text_
     ptrdiff_t u;
 
     MsgTable_StoreBuffer(ETZR_mainTable, textId, buf, callback);
-    IF_DEBUG recomp_printf("Buffer Added for 0x%04X\n", (u32)textId);
+    LOGI_F("Buffer Added for 0x%04X", (u32)textId);
     MsgBuffer_Destroy(buf);
 }
 
@@ -35,7 +35,7 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceWithEmpty(u16 textId, MsgCallback callback)
     MsgSContent_Sprintf((char*)&buf->data.content, "\xBF");
 
     MsgTable_StoreBufferEmpty(ETZR_mainTable, textId, callback);
-    IF_DEBUG recomp_printf("Empty Buffer Added for 0x%04X\n", (u32)textId);
+    LOGI_F("Empty Buffer Added for 0x%04X", (u32)textId);
     MsgBuffer_Destroy(buf);
 }
 
@@ -43,7 +43,7 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceWithEmpty(u16 textId, MsgCallback callback)
 // Adding Custom Buffers:
 RECOMP_EXPORT void EZTR_Basic_AddCustomBuffer(CustomMsgHandle handle, MsgBuffer* buf, MsgCallback callback) {
     MsgTable_StoreNewCustomBuffer(ETZR_mainTable, handle, buf, callback);
-    IF_DEBUG recomp_printf("Buffer Added for 0x%04X\n", (u32)handle(NULL));
+    LOGI_F("Buffer Added for 0x%04X", (u32)handle(NULL));
 }
 
 RECOMP_EXPORT void EZTR_Basic_AddCustomText(CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
@@ -61,7 +61,7 @@ RECOMP_EXPORT void EZTR_Basic_AddCustomText(CustomMsgHandle handle, u8 text_box_
     ptrdiff_t u;
 
     MsgTable_StoreNewCustomBuffer(ETZR_mainTable, handle, buf, callback);
-    IF_DEBUG recomp_printf("Buffer Added for 0x%04X\n", (u32)handle(NULL));
+    LOGI_F("Buffer Added for 0x%04X", (u32)handle(NULL));
 
     MsgBuffer_Destroy(buf);
 }
@@ -73,14 +73,14 @@ RECOMP_EXPORT void EZTR_Basic_AddCustomTextEmpty(CustomMsgHandle handle, MsgCall
     MsgSContent_Sprintf((char*)&buf->data.content, "\xBF");
 
     MsgTable_StoreNewCustomBufferEmpty(ETZR_mainTable, handle, callback);
-    IF_DEBUG recomp_printf("Empty Buffer Added for 0x%04X\n", (u32)handle(NULL));
+    LOGI_F("Empty Buffer Added for 0x%04X", (u32)handle(NULL));
     MsgBuffer_Destroy(buf);
 }
 
 // Replacing Custom Messages:
 RECOMP_EXPORT void EZTR_Basic_ReplaceCustomBuffer(CustomMsgHandle handle, MsgBuffer* buf, MsgCallback callback) {
     MsgTable_StoreBuffer(ETZR_mainTable, handle(NULL), buf, callback);
-    IF_DEBUG recomp_printf("Buffer Added for 0x%04X\n", (u32)handle(NULL));
+    LOGI_F("Buffer Added for 0x%04X", (u32)handle(NULL));
 }
 
 RECOMP_EXPORT void EZTR_Basic_ReplaceCustomText(CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
@@ -98,12 +98,12 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceCustomText(CustomMsgHandle handle, u8 text_
     ptrdiff_t u;
 
     MsgTable_StoreBuffer(ETZR_mainTable, handle(NULL), buf, callback);
-    IF_DEBUG recomp_printf("Buffer Added for 0x%04X\n", (u32)handle(NULL));
+    LOGI_F("Buffer Added for 0x%04X", (u32)handle(NULL));
 
     MsgBuffer_Destroy(buf);
 }
 
 RECOMP_EXPORT void EZTR_Basic_ReplaceCustomTextEmpty(CustomMsgHandle handle, MsgCallback callback) {
     MsgTable_StoreBufferEmpty(ETZR_mainTable, handle(NULL), callback);
-    IF_DEBUG recomp_printf("Empty Buffer Added for 0x%04X\n", (u32)handle(NULL));
+    LOGI_F("Empty Buffer Added for 0x%04X", (u32)handle(NULL));
 }

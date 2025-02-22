@@ -29,7 +29,7 @@ MsgEntryCluster* MsgEntryCluster_Create(u8 id) {
         retVal->entries[i] = NULL;
     }
 
-    recomp_printf("%sCreating Cluster with Id 0x%02x (%u).\n", LOG_HEADER, (u32)id, (u32)id);
+    LOGD_F("Creating Cluster with Id 0x%02x (%u).", (u32)id, (u32)id);
     return retVal;
 }
 
@@ -45,11 +45,11 @@ void MsgEntryCluster_Destroy(MsgEntryCluster* cluster) {
 
 MsgEntry* MsgEntryCluster_GetEntry(MsgEntryCluster* cluster, u16 textId) {
     SPLIT_TEXT_ID(textId, cl, pos);
-    IF_DEBUG recomp_printf("Loading Entry for 0x%04x\n", textId);
+    LOGD_F("Loading Entry for 0x%04x\n", textId);
     MsgEntry* retVal = cluster->entries[pos];
 
     if (retVal != NULL && retVal->textId != textId) {
-        recomp_printf("Entry for 0x%04x is NULL\n", textId);
+        LOGD_F("Entry for 0x%04x is NULL\n", textId);
         return NULL;
     }
     return retVal;
@@ -89,7 +89,7 @@ MsgTable* MsgTable_Create() {
     }
     retVal->cluster_count = 0;
     retVal->highest_msg_id = MSG_HIGHEST_ID;
-    recomp_printf("%sMessage Table Created.\n", LOG_HEADER);
+    LOGI("Message Table Created.\n");
     return retVal;
 }
 
@@ -104,10 +104,10 @@ void MsgTable_Destroy(MsgTable* table) {
 }
 
 MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 textId) {
-    IF_DEBUG recomp_printf("Loading Cluster for 0x%04x\n", textId);
+    LOGD_F("Loading Cluster for 0x%04x", textId);
     SPLIT_TEXT_ID(textId, cl, pos);
     if (table->clusters[cl] == NULL) {
-        IF_DEBUG recomp_printf("Cluster for 0x%04x is NULL\n", textId);
+        LOGD_F("Cluster for 0x%04x is NULL", textId);
         return NULL;
     }
 
@@ -130,7 +130,7 @@ void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCall
     }
     
     MsgEntryCluster_StoreBuffer(table->clusters[cl], textId, entry, callback);
-    IF_DEBUG recomp_printf("%sSetting Text Entry Id 0x%04X (%i)\n", LOG_HEADER, (u32)textId, (u32)textId);
+    LOGD_F("Setting Text Entry Id 0x%04X (%i)", (u32)textId, (u32)textId);
 }
 
 void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback) {
@@ -169,19 +169,19 @@ void MsgTable_ChangeCallback(MsgTable* table, u16 textId, MsgCallback callback) 
     if (search != NULL) {
         search->callback = callback;
     } else {
-        recomp_printf("%sERROR assigning callback for textId %i - set the buffer first.\n", LOG_HEADER, search->textId);
+        LOGE_F("ERROR assigning callback for textId %i - set the buffer first.\n", search->textId);
     }
 }
 
 MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* play) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
-        IF_DEBUG recomp_printf("Loading Buffer for 0x%04x\n", textId);
+        LOGD_F("Loading Buffer for 0x%04x", textId);
         MsgBuffer* buf = MsgBuffer_CreateFromStr(search->buf_store);
-        IF_DEBUG MsgSContent_Printf("%m\xBF", buf);
-        IF_DEBUG recomp_printf("\n");
+        IF_LOG_DEBUG MsgSContent_Printf("%m\xBF", buf);
+        
         if (search->callback != NULL) {
-            IF_DEBUG recomp_printf("Running Callback for 0x%04x\n", textId);
+            LOGD_F("Running Callback for 0x%04x", textId);
             search->callback(buf, textId, play);
         }
         return buf;

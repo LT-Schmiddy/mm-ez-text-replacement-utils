@@ -430,6 +430,15 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer_msg, const size_t max_
 
 ///////////////////////////////////////////////////////////////////////////////
 
+int MsgSContent_PrintfLn(const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    recomp_printf("\n");
+    pf_va_end(va);
+    return ret;
+}
 
 int MsgSContent_Printf(const char* format, ...) {
     va_list va;

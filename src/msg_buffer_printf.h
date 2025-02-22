@@ -73,6 +73,7 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t max_len,
  * \return The number of characters that are written into the array, not counting the terminating null character
  */
 // #define printf printf_
+int MsgSContent_PrintfLn(const char* format, ...);
 int MsgSContent_Printf(const char* format, ...);
 
 

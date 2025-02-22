@@ -1,6 +1,9 @@
 #include "msg_buffer.h"
 #include "util.h"
 
+#include "recomp_logging.h"
+
+
 MsgBuffer* MsgBuffer_Create() {
     MsgBuffer* retVal = recomp_alloc(sizeof(MsgBuffer));
     MsgBuffer_WriteDefaultHeader(retVal);
@@ -29,7 +32,7 @@ u32 MsgBuffer_Copy(MsgBuffer* dst, char* src) {
     return MsgBuffer_NCopy(dst, src, MSG_BUFFER_SIZE);
 }
 u32 MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len) {
-    IF_DEBUG recomp_printf("StrNCopying Message Data: %p -> %p ", src, dst);
+    LOGV_F("StrNCopying Message Data: %p -> %p ", src, dst);
 
     u32 i = 0;
     for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < len; i++) {
@@ -41,21 +44,20 @@ u32 MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len) {
         // Otherwise at the max index
         dst->raw.schar[i-1] = '\xBF';
     }
-    IF_DEBUG MsgSContent_Printf("%m\xBF", dst->data.content);
-    IF_DEBUG recomp_printf("\n");
+    IF_LOG_VERBOSE MsgSContent_PrintfLn("%m\xBF", dst->data.content);
     return i;
 }
 
 char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
     size_t store_len = MsgBuffer_Len(buf)+1;
     // The extra byte is to store the \xBF:
-    recomp_printf("Storage Size: %u\n", store_len);
+    LOGV_F("Storage Size: %u", store_len);
     char* retVal = recomp_alloc(sizeof(char) * store_len);
     
     // Not really meant for this, but it's fine.
     u32 copy_len = MsgBuffer_NCopy((MsgBuffer*)retVal, (char*)buf, store_len)+1;
     if (copy_len != store_len) {
-        recomp_printf("WARNING: STORAGE SIZE MISMATCH! Storage: %u, Length: %u\n", store_len, copy_len);
+        LOGW_F("WARNING: STORAGE SIZE MISMATCH! Storage: %u, Length: %u", store_len, copy_len);
     };
     return retVal;
 }
@@ -280,7 +282,7 @@ u32 MsgSContent_Len(char* cont) {
 }
 
 u32 MsgSContent_NCopy(char* dst, char* src, size_t len) {
-    IF_DEBUG recomp_printf("StrNCopying Message Content: %p -> %p ", src, dst);
+    LOGV_F("StrNCopying Message Content: %p -> %p", src, dst);
 
     u32 i = 0;
     for (; (src[i] != MSG_ENDING_CHAR) && i < len; i++) {
@@ -292,8 +294,7 @@ u32 MsgSContent_NCopy(char* dst, char* src, size_t len) {
         // Otherwise at the max index
         dst[i-1] = '\xBF';
     }
-    IF_DEBUG MsgSContent_Printf("%m\xBF", dst);
-    IF_DEBUG recomp_printf("\n");
+    IF_LOG_VERBOSE MsgSContent_PrintfLn("%m\xBF", dst);
     return i;
 }
 

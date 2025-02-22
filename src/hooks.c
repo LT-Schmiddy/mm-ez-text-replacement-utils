@@ -16,10 +16,10 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
     }
 
     MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, stored_play);
-    IF_DEBUG recomp_printf("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
+    LOGV_F("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
     // Handled text replacement
     if (buf != NULL) {
-        recomp_printf("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
+        LOGD_F("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
@@ -29,7 +29,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
         MsgBuffer_Copy((MsgBuffer*)&font->msgBuf, buf->raw.schar);
         // MsgBuffer_Print((MsgBuffer*)&font->msgBuf);
         MsgBuffer_Destroy(buf);
-        // IF_DEBUG recomp_printf("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
+        LOGV_F("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         
         // Not completely sure, but using memcpy causes issues if the message is too long.
         // We'll just copy char by char.

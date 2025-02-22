@@ -65,12 +65,12 @@ additional_files = [
 ## Config options:
 
 [[manifest.config_options]]
-id = "debug_logging"
-name = "Debug Logging"
+id = "recomp_log_level"
+name = "Log Level"
 description = "Log additional information to the console for debugging."
 type = "Enum"
-options = [ "Off", "On" ]
-default = "Off"
+options = [ "NONE", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
+default = "NONE"
 
 [[manifest.config_options]]
 id = "text_dumping"
