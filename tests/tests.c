@@ -22,6 +22,9 @@ EZTR_MSG_CALLBACK(my_callback) {
     static int i = 0;
     i++;
     EZTR_MsgSContent_Sprintf(buf->data.content, "You've read this %i times.\xBF", i);
+
+    // Tests declaring a followup message:
+    buf->data.next_message_id = EZTR_test_message(NULL);
 }
 
 void validate(char* case_name, bool case_stmt) {
