@@ -62,7 +62,7 @@ static const char* _RECOMP_LOG_LEVEL_COLORS[] = {
 #define IF_LOG_VERBOSE IF_LOG_LEVEL(RECOMP_LOG_VERBOSE)
 
 #define _LOG_HEADER(log_level) \
-    _LOG_PRINTF_CALL("%s%s %s (%s at line %u, in %s): ", _RECOMP_LOG_LEVEL_COLORS[log_level], RECOMP_LOG_CONFIG_HEADER, \
+    _LOG_PRINTF_CALL("%s%s - %s (%s at line %u, in %s): ", _RECOMP_LOG_LEVEL_COLORS[log_level], RECOMP_LOG_CONFIG_HEADER, \
         _RECOMP_LOG_LEVEL_STRINGS[log_level], __FILE_NAME__, __LINE__, __func__);
 
 #define _LOG_FOOTER _LOG_PRINTF_CALL("%s\n", _CRESET);
