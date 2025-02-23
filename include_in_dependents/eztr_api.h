@@ -20,9 +20,20 @@
 #define EZTR_IMPORT(func) func
 #define EZTR_PACK_STRUCT 
 #else
+
+// Stuff Doxygen needs to ignore:
 #define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
 #define EZTR_PACK_STRUCT __attribute__((packed))
+
+EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
+#define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
+    static u16 id; static u8 is_set = 0; if (new_id != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
+    "\e[1;31mThe textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
+    ); } else { id = *new_id; is_set = 1; }} return id; }
+
 #endif
+
+
 #define EZTR_MSG_HIGHEST_ID 0x354C
 /**
  * @brief The the full size of message buffer, in bytes.
@@ -66,7 +77,7 @@ typedef union {
     char schar[EZTR_MSG_BUFFER_SIZE]; // msgBuf
     u16 wchar[EZTR_MSG_BUFFER_WIDE_SIZE];   // msgBufWide
     u64 force_structure_alignment_msg;
-} EZTR_MsgRaw;
+} EZTR_MsgBuffer_Raw;
 
 
 /**
@@ -78,7 +89,7 @@ typedef union {
 typedef struct {
     char header[EZTR_MSG_HEADER_SIZE];
     char content[EZTR_MSG_CONTENT_SIZE];
-} EZTR_MsgPartition;
+} EZTR_MsgBuffer_Partition;
 
 
 /**
@@ -101,10 +112,10 @@ typedef struct EZTR_PACK_STRUCT {
     u16 second_item_rupees;
     u16 padding;
     char content[EZTR_MSG_CONTENT_SIZE];
-} EZTR_MsgData;
+} EZTR_MsgBuffer_Data;
 
 /**
- * @brief The main message buffer type, and the primary struct for interacting with message data.
+ * @brief A union of the three MsgBuffer structs, and the primary type for interacting with message data.
  * 
  * Each member of the union is a different way of representing the buffer in code.
  * 
@@ -114,15 +125,15 @@ typedef struct EZTR_PACK_STRUCT {
  * 
  */
 typedef union {
-        EZTR_MsgRaw raw;
-        EZTR_MsgPartition partitions;
-        EZTR_MsgData data;
+        EZTR_MsgBuffer_Raw raw;
+        EZTR_MsgBuffer_Partition partitions;
+        EZTR_MsgBuffer_Data data;
 } EZTR_MsgBuffer;
 
-#define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
-static u16 id; static u8 is_set = 0; if (new_id != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
-"\e[1;31mThe textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
-); } else { id = *new_id; is_set = 1; }} return id; }
+/**
+ * @brief 
+ * 
+ */
 
 /**
  * @brief 
@@ -178,13 +189,6 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  * 
  */
 #define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
-
-/**
- * @brief 
- * 
- */
-
-#define EZTR_SET_ID(handle) EZTR_SET_CUSTOM_MSG_ID(handle)
 
 /**
  * @brief 
@@ -533,8 +537,6 @@ typedef enum {
     EZTR_ICON_NOTHING_93 = 0xFD,
     EZTR_ICON_NO_ICON = 0xFE
 } EZTR_TextBoxIcon;
-
-EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 
 EZTR_IMPORT(void EZTR_Basic_ReplaceBuffer(u16 textId, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
 

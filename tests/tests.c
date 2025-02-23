@@ -16,6 +16,13 @@ int cases = 0;
 int cases_passed = 0; 
 
 EZTR_DEFINE_CUSTOM_MSG_HANDLE(EZTR_test_message);
+EZTR_DEFINE_CUSTOM_MSG_HANDLE(EZTR_test_message2);
+
+EZTR_MSG_CALLBACK(my_callback) {
+    static int i = 0;
+    i++;
+    EZTR_MsgSContent_Sprintf(buf->data.content, "You've read this %i times.\xBF", i);
+}
 
 void validate(char* case_name, bool case_stmt) {
     cases++;
@@ -114,6 +121,7 @@ EZTR_ON_INIT void run_tests() {
     EZTR_Basic_ReplaceCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
             EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 3\xBF", NULL);
     
+    EZTR_Basic_AddCustomTextEmpty(EZTR_test_message2, my_callback);
 
     EZTR_MsgBuffer_Destroy(buf1);
     EZTR_MsgBuffer_Destroy(buf2);
