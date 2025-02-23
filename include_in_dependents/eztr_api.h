@@ -2,6 +2,7 @@
 #define __EZTR_API__
 
 /*! \file eztr_api.h
+    \version 2.0.0
     \brief The main header for EZTR
 */
 
@@ -11,7 +12,7 @@
 /**
  * @brief The mod id string for EZTR.
  * 
- * The `eztr_api.h` imports all the functions and events needed to for EZTR, 
+ * The `eztr_api.h` imports all the functions and events needed for EZTR, 
  * so you probably won't need to use this directly.
  */
 #define EZTR_MOD_ID_STR "MM_EZ_Text_Replacer_API"
@@ -19,6 +20,7 @@
 #ifdef DOXYGEN
 #define EZTR_IMPORT(func) func
 #define EZTR_PACK_STRUCT 
+
 #else
 
 // Stuff Doxygen needs to ignore:
@@ -28,10 +30,10 @@
 typedef struct {
     u16 new_id;
     u8 out_success;
-} 
-_EZTR_CustomMsgHandleSetter;
+} _EZTR_CustomMsgHandleSetter;
 
 EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
+
 #define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
     static u16 id; static u8 is_set = 0; if (setter != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
     "\e[1;31mThe textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
@@ -66,7 +68,7 @@ EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 /**
  * @brief The size of the message buffer's content region, in bytes.
  * 
- * Useful if you need to loop throught the buffer.
+ * Useful if you need to loop throught a buffer's content.
  */
  #define EZTR_MSG_CONTENT_SIZE 1269 // MESSAGE_BUFFER_SIZE - MESSAGE_HEADER_SIZE
 
@@ -129,6 +131,8 @@ typedef struct EZTR_PACK_STRUCT {
  * * `partitions` is the buffer, seperated into it's two primary regions (header and content).
  * * `data` is the buffer, with it's header and content values listed as individual members.
  * 
+ * Do not allocate this on the stack, as you'll likely end up with a StackOverflow. Instead, create a buffer using
+ * `EZTR_MsgBuffer_Create()` of one of it's sister functions.
  */
 typedef union {
         EZTR_MsgBuffer_Raw raw;
@@ -137,19 +141,17 @@ typedef union {
 } EZTR_MsgBuffer;
 
 /**
- * @brief 
- * 
- */
-
-/**
- * @brief 
- * 
+ * @brief Uses to set/get the actual symbol name for custom message handles
+ * If you want to add a prefix/suffix to your custom message handles globally, it can be done here.
  */
 #define EZTR_CUSTOM_MSG_HANDLE_NAME(name) name
 // #define EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix) EZTR_CustomMsgHandle_##name_suffix
 
 /**
- * @brief 
+ * @brief Creates a non-exported CustomMsgHandle object
+ * 
+ * Most mods are not installed in a vacuum. You should consider exporting your custom message handles
+ * so that other mods can access the messages you define if need be (compatibility patches, addons, etc.)
  * 
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
@@ -157,7 +159,13 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
 __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
 
 /**
- * @brief 
+ * @brief Creates a CustomMsgHandle object
+ * 
+ * This is the primary method for creating handles for custom messages. You'll need to use this macro
+ * inside one of your .c files (outside of any functions) to create the handle itself. Use 
+ * `EZTR_DECLARE_CUSTOM_MSG_HANDLE` to access the handle from other files.
+ * 
+ * See the `EZTR_CustomMsgHandle` documentation for more information about handles and how they work.
  * 
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
@@ -165,19 +173,24 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
 __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
 
 /**
- * @brief 
+ * @brief Creates a declaration for a CustomMsgHandle object.
+ * 
+ * Use this reference handles created in other .c files. Also works in headers.
  * 
  */
-#define EZTR_DECLARE_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id)
+#define EZTR_DECLARE_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter)
 
 /**
- * @brief 
+ * @brief Declares and imports a CustomMsgHandle object from another mod.
  * 
+ * This will allow you to use and interact with custom messages from other mods.
  */
-#define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name) RECOMP_IMPORT(mod_str, u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id))
+#define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name) RECOMP_IMPORT(mod_str, u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter))
 
 /**
- * @brief 
+ * @brief Gets the textId from a custom message handle.
+ * 
+ * A more readable alternative to `handle(NULL)`
  * 
  */
 #define EZTR_GET_CUSTOM_MSG_ID(handle) handle(NULL)
@@ -185,19 +198,47 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
 
 // Shorthand:
 /**
- * @brief 
+ * @brief Shorthand for `EZTR_CUSTOM_MSG_HANDLE_NAME()`
+ * 
+ * Useful if you want to use global prefixes.
  * 
  */
 #define EZTR_HNAME(name_suffix) EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix)
 
 /**
- * @brief 
+ * @brief Gets the textId from a custom message handle.
+ * 
+ * A more readable alternative to `handle(NULL)`, and shorthand for `EZTR_GET_CUSTOM_MSG_ID()`
  * 
  */
 #define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
 
 /**
- * @brief 
+ * @brief The type declaration for custom message handle.
+ * 
+ * These are created using either the `EZTR_DEFINE_CUSTOM_MSG_HANDLE()` macro
+ * or the `EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT()` macro in one of your .c files, 
+ * outside of any functions.
+ * 
+ * It's worth noting that a custom message handle is actually a function, defined through macros.
+ * In brief, here are the important things to know:
+ * * The handler's only argument is a pointer that EZTR uses internally. Modders don't need to use it.
+ * * You can retrieve the handle's textId by calling it with NULL as the argument (`handle(NULL)`)
+ * * By default, the handle can only have its textId assigned once (See below on how to change this behavior). 
+ * * Handles created using `EZTR_DEFINE_CUSTOM_MSG_HANDLE`, the recommended macro for creating custom message handles, are marked with `RECOMP_EXPORT`.
+ *
+ * This implementation was decided on to ensure that the textIds of custom messages are not lost through
+ * variable reassignments, and to facilitate mods potentially needing to access/modify each other's messages.
+ * 
+ * For those interested in the technical details: The function's only argument is used by EZTR to set the textId variable 
+ * when a custom message is assigned to it, and to check that the assignment was a success. 
+ * 
+ * The version of the handle function included in this header stores the textId in a static variable, and includes logic that
+ * will only allow the textId to be set once. If a second attempt to set the ID is made, an error message is printed. Rather than
+ * change a handle's textId, you should change the stored message at that id.
+ * 
+ * If you want to change the behavior of the handles, you can write your own custom message handle functions, but
+ * it's not recommended.
  * 
  */
 typedef u16 (*EZTR_CustomMsgHandle)(_EZTR_CustomMsgHandleSetter* setter);
@@ -544,21 +585,49 @@ typedef enum {
     EZTR_ICON_NO_ICON = 0xFE
 } EZTR_TextBoxIcon;
 
+
+/**
+ * @brief Declare a replacement of a vanilla message by copying from a buffer defined by the user.
+ * 
+ * If you've defined a message using the MsgBuffer/MsgSContent functions, you can use this to set it (or, rather,
+ * a copy of it) as a replacement for a vanilla message.
+ * 
+ * Note that this function is meant for replacing vanilla messages only. It will not allow you to use a textId greater 
+ * than 0x354C, as that is the highest textId value found in the vanilla game.
+ * If you wish to create/modify a custom message, see `EZTR_Basic_AddCustomBuffer()` and EZTR_Basic_ReplaceCustomBuffer()`
+ * 
+ * @param textId The id of the vanilla message you wish to replace.
+ * @param buf The message buffer to copy from.
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic text. Set as NULL if
+ * you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ */
 EZTR_IMPORT(void EZTR_Basic_ReplaceBuffer(u16 textId, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
 
 /**
- * @brief 
+ * @brief Declare a replacement of a vanilla message by defining the header attributes and message content.
  * 
- * @param textId 
- * @param text_box_type 
- * @param text_box_y_pos 
- * @param display_icon 
- * @param next_message_id 
- * @param first_item_rupees 
- * @param second_item_rupees 
- * @param pipe_escape_bytes 
- * @param content 
- * @param callback 
+ * This is probably the easiest method to declare replacement text. 
+ * 
+ * Note that this function is meant for replacing vanilla messages only. It will not allow you to use a textId greater 
+ * than 0x354C, as that is the highest textId value found in the vanilla game.
+ * If you wish to create/modify a custom message, see `EZTR_Basic_AddCustomText()` and EZTR_Basic_ReplaceCustomText()`
+ * 
+ * @param textId The id of the vanilla message you wish to replace.
+ * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
+ * @param text_box_y_pos The vertical position of the textbox on-screen.
+ * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
+ * Use `EZTR_ICON_NO_ICON` for no icon.
+ * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
+ * then `content` is copied directly into storage.
+ * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
+ * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
  */
 EZTR_IMPORT(void EZTR_Basic_ReplaceText(
     u16 textId, 
@@ -574,68 +643,184 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText(
 ));
 
 /**
- * @brief 
+ * @brief Declare a replacement of a vanilla message, where the replacement message is empty.
  * 
- * @param textId 
- * @param callback 
+ * This is primarily used if you want the message to be completely dynamically generated.
+ * 
+ * Note that this function is meant for replacing vanilla messages only. It will not allow you to use a textId greater 
+ * than 0x354C, as that is the highest textId value found in the vanilla game.
+ * If you wish to create/modify a custom message, see `EZTR_Basic_AddCustomTextEmpty()` and EZTR_Basic_ReplaceCustomTextEmpty()`
+ * 
+ * @param textId The id of the vanilla message you wish to replace.
+ * @param callback A function pointer to call right before this text is displayed, in which you will construct the 
+ * complete message buffer dynamically. See `EZTR_MsgCallback` for more information.
  */
-EZTR_IMPORT(void EZTR_Basic_ReplaceWithEmpty(u16 textId, EZTR_MsgCallback callback));
+EZTR_IMPORT(void EZTR_Basic_ReplaceTextEmpty(u16 textId, EZTR_MsgCallback callback));
 
+/**
+ * @brief Declare a brand new (i.e: custom) message by copying from a buffer defined by the user.
+ * 
+ * If you've defined a message using the MsgBuffer/MsgSContent functions, you can use this to set it (or, rather,
+ * a copy of it) as the new message.
+ * 
+ * To avoid potential ID conflicts between mods, the u16 textId for this message will be assigned by EZTR and 
+ * will be accessable via the handle. See `EZTR_CustomMsgHandle` for more information on how custom message handles work.
+ * 
+ * @param handle The handle for the new message. 
+ * @param buf The message buffer to copy from.
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic text. Set as NULL if
+ * you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ */
 EZTR_IMPORT(void EZTR_Basic_AddCustomBuffer(EZTR_CustomMsgHandle handle, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
 
+/**
+ * @brief Declare a brand new (i.e: custom) message by defining the header attributes and message content.
+ * 
+ * This is probably the easiest method to declare new messages. 
+ * 
+ * To avoid potential ID conflicts between mods, the u16 textId for this message will be assigned by EZTR and 
+ * will be accessable via the handle. See `EZTR_CustomMsgHandle` for more information on how custom message handles work.
+ * 
+ * @param handle The handle for the new message. 
+ * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
+ * @param text_box_y_pos The vertical position of the textbox on-screen.
+ * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
+ * Use `EZTR_ICON_NO_ICON` for no icon.
+ * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
+ * then `content` is copied directly into storage.
+ * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
+ * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ */
 EZTR_IMPORT(void EZTR_Basic_AddCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
 
+/**
+ * @brief Declare a brand new (i.e: custom) message, where the replacement message is empty.
+ * 
+ * This is primarily used if you want the message to be completely dynamically generated.
+ * 
+ * To avoid potential ID conflicts between mods, the u16 textId for this message will be assigned by EZTR and 
+ * will be accessable via the handle. See `EZTR_CustomMsgHandle` for more information on how custom message handles work.
+ * 
+ * @param handle The handle for the new message.
+ * @param callback A function pointer to call right before this text is displayed, in which you will construct the 
+ * complete message buffer dynamically. See `EZTR_MsgCallback` for more information.
+ */
 EZTR_IMPORT(void EZTR_Basic_AddCustomTextEmpty(EZTR_CustomMsgHandle handle, EZTR_MsgCallback callback));
 
-
+/**
+ * @brief Declare a replacement for a custom message by copying from a buffer defined by the user.
+ * 
+ * If you've defined a message using the MsgBuffer/MsgSContent functions, you can use this to set it (or, rather,
+ * a copy of it) as the new message.
+ * 
+ * @param handle The handle for the message being replaced. 
+ * @param buf The message buffer to copy from.
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic text. Set as NULL if
+ * you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ */
 EZTR_IMPORT(void EZTR_Basic_ReplaceCustomBuffer(EZTR_CustomMsgHandle handle, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
 
+/**
+ * @brief Declare a replacement of a custom message by defining the header attributes and message content.
+ * 
+ * This is probably the easiest method to replace custom messages, even those defined by other mods.
+ * 
+ * @param handle The handle for the message being replaced. 
+ * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
+ * @param text_box_y_pos The vertical position of the textbox on-screen.
+ * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
+ * Use `EZTR_ICON_NO_ICON` for no icon.
+ * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
+ * then `content` is copied directly into storage.
+ * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
+ * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ */
 EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
 
+/**
+ * @brief Declare a replacement of a custom message, where the replacement message is empty.
+ * 
+ * This is primarily used if you want the message to be completely dynamically generated.
+ * 
+ * @param handle The handle for the message being replaced.
+ * @param callback A function pointer to call right before this text is displayed, in which you will construct the 
+ * complete message buffer dynamically. See `EZTR_MsgCallback` for more information.
+ */
 EZTR_IMPORT(void EZTR_Basic_ReplaceCustomTextEmpty(EZTR_CustomMsgHandle handle, EZTR_MsgCallback callback));
 
 /**
- * @brief Create msgBuffer
+ * @brief Creates a new message buffer object on the heap.
  * 
- * @return MsgBuffer* 
+ * The created buffer will be have a default header and an empty content region.
+ * You need to free any buffer you create using this function with `EZTR_MsgBuffer_Destroy()`, 
+ * or else you will create a memory leak.
+ * 
+ * @return MsgBuffer* A pointer to the buffer you created.
  */
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_Create());
 
 /**
- * @brief 
+ * @brief Creates a new message buffer object on the heap, and copies `src` into it.
  * 
- * @param src 
- * @return MsgBuffer* 
+ * Equivalent to `buf = EZTR_MsgBuffer_Create(); EZTR_MsgBuffer_Copy(buf);`
+ * 
+ * You need to free any buffer you create using this function with `EZTR_MsgBuffer_Destroy()`, 
+ * or else you will create a memory leak.
+ * 
+ * @param src The content to copy into the buffer. Expected to have a header region, and be terminated with '\xBF'.
+ * @return MsgBuffer*  A pointer to the buffer you created.
  */
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStr(char* src));
 
 /**
- * @brief 
+ * @brief Creates a new message buffer object on the heap, and copies `src` into it for up to `len` bytes.
  * 
- * @param src 
- * @param len 
- * @return MsgBuffer* 
+ * Equivalent to `buf = EZTR_MsgBuffer_Create(); EZTR_MsgBuffer_CopyN(buf, len);`
+ * 
+ * You need to free any buffer you create using this function with `EZTR_MsgBuffer_Destroy()`, 
+ * or else you will create a memory leak.
+ * 
+ * @param src The content to copy into the buffer. Expected to have a header region, and be terminated with '\xBF'.
+ * @param len The maximum number of bytes to copy. If a '\xBF` is encountered in `src`, the function will stop copying before len is reached.
+ * @return MsgBuffer* A pointer to the buffer you created.
  */
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStrN(char* src, size_t len));
 
 /**
- * @brief 
+ * @brief Frees/destroys a message buffer.
  * 
- * @param buf 
+ * EZTR only expects you to destroy buffers that you create youself using one of the above functions.A_BTN_STATE_IDLE
+ * Buffers given to you by in `MsgCallback` functions are created and destroyed by EZTR.
+ * 
+ * @param buf A pointer to the message buffer to destroy.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_Destroy(EZTR_MsgBuffer* buf));
 
 // Copy:
 /**
- * @brief 
+ * @brief Copies message buffer data from .
  * 
  * @param dst 
  * @param src 
  * @return u32 
  */
-EZTR_IMPORT(u32 EZTR_MsgBuffer_Copy(char* dst, char* src));
+EZTR_IMPORT(u32 EZTR_MsgBuffer_Copy(EZTR_MsgBuffer* dst, char* src));
 
 /**
  * @brief 
@@ -645,7 +830,7 @@ EZTR_IMPORT(u32 EZTR_MsgBuffer_Copy(char* dst, char* src));
  * @param len 
  * @return u32 
  */
-EZTR_IMPORT(u32 EZTR_MsgBuffer_NCopy(char* dst, char* src, size_t len));
+EZTR_IMPORT(u32 EZTR_MsgBuffer_NCopy(EZTR_MsgBuffer* dst, char* src, size_t len));
 
 /**
  * @brief 

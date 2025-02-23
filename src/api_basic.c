@@ -26,8 +26,8 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId, u8 text_box_type, u8 text_
     
     MsgBuffer_WriteHeader(buf, text_box_type, text_box_y_pos, display_icon, next_message_id, first_item_rupees, second_item_rupees);
 
+
     if (pipe_escape_bytes) {
-        
         MsgSContent_Sprintf(buf->data.content, "%m\xBF", content);
     } else {
         MsgSContent_Copy(buf->data.content, content);
@@ -39,7 +39,7 @@ RECOMP_EXPORT void EZTR_Basic_ReplaceText(u16 textId, u8 text_box_type, u8 text_
     MsgBuffer_Destroy(buf);
 }
 
-RECOMP_EXPORT void EZTR_Basic_ReplaceWithEmpty(u16 textId, MsgCallback callback) {
+RECOMP_EXPORT void EZTR_Basic_ReplaceTextEmpty(u16 textId, MsgCallback callback) {
     if (textId > MSG_HIGHEST_ID) {
         LOGE_F("0x%04X does not correspond to a vanilla message. No entry will be created. "
             "To create a new message entry, use `EZTR_Basic_AddCustomTextEmpty`.", textId);

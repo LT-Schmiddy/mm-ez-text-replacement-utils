@@ -12,7 +12,7 @@
 void EZTR_Basic_ReplaceBuffer(u16 textId, MsgBuffer* buf, MsgCallback callback);
 void EZTR_Basic_ReplaceText(u16 textId, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, MsgCallback callback);
-void EZTR_Basic_ReplaceWithEmpty(u16 textId, MsgCallback callback);
+void EZTR_Basic_ReplaceTextEmpty(u16 textId, MsgCallback callback);
 
 // Adding Custom Buffers:
 void EZTR_Basic_AddCustomBuffer(CustomMsgHandle handle, MsgBuffer* buf, MsgCallback callback);
