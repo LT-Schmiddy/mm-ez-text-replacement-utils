@@ -140,16 +140,35 @@ void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback
     MsgBuffer_Destroy(buf);
 }
 
-void MsgTable_StoreNewCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback) {
-    u16 new_id = ++(table->highest_msg_id);
-    MsgTable_StoreBuffer(table, new_id, entry, callback);
-    handle(&new_id);
+bool MsgTable_StoreNewCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback) {
+    u16 new_id = table->highest_msg_id + 1;
+    // Setting the handle ID:
+    CustomMsgHandleSetter s;
+    s.new_id = new_id;
+    handle(&s);
+
+    if (s.out_success) {
+        table->highest_msg_id = new_id;
+        MsgTable_StoreBuffer(table, new_id, entry, callback);
+    }
+
+    return s.out_success;
 }
 
-void MsgTable_StoreNewCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback) {
-    u16 new_id = ++(table->highest_msg_id);
-    MsgTable_StoreBufferEmpty(table, new_id, callback);
-    handle(&new_id);
+bool MsgTable_StoreNewCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback) {
+    u16 new_id = table->highest_msg_id + 1;
+    
+    // Setting the handle ID:
+    CustomMsgHandleSetter s;
+    s.new_id = new_id;
+    handle(&s);
+
+    if (s.out_success) {
+        table->highest_msg_id = new_id;
+        MsgTable_StoreBufferEmpty(table, new_id, callback);
+    }
+
+    return s.out_success;
 }
 
 u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {

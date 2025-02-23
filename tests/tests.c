@@ -113,15 +113,25 @@ EZTR_ON_INIT void run_tests() {
     EZTR_Basic_AddCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX\xBF", NULL);
 
-    validate("my_message id = 0x354D", EZTR_test_message(NULL) == 0x354D);
-
+    validate("my_message id == 0x354D", EZTR_test_message(NULL) == 0x354D);
+    
+    // This should fail.
     EZTR_Basic_AddCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 2\xBF", NULL);
-
+    
+    // So should this:
+    EZTR_Basic_ReplaceText(EZTR_test_message(NULL), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 2\xBF", NULL);
+    
+    // This should work.
     EZTR_Basic_ReplaceCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
             EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 3\xBF", NULL);
     
     EZTR_Basic_AddCustomTextEmpty(EZTR_test_message2, my_callback);
+    
+    validate("EZTR_test_message2 id == 0x354D", EZTR_test_message2(NULL) == 0x354E);
+    recomp_printf("EZTR_test_message2 id = 0x%04X\n", EZTR_test_message2(NULL));
+
 
     EZTR_MsgBuffer_Destroy(buf1);
     EZTR_MsgBuffer_Destroy(buf2);

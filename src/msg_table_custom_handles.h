@@ -22,11 +22,15 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
 
 #define EZTR_HNAME(name) EZTR_CUSTOM_MSG_HANDLE_NAME(name)
 
+typedef struct {
+    u16 new_id;
+    u8 out_success;
+} 
+CustomMsgHandleSetter;
+
 // Type of the custom message handle:
-typedef u16 (*CustomMsgHandle)(u16* new_id);
+typedef u16 (*CustomMsgHandle)(CustomMsgHandleSetter* setter);
 
-u16 CustomMsgHandle_GetId(CustomMsgHandle handle);
 
-void CustomMsgHandle_SetId(CustomMsgHandle handle, u16 new_id);
 
 #endif

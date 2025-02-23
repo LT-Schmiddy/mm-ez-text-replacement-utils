@@ -1,13 +1,13 @@
 #include "hooks.h"
 
-PlayState* stored_play = NULL;
+PlayState* Message_OpenText_stored_play = NULL;
 RECOMP_HOOK("Message_OpenText") void before_handle_main_text_replacement(PlayState* play, u16 p_textId) {
-    stored_play = play;
+    Message_OpenText_stored_play = play;
 }
 
 // RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement(PlayState* play, u16 p_textId) {
 RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
-    MessageContext* msgCtx = &stored_play->msgCtx;
+    MessageContext* msgCtx = &Message_OpenText_stored_play->msgCtx;
     Font* font = &msgCtx->font;
     u16 textId = msgCtx->currentTextId;
 
@@ -15,11 +15,11 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
         dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
     }
 
-    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, stored_play);
-    LOGV_F("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
+    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, Message_OpenText_stored_play);
+    LOGV_F("Message_OpenText Hook: 0x%04X (%i).", (u32)textId, (u32)textId);
     // Handled text replacement
     if (buf != NULL) {
-        LOGI_F("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
+        LOGI_F("Replacing Text 0x%04X (%i).", (u32)textId, (u32)textId);     
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
@@ -58,7 +58,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
         msgCtx->itemId = 0xFE;
 
         if ((msgCtx->textBoxType == TEXTBOX_TYPE_5) || (msgCtx->textBoxType == TEXTBOX_TYPE_D) ||
-            (stored_play->pauseCtx.bombersNotebookOpen)) {
+            (Message_OpenText_stored_play->pauseCtx.bombersNotebookOpen)) {
             msgCtx->unk120CE = msgCtx->unk120D0 = msgCtx->unk120D2 = 0;
         } else {
             msgCtx->unk120CE = msgCtx->unk120D0 = msgCtx->unk120D2 = 0xFF;

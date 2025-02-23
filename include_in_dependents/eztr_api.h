@@ -25,11 +25,17 @@
 #define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
 #define EZTR_PACK_STRUCT __attribute__((packed))
 
+typedef struct {
+    u16 new_id;
+    u8 out_success;
+} 
+_EZTR_CustomMsgHandleSetter;
+
 EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 #define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
-    static u16 id; static u8 is_set = 0; if (new_id != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
+    static u16 id; static u8 is_set = 0; if (setter != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
     "\e[1;31mThe textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
-    ); } else { id = *new_id; is_set = 1; }} return id; }
+    ); setter->out_success = 0;} else { id = setter->new_id; is_set = 1; setter->out_success = 1;}} return id; }
 
 #endif
 
@@ -147,7 +153,7 @@ typedef union {
  * 
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
-u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
+u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
 __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
 
 /**
@@ -155,7 +161,7 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  * 
  */
 #define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
-u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(u16* new_id) \
+u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
 __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
 
 /**
@@ -194,7 +200,7 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  * @brief 
  * 
  */
-typedef u16 (*EZTR_CustomMsgHandle)(u16* new_id);
+typedef u16 (*EZTR_CustomMsgHandle)(_EZTR_CustomMsgHandleSetter* setter);
 
 /**
  * @brief The function pointer type for message callbacks. 
