@@ -3,3 +3,4 @@
 #include "api_enums.h"
 
 extern MsgTable* ETZR_mainTable;
+void _EXTR_ReportErrorMessage(char* error_msg);

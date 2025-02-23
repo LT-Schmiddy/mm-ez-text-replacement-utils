@@ -29,7 +29,7 @@ MsgEntryCluster* MsgEntryCluster_Create(u8 id) {
         retVal->entries[i] = NULL;
     }
 
-    LOGD_F("Creating Cluster with Id 0x%02x (%u).", (u32)id, (u32)id);
+    LOGD_F("Creating Cluster with Id 0x%02X (%u).", (u32)id, (u32)id);
     return retVal;
 }
 
@@ -45,11 +45,11 @@ void MsgEntryCluster_Destroy(MsgEntryCluster* cluster) {
 
 MsgEntry* MsgEntryCluster_GetEntry(MsgEntryCluster* cluster, u16 textId) {
     SPLIT_TEXT_ID(textId, cl, pos);
-    LOGD_F("Loading Entry for 0x%04x\n", textId);
+    LOGD_F("Loading Entry 0x%02X for 0x%04X", pos, textId);
     MsgEntry* retVal = cluster->entries[pos];
 
     if (retVal != NULL && retVal->textId != textId) {
-        LOGD_F("Entry for 0x%04x is NULL\n", textId);
+        LOGD_F("Entry for 0x%04X is NULL", textId);
         return NULL;
     }
     return retVal;
@@ -104,8 +104,8 @@ void MsgTable_Destroy(MsgTable* table) {
 }
 
 MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 textId) {
-    LOGD_F("Loading Cluster for 0x%04x", textId);
     SPLIT_TEXT_ID(textId, cl, pos);
+    LOGD_F("Loading Cluster 0x%02X for 0x%04X", cl, textId);
     if (table->clusters[cl] == NULL) {
         LOGD_F("Cluster for 0x%04x is NULL", textId);
         return NULL;
@@ -176,12 +176,12 @@ void MsgTable_ChangeCallback(MsgTable* table, u16 textId, MsgCallback callback) 
 MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* play) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
-        LOGD_F("Loading Buffer for 0x%04x", textId);
+        LOGD_F("Loading Buffer for 0x%04X", textId);
         MsgBuffer* buf = MsgBuffer_CreateFromStr(search->buf_store);
-        IF_LOG_DEBUG MsgSContent_Printf("%m\xBF", buf);
+        IF_LOG_VERBOSE MsgSContent_PrintfLn("%m\xBF", buf);
         
         if (search->callback != NULL) {
-            LOGD_F("Running Callback for 0x%04x", textId);
+            LOGD_F("Running Callback for 0x%04X", textId);
             search->callback(buf, textId, play);
         }
         return buf;

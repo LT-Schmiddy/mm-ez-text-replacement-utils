@@ -19,7 +19,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
     LOGV_F("Message_OpenText Hook: 0x%04X (%i).\n", (u32)textId, (u32)textId);
     // Handled text replacement
     if (buf != NULL) {
-        LOGD_F("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
+        LOGI_F("Replacing Text 0x%04X (%i).\n", (u32)textId, (u32)textId);     
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
@@ -135,7 +135,7 @@ RECOMP_PATCH void func_801514B0(PlayState* play, u16 arg1, u8 arg2) {
 
     MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, msgCtx->currentTextId, play);
     if (buf != NULL) {
-        recomp_printf("Replacing Text %d.\n", msgCtx->currentTextId);        
+        LOGI_F("Replacing Text %d.\n", msgCtx->currentTextId);        
         // running Callbacks:
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 

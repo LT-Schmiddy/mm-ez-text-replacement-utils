@@ -5,7 +5,7 @@
 #include "recomp_logging_config.h"
 // End of config:
 #ifndef __FILE_NAME__
-#define __FILE_NAME__ "Source File"
+#define __FILE_NAME__ "Unknown Source File"
 #endif
 
 typedef enum {

@@ -120,8 +120,8 @@ typedef union {
 } EZTR_MsgBuffer;
 
 #define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
-static u16 id; static u8 is_set = 0; if (new_id != NULL) { if (is_set) { EZTR_MsgSContent_PrintfLine( \
-"ERROR: the textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated.\xBF" \
+static u16 id; static u8 is_set = 0; if (new_id != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
+"\e[1;31mThe textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
 ); } else { id = *new_id; is_set = 1; }} return id; }
 
 /**
@@ -533,6 +533,8 @@ typedef enum {
     EZTR_ICON_NOTHING_93 = 0xFD,
     EZTR_ICON_NO_ICON = 0xFE
 } EZTR_TextBoxIcon;
+
+EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 
 EZTR_IMPORT(void EZTR_Basic_ReplaceBuffer(u16 textId, EZTR_MsgBuffer* buf, EZTR_MsgCallback callback));
 

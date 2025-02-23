@@ -3,7 +3,7 @@
 
 #include "mod_globals.h"
 
-#define RECOMP_LOG_CONFIG_HEADER "LOG"
+#define RECOMP_LOG_CONFIG_HEADER "EZTR LOG"
 #define RECOMP_LOG_CONFIG_LOG_LEVEL recomp_get_config_u32("recomp_log_level")
 #define RECOMP_LOG_CONFIG_PRINTF_FUNC recomp_printf
 

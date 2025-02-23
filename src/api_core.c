@@ -10,3 +10,8 @@ RECOMP_CALLBACK("*", recomp_on_init) void on_startup () {
 
     recomp_printf("EZTR Initialization Complete.\n");
 }
+
+
+RECOMP_EXPORT void _EXTR_ReportErrorMessage(char* error_msg) {
+    LOGE_F("Dependent mod reported an error: %s", error_msg);
+}
