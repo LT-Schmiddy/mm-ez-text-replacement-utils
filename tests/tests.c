@@ -15,7 +15,7 @@ RECOMP_IMPORT("*", void recomp_free_config_string(char* str));
 int cases = 0;
 int cases_passed = 0; 
 
-EZTR_DEFINE_CUSTOM_MSG_HANDLE(EZTZ_test_message);
+EZTR_DEFINE_CUSTOM_MSG_HANDLE(EZTR_test_message);
 
 void validate(char* case_name, bool case_stmt) {
     cases++;
@@ -103,15 +103,15 @@ EZTR_ON_INIT void run_tests() {
     validate("EZTR_MsgSContent_Sprintf", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
     // Custom Message Stuff:
-    EZTR_Basic_AddCustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    EZTR_Basic_AddCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX\xBF", NULL);
 
-    validate("my_message id = 0x354D", EZTZ_test_message(NULL) == 0x354D);
+    validate("my_message id = 0x354D", EZTR_test_message(NULL) == 0x354D);
 
-    EZTR_Basic_AddCustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    EZTR_Basic_AddCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 2\xBF", NULL);
 
-    EZTR_Basic_ReplaceCustomText(EZTZ_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    EZTR_Basic_ReplaceCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
             EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 3\xBF", NULL);
     
 
