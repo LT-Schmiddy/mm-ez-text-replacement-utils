@@ -132,8 +132,8 @@ EZTR_ON_INIT void run_tests() {
     validate("EZTR_test_message2 id == 0x354D", EZTR_test_message2(NULL) == 0x354E);
     recomp_printf("EZTR_test_message2 id = 0x%04X\n", EZTR_test_message2(NULL));
 
-    // Razor Sword message. Tests item description replacement.
-    EZTR_Basic_ReplaceText(0x1785, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    // Deku Nut message. Tests item description replacement.
+    EZTR_Basic_ReplaceText(0x1709, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 4\xBF", NULL);
 
 
