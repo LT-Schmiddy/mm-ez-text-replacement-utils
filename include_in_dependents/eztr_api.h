@@ -874,123 +874,187 @@ EZTR_IMPORT(u32 EZTR_MsgBuffer_Len(EZTR_MsgBuffer* buf));
 EZTR_IMPORT(u32 EZTR_MsgBuffer_ContentLen(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Sets a message buffer's header to default values.
  * 
- * @param buf 
+ * The default values for a message buffer header are:
+ * 
+ * * text_box_type = EZTR_STANDARD_TEXT_BOX_I (0)
+ * * text_box_y_pos = 0
+ * * display_icon = EZTR_ICON_NO_ICON (0xFE)
+ * * next_message_id = EZTR_NO_VALUE (0xFFFF)
+ * * first_item_rupees = EZTR_NO_VALUE (0xFFFF)
+ * * second_item_rupees = EZTR_NO_VALUE (0xFFFF)
+ * 
+ * @param buf the message buffer to write to.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_WriteDefaultHeader(EZTR_MsgBuffer* buf));
 
 /**
  * @brief 
  * 
- * @param buf 
- * @param text_box_type 
- * @param text_box_y_pos 
- * @param display_icon 
- * @param next_message_id 
- * @param first_item_rupees 
- * @param second_item_rupees 
+ * @param buf the message buffer to write to. 
+ * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
+ * @param text_box_y_pos The vertical position of the textbox on-screen.
+ * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
+ * Use `EZTR_ICON_NO_ICON` for no icon.
+ * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_WriteHeader(EZTR_MsgBuffer* buf, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees));
 
-    /**
- * @brief 
+/**
+ * @brief Retrieves the text_box_type from a message buffer's header.
  * 
- * @param buf 
- * @return u8 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ * 
+ * @param buf The message buffer to read from.
+ * @return u8 The text_box_type of the message buffer. If `EZTR_MsgBufferData` is being packed correctly, this will be
+ * equivalent to `buf->data.text_box_type`.
  */
 EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxType(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Sets the text_box_type of the message buffer's header. 
  * 
- * @param buf 
- * @param type 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ *  
+ * @param buf The message buffer to write to.
+ * @param type The new text_box_type value. If `EZTR_MsgBufferData` is being packed correctly, this will be equivalent 
+ * to `buf->data.text_box_type = type`
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxType(EZTR_MsgBuffer* buf, u8 type));
 
 /**
- * @brief 
+ * @brief Retrieves the text_box_y_pos from a message buffer's header.
  * 
- * @param buf 
- * @return u8 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ * 
+ * @param buf The message buffer to read from.
+ * @return u8 The text_box_y_pos of the message buffer. If `EZTR_MsgBufferData` is being packed correctly, this will be
+ * equivalent to `buf->data.text_box_y_pos`.
  */
 EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxYPos(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Sets the text_box_y_pos of the message buffer's header. 
  * 
- * @param buf 
- * @param pos 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ *  
+ * @param buf The message buffer to write to.
+ * @param pos The new text_box_y_pos value. If `EZTR_MsgBufferData` is being packed correctly, this will be equivalent 
+ * to `buf->data.text_box_y_pos = pos`
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxYPos(EZTR_MsgBuffer* buf, u8 pos));
 
 /**
- * @brief 
+ * @brief Retrieves the display_icon from a message buffer's header.
  * 
- * @param buf 
- * @return u8 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ * 
+ * @param buf The message buffer to read from.
+ * @return u8 The display_icon of the message buffer. If `EZTR_MsgBufferData` is being packed correctly, this will be
+ * equivalent to `buf->data.display_icon`.
  */
 EZTR_IMPORT(u8 EZTR_MsgBuffer_GetTextBoxDisplayIcon(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Sets the display_icon of the message buffer's header. 
  * 
- * @param buf 
- * @param icon 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ *  
+ * @param buf The message buffer to write to.
+ * @param icon The new display_icon value. If `EZTR_MsgBufferData` is being packed correctly, this will be equivalent 
+ * to `buf->data.display_icon = icon`
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetTextBoxDisplayIcon(EZTR_MsgBuffer* buf, u8 icon));
 
 /**
- * @brief 
+ * @brief Retrieves the next_message_id from a message buffer's header.
  * 
- * @param buf 
- * @return u16 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ * 
+ * @param buf The message buffer to read from.
+ * @return u16 The display_icon of the message buffer. If `EZTR_MsgBufferData` is being packed correctly, this will be
+ * equivalent to `buf->data.next_message_id`.
  */
 EZTR_IMPORT(u16 EZTR_MsgBuffer_GetNextMsg(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Sets the next_message_id of the message buffer's header. 
  * 
- * @param buf 
- * @param textId 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ *  
+ * @param buf The message buffer to write to.
+ * @param textId The new display_icon value. If `EZTR_MsgBufferData` is being packed correctly, this will be equivalent 
+ * to `buf->data.next_message_id = icon`.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetNextMsg(EZTR_MsgBuffer* buf, u16 textId));
 
 /**
- * @brief 
+ * @brief Retrieves the first_item_rupees from a message buffer's header.
  * 
- * @param buf 
- * @return u16 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ * 
+ * @param buf The message buffer to read from.
+ * @return u16 The first_item_rupees of the message buffer. If `EZTR_MsgBufferData` is being packed correctly, this will be
+ * equivalent to `buf->data.first_item_rupees`.
  */
 EZTR_IMPORT(u16 EZTR_MsgBuffer_GetFirstItemRupees(EZTR_MsgBuffer* buf));
+
 /**
- * @brief 
+ * @brief Sets the first_item_rupees of the message buffer's header. 
  * 
- * @param buf 
- * @param val 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ *  
+ * @param buf The message buffer to write to.
+ * @param value The new first_item_rupees value. If `EZTR_MsgBufferData` is being packed correctly, this will be equivalent 
+ * to `buf->data.first_item_rupees = icon`.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetFirstItemRupees(EZTR_MsgBuffer* buf, u16 val));
 
 /**
- * @brief 
+ * @brief Retrieves the second_item_rupees from a message buffer's header.
  * 
- * @param buf 
- * @return u16 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ * 
+ * @param buf The message buffer to read from.
+ * @return u16 The second_item_rupees of the message buffer. If `EZTR_MsgBufferData` is being packed correctly, this will be
+ * equivalent to `buf->data.second_item_rupees`.
  */
 EZTR_IMPORT(u16 EZTR_MsgBuffer_GetSecondItemRupees(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Sets the second_item_rupees of the message buffer's header. 
  * 
- * @param buf 
- * @param val 
+ * Useful if your compiler is having trouble with the `__attribute_((packed))` on `EZTR_MsgBufferData`, and the data isn't 
+ * lining up correctly.
+ *  
+ * @param buf The message buffer to write to.
+ * @param value The new second_item_rupees value. If `EZTR_MsgBufferData` is being packed correctly, this will be equivalent 
+ * to `buf->data.second_item_rupees = icon`.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 val));
 
 /**
- * @brief 
+ * @brief Prints the contents of a message buffer to the console.
+ * 
+ * Each value in the header will be labeled. The content region
  * 
  * @param buf 
  */
