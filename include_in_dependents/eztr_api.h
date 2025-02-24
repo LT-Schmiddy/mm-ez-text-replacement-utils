@@ -23,7 +23,6 @@
 
 #else
 
-// Stuff Doxygen needs to ignore:
 #define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
 #define EZTR_PACK_STRUCT __attribute__((packed))
 
@@ -830,7 +829,7 @@ EZTR_IMPORT(void EZTR_MsgBuffer_Destroy(EZTR_MsgBuffer* buf));
  * Unlike something like `strcoy()`, this method is safe as long as dst is a full-sized message buffer,
  * as it will not copy beyond the message buffer size.
  * 
- * Because `src` is expected to have a header region, the message termination characters `\xBF` are ignored
+ * Because `src` is expected to have a header region, the message termination characters '\xBF' are ignored
  * for the first 11 bytes.
  * 
  * @param dst The message buffer to copy into.
@@ -842,12 +841,13 @@ EZTR_IMPORT(u32 EZTR_MsgBuffer_Copy(EZTR_MsgBuffer* dst, char* src));
  /**
  * @brief Copies data from `src` into the message buffer `dst`, up to `len` bytes.
  * 
- * Because `src` is expected to have a header region, the message termination characters `\xBF` are ignored
+ * Because `src` is expected to have a header region, the message termination characters '\xBF' are ignored
  * for the first 11 bytes.
  * 
  * @param dst The message buffer to copy into.
  * @param src The data to copy. If you want to copy from another message buffer, use `src->raw.schar` or typecast src as `char*`.
- * @param len The maximum number of bytes to copy. If a '\xBF` is encountered in the content region of `src`, the function will stop copying before `len` is reached.
+ * @param len The maximum number of bytes to copy. If a '\xBF` is encountered in the content region of `src`, the function 
+ * will stop copying before `len` is reached.
  * @return u32 The number of bytes copied.
  */
 EZTR_IMPORT(u32 EZTR_MsgBuffer_NCopy(EZTR_MsgBuffer* dst, char* src, size_t len));
@@ -855,7 +855,7 @@ EZTR_IMPORT(u32 EZTR_MsgBuffer_NCopy(EZTR_MsgBuffer* dst, char* src, size_t len)
 /**
  * @brief Gets the size of the message buffer's stored data, in bytes.
  * 
- * Does not include the termination character `\xBF`.
+ * Does not include the termination character '\xBF'.
  * 
  * @param buf The buffer to measure.
  * @return u32 The number of bytes the message buffer's data takes up.
@@ -865,8 +865,8 @@ EZTR_IMPORT(u32 EZTR_MsgBuffer_Len(EZTR_MsgBuffer* buf));
 /**
  * @brief Gets the size of the message buffer's content region, in bytes.
  * 
- * Effectively `EZTR_MsgBuffer_Len(buf) - 11`. 
- * Does not include the termination character `\xBF`.
+ * Effectively `EZTR_MsgBuffer_Len(buf) - 11` or `EZTR_MsgSContent_Len(buf->partition.content)`. 
+ * Does not include the termination character '\xBF'.
  * 
  * @param buf The buffer to measure.
  * @return u32 The number of bytes the message buffer's content takes up.
@@ -1063,91 +1063,149 @@ EZTR_IMPORT(void EZTR_MsgBuffer_Print(EZTR_MsgBuffer* buf));
 /**
  * @brief Prints the contents of a message buffer to the console.
  * 
- * Each value in the header will be labeled. The content region the entire 1279 bytes of the content region.
+ * Each value in the header will be labeled. The this function prints the entire 1279 bytes of the content region.
  * 
  * @param buf The message buffer to print.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_PrintFull(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Gets a pointer to the beginning of the content region for a desired message buffer.
  * 
- * @param buf 
- * @return char* 
+ * Equivalent to `buf->partition.content`, or `buf->data.content` assuming EZTR_MsgBufferData is being packed correctly. 
+ * 
+ * @param buf The buffer to get the the content from.
+ * @return char* The beginning of the message buffer's content region.
  */
 EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Sets the message message content as empty.A_BTN_STATE_IDLE
  * 
- * @param cont 
+ * This is accomplished by setting the first character in the message content to the '\xBF' termination character.
+ * No other bytes are effected.
+ * 
+ * @param cont A pointer to message content string.
  */
 EZTR_IMPORT(void EZTR_MsgSContent_SetEmpty(char* cont));
 
 /**
- * @brief 
+ * @brief Gets the length of the a message content string in bytes, not counting the '\xBF' termination character
  * 
- * @param cont 
- * @return u32 
+ * Similar to `strlen()` for null-terminated strings. 
+ * 
+ * This function is safe as long as `cont` points to the beginning of a message buffer's content region, since it 
+ * will not count bytes beyond that size.
+ * 
+ * @param cont The message content you want to get the length of. 
+ * @return u32 The length of the message content, in bytes.
  */
 EZTR_IMPORT(u32 EZTR_MsgSContent_Len(char* cont));
 
 /**
- * @brief 
+ * @brief Copies message content from `src` into the `dst`, up to `len` bytes.
  * 
- * @param dst 
- * @param src 
- * @param len 
- * @return u32 
+ * Similar to `strncpy()` for null-terminated strings. 
+ * 
+ * @param dst The location to copy message content into.
+ * @param src The message content to copy.
+ * @param len The maximum number of bytes to copy. If a '\xBF' is encountered in `src`, the function  will stop copying 
+ * before `len` is reached.
+ * @return u32 The number of bytes copied.
  */
 EZTR_IMPORT(u32 EZTR_MsgSContent_NCopy(char* dst, char* src, size_t len));
 
 /**
- * @brief 
+ * @brief Copies message content from `src` into the `dst`.
  * 
- * @param dst 
- * @param src 
- * @return u32 
+ * Similar to `strcpy()` for null-terminated strings.
+ * 
+ * This function is safe as long as `dst` points to the beginning of a message buffer's content region, since it 
+ * will not copy bytes beyond that size.
+ * 
+ * @param dst The location to copy message content into.
+ * @param src The message content to copy. Should be '\xBF' terminated.
+ * @return u32 The number of bytes copied.
  */
 EZTR_IMPORT(u32 EZTR_MsgSContent_Copy(char* dst, char* src));
 
 /**
- * @brief 
+ * @brief Copies the message content of `src` onto the end of `dst`, up to `len` bytes from `src`.
  * 
- * @param dst 
- * @param src 
- * @param len 
- * @return u32 
+ * Similar to `strncat()` for null-terminated strings.
+ * 
+ * This function will not produce message content larger than a message buffer's content region. Copying will
+ * stop once the maximum size is reached.
+ * 
+ * @param dst The location to append message content into.
+ * @param src The message content to copy.
+ * @param len The maximum number of bytes to copy. If a '\xBF' is encountered in `src`, the function  will stop copying 
+ * before `len` is reached.
+ * @return char* The pointer to the new string (i.e: to `dst`).
  */
 EZTR_IMPORT(char* EZTR_MsgSContent_NCat(char* dst, char* src, size_t len));
+
 /**
- * @brief 
+ * @brief Copies the message content of `src` onto the end of `dst`.
  * 
- * @param dst 
- * @param src 
- * @return char* 
+ * Similar to `strcat()` for null-terminated strings.
+ * 
+ * This function is safe as long as `dst` points to the beginning of a message buffer's content region, as it
+ * will not produce message content larger than a message buffer's content region. Copying will
+ * stop once the maximum size is reached.
+ * 
+ * @param dst The location to append message content into.
+ * @param src The message content to copy. Should be '\xBF' terminated.
+ * @return char* The pointer to the new string (i.e: to `dst`).
  */
 EZTR_IMPORT(char* EZTR_MsgSContent_Cat(char* dst, char* src));
+
 /**
- * @brief 
+ * @brief Compares up to `len` bytes of two message content strings.
  * 
- * @param str1 
- * @param str2 
- * @param len 
- * @return s32 
+ * Similar to `strncmp()` for null-terminated strings, but with one notable difference:
+ * With `strncmp()`, if two strings are equal for the first `n` characters, but one string continues after `n` while  
+ * the other doesn't, the shorter string is considered 'lesser' because the null terminator `'\x00'` is naturally
+ * the lowest possible ASCII value. Because strings in MM are `'\XBF'` terminated, that behavior won't apply here.
+ * 
+ * In `EZTR_MsgSContent_NCmp()`, a special case is applied: If two strings are equal for `n` characters, but the 
+ * next character after `n` is `'\XBF'` in one of the strings, it is considered the lesser string regardless of 
+ * what the other character is.
+ * 
+ * @param str1 The first message content string to compare.
+ * @param str2 The second message content string to compare.
+ * @param len The maximum number of bytes to compare.
+ * @return s32 Returns 0 is the strings are the same, 1 if the first string is greater than the second, and 
+ * -1 if the second string is greater than the first.
  */
 EZTR_IMPORT(s32 EZTR_MsgSContent_NCmp(char* str1, char* str2, size_t len));
+
 /**
- * @brief 
+ * @brief Compares two message content strings.
  * 
- * @param str1 
- * @param str2 
- * @return s32 
+ * This function is safe as long as both `str1` and `str2` point to the content region of message buffers, as the 
+ * comparison will not continue beyond that size.
+ * 
+ * Similar to `strcmp()` for null-terminated strings, but with one notable difference:
+ * With `strncmp()`, if two strings are equal for the first `n` characters, but one string continues after `n` while  
+ * the other doesn't, the shorter string is considered 'lesser' because the null terminator `'\x00'` is naturally
+ * the lowest possible ASCII value. Because strings in MM are `'\XBF'` terminated, that behavior won't apply here.
+ * 
+ * In `EZTR_MsgSContent_Cmp()`, a special case is applied: If two strings are equal for `n` characters, but the 
+ * next character after `n` is `'\XBF'` in one of the strings, it is considered the lesser string regardless of 
+ * what the other character is.
+ * 
+ * @param str1 The first message content string to compare.
+ * @param str2 The second message content string to compare.
+ * @return s32 Returns 0 is the strings are the same, 1 if the first string is greater than the second, and 
+ * -1 if the second string is greater than the first.
  */
 EZTR_IMPORT(s32 EZTR_MsgSContent_Cmp(char* str1, char* str2));
 
 /**
- * @brief 
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param ... 
@@ -1156,7 +1214,9 @@ EZTR_IMPORT(s32 EZTR_MsgSContent_Cmp(char* str1, char* str2));
 EZTR_IMPORT(int EZTR_MsgSContent_Printf(const char* format, ...));
 
 /**
- * @brief 
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param ... 
@@ -1165,7 +1225,12 @@ EZTR_IMPORT(int EZTR_MsgSContent_Printf(const char* format, ...));
 EZTR_IMPORT(int EZTR_MsgSContent_PrintfLine(const char* format, ...));
 
 /**
- * @brief 
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * Unlike `EZTR_MsgSContent_Printf()`, this function will append a newline to the end of 
+ * console output.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param format 
@@ -1175,7 +1240,9 @@ EZTR_IMPORT(int EZTR_MsgSContent_PrintfLine(const char* format, ...));
 EZTR_IMPORT(int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...));
 
 /**
- * @brief 
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param count 
@@ -1186,7 +1253,9 @@ EZTR_IMPORT(int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...))
 EZTR_IMPORT(int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...));
 
 /**
- * @brief 
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param count 
@@ -1197,7 +1266,9 @@ EZTR_IMPORT(int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const char
 EZTR_IMPORT(int EZTR_MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va));
 
 /**
- * @brief 
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param va 
@@ -1206,7 +1277,9 @@ EZTR_IMPORT(int EZTR_MsgSContent_Vsnprintf(char* buffer, size_t count, const cha
 EZTR_IMPORT(int EZTR_MsgSContent_Vprintf(const char* format, va_list va));
 
 /**
- * @brief 
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param out 
  * @param arg 
