@@ -98,6 +98,7 @@ EZTR_ON_INIT void run_tests() {
     validate("Count == 10", b2count == 10);
 
     EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex\xBF");
+    EZTR_MsgBuffer_PrintFull(buf3);
 
     recomp_printf("USER_CHECK: These two buffers should have the same values.");
     EZTR_MsgBuffer_Print(buf2);

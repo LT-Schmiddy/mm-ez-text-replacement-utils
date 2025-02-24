@@ -263,7 +263,7 @@ void MsgBuffer_PrintFull(MsgBuffer* buf) {
 
     recomp_printf("\tContent: \"");
     // Printing Message Content:
-    for (s32 i = 0; i < MSG_BUFFER_SIZE; i++) {
+    for (s32 i = MSG_HEADER_SIZE; i < MSG_BUFFER_SIZE; i++) {
         char c = buf->raw.schar[i];
 
         print_char(c);

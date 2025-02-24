@@ -85,7 +85,7 @@ RECOMP_EXPORT void EZTR_MsgBuffer_Print(MsgBuffer* buf) {
     MsgBuffer_Print(buf);
 }
 RECOMP_EXPORT void EZTR_MsgBuffer_PrintFull(MsgBuffer* buf) {
-    MsgBuffer_Print(buf);
+    MsgBuffer_PrintFull(buf);
 }
 RECOMP_EXPORT char* EZTR_MsgBuffer_GetContentPtr(MsgBuffer* buf) {
     return MsgBuffer_GetContentPtr(buf);
