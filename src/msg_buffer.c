@@ -32,7 +32,7 @@ u32 MsgBuffer_Copy(MsgBuffer* dst, char* src) {
     return MsgBuffer_NCopy(dst, src, MSG_BUFFER_SIZE);
 }
 u32 MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len) {
-    LOGV_F("StrNCopying Message Data: %p -> %p ", src, dst);
+    LOGV("StrNCopying Message Data: %p -> %p ", src, dst);
 
     u32 i = 0;
     for (; (src[i] != MSG_ENDING_CHAR || i < MSG_HEADER_SIZE) && i < len; i++) {
@@ -51,13 +51,13 @@ u32 MsgBuffer_NCopy(MsgBuffer* dst, char* src, size_t len) {
 char* MsgBuffer_ShrinkForStorage(MsgBuffer* buf) {
     size_t store_len = MsgBuffer_Len(buf)+1;
     // The extra byte is to store the \xBF:
-    LOGV_F("Storage Size: %u", store_len);
+    LOGV("Storage Size: %u", store_len);
     char* retVal = recomp_alloc(sizeof(char) * store_len);
     
     // Not really meant for this, but it's fine.
     u32 copy_len = MsgBuffer_NCopy((MsgBuffer*)retVal, (char*)buf, store_len)+1;
     if (copy_len != store_len) {
-        LOGW_F("WARNING: STORAGE SIZE MISMATCH! Storage: %u, Length: %u", store_len, copy_len);
+        LOGW("WARNING: STORAGE SIZE MISMATCH! Storage: %u, Length: %u", store_len, copy_len);
     };
     return retVal;
 }
@@ -282,7 +282,7 @@ u32 MsgSContent_Len(char* cont) {
 }
 
 u32 MsgSContent_NCopy(char* dst, char* src, size_t len) {
-    LOGV_F("StrNCopying Message Content: %p -> %p", src, dst);
+    LOGV("StrNCopying Message Content: %p -> %p", src, dst);
 
     u32 i = 0;
     for (; (src[i] != MSG_ENDING_CHAR) && i < len; i++) {

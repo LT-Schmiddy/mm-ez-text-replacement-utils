@@ -30,15 +30,15 @@ char hex_to_byte(char* str) {
     u8 upper = 0;
     u8 lower = 0;
     
-    LOGV_F("Str: %c%c\n", str, str + 1);
+    LOGV("Str: %c%c\n", str, str + 1);
     for (u8 i = 0; i < 16; i++) {
         
         if (toupper(str[0]) == _hex[i]) {
-            LOGV_F("Upper Char: %c\n", _hex[i]);
+            LOGV("Upper Char: %c\n", _hex[i]);
             upper = i;
         }
         if (toupper(str[1]) == _hex[i]) {
-            LOGV_F("Lower Char: %c\n", _hex[i]);
+            LOGV("Lower Char: %c\n", _hex[i]);
             lower = i;
         }
     }

@@ -11,7 +11,7 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
     MessageContext* msgCtx = &Message_OpenText_stored_play->msgCtx;
     Font* font = &msgCtx->font;
     u16 textId = msgCtx->currentTextId;
-    LOGV_F("Message_OpenText Hook: 0x%04X (%i).", (u32)textId, (u32)textId);
+    LOGV("Message_OpenText Hook: 0x%04X (%i).", (u32)textId, (u32)textId);
 
     if (TEXT_DUMPING) {
         dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
@@ -21,14 +21,14 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
 
     // Handled text replacement
     if (buf != NULL) {
-        LOGI_F("Replacing Text 0x%04X (%i).", (u32)textId, (u32)textId);     
+        LOGI("Replacing Text 0x%04X (%i).", (u32)textId, (u32)textId);     
         // MsgTable_RunCallback(ETZR_mainTable, msgCtx->currentTextId, play);
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
         MsgBuffer_Copy((MsgBuffer*)&font->msgBuf, buf->raw.schar);
         MsgBuffer_Destroy(buf);
 
-        LOGV_F("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
+        LOGV("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         IF_LOG_VERBOSE MsgBuffer_Print((MsgBuffer*)&font->msgBuf);
         // Not completely sure, but using memcpy causes issues if the message is too long.
         // We'll just copy char by char.
@@ -93,13 +93,13 @@ RECOMP_HOOK_RETURN("func_801514B0") void handle_item_desc() {
 
     MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, msgCtx->currentTextId, play);
     if (buf != NULL) {
-        LOGI_F("Replacing Text 0x%04X (%i).", (u32)msgCtx->currentTextId, (u32)msgCtx->currentTextId);     
+        LOGI("Replacing Text 0x%04X (%i).", (u32)msgCtx->currentTextId, (u32)msgCtx->currentTextId);     
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
         MsgBuffer_Copy((MsgBuffer*)&font->msgBuf, buf->raw.schar);
         MsgBuffer_Destroy(buf);
 
-        LOGV_F("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
+        LOGV("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         IF_LOG_VERBOSE MsgBuffer_Print((MsgBuffer*)&font->msgBuf);
 
         msgCtx->choiceNum = 0;

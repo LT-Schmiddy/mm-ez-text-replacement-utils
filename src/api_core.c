@@ -13,5 +13,5 @@ RECOMP_CALLBACK("*", recomp_on_init) void on_startup () {
 
 
 RECOMP_EXPORT void _EXTR_ReportErrorMessage(char* error_msg) {
-    LOGE_F("Dependent mod reported an error: %s", error_msg);
+    LOGE("Dependent mod reported an error: %s", error_msg);
 }

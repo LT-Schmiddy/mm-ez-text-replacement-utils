@@ -29,7 +29,7 @@ MsgEntryCluster* MsgEntryCluster_Create(u8 id) {
         retVal->entries[i] = NULL;
     }
 
-    LOGD_F("Creating Cluster with Id 0x%02X (%u).", (u32)id, (u32)id);
+    LOGD("Creating Cluster with Id 0x%02X (%u).", (u32)id, (u32)id);
     return retVal;
 }
 
@@ -45,11 +45,11 @@ void MsgEntryCluster_Destroy(MsgEntryCluster* cluster) {
 
 MsgEntry* MsgEntryCluster_GetEntry(MsgEntryCluster* cluster, u16 textId) {
     SPLIT_TEXT_ID(textId, cl, pos);
-    LOGD_F("Loading Entry 0x%02X for 0x%04X", pos, textId);
+    LOGD("Loading Entry 0x%02X for 0x%04X", pos, textId);
     MsgEntry* retVal = cluster->entries[pos];
 
     if (retVal != NULL && retVal->textId != textId) {
-        LOGD_F("Entry for 0x%04X is NULL", textId);
+        LOGD("Entry for 0x%04X is NULL", textId);
         return NULL;
     }
     return retVal;
@@ -105,9 +105,9 @@ void MsgTable_Destroy(MsgTable* table) {
 
 MsgEntry* MsgTable_GetEntry(MsgTable* table, u16 textId) {
     SPLIT_TEXT_ID(textId, cl, pos);
-    LOGD_F("Loading Cluster 0x%02X for 0x%04X", cl, textId);
+    LOGD("Loading Cluster 0x%02X for 0x%04X", cl, textId);
     if (table->clusters[cl] == NULL) {
-        LOGD_F("Cluster for 0x%04x is NULL", textId);
+        LOGD("Cluster for 0x%04x is NULL", textId);
         return NULL;
     }
 
@@ -130,7 +130,7 @@ void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCall
     }
     
     MsgEntryCluster_StoreBuffer(table->clusters[cl], textId, entry, callback);
-    LOGD_F("Setting Text Entry Id 0x%04X (%i)", (u32)textId, (u32)textId);
+    LOGD("Setting Text Entry Id 0x%04X (%i)", (u32)textId, (u32)textId);
 }
 
 void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback) {
@@ -188,19 +188,19 @@ void MsgTable_ChangeCallback(MsgTable* table, u16 textId, MsgCallback callback) 
     if (search != NULL) {
         search->callback = callback;
     } else {
-        LOGE_F("ERROR assigning callback for textId %i - set the buffer first.\n", search->textId);
+        LOGE("ERROR assigning callback for textId %i - set the buffer first.\n", search->textId);
     }
 }
 
 MsgBuffer* MsgTable_LoadBufferCallback(MsgTable* table, u16 textId, PlayState* play) {
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
-        LOGD_F("Loading Buffer for 0x%04X", textId);
+        LOGD("Loading Buffer for 0x%04X", textId);
         MsgBuffer* buf = MsgBuffer_CreateFromStr(search->buf_store);
         IF_LOG_VERBOSE MsgSContent_PrintfLn("%m\xBF", buf);
         
         if (search->callback != NULL) {
-            LOGD_F("Running Callback for 0x%04X", textId);
+            LOGD("Running Callback for 0x%04X", textId);
             search->callback(buf, textId, play);
         }
         return buf;

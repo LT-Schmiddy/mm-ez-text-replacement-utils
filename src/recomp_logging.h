@@ -41,8 +41,7 @@ static const char* _RECOMP_LOG_LEVEL_COLORS[] = {
     RECOMP_LOG_CONFIG_VERBOSE_COLOR, 
 };
 
-#define _LOG_PRINTF_CALL(format, ...) RECOMP_LOG_CONFIG_PRINTF_FUNC(format, __VA_ARGS__)
-#define _LOG_PRINT_CALL(format, ...) RECOMP_LOG_CONFIG_PRINTF_FUNC(format)
+#define _LOG_PRINTF_CALL(...) RECOMP_LOG_CONFIG_PRINTF_FUNC(__VA_ARGS__)
 
 #define IS_LOG_LEVEL(log_level) log_level <= RECOMP_LOG_CONFIG_LOG_LEVEL
 #define IF_LOG_LEVEL(log_level) if (IS_LOG_LEVEL(log_level))
@@ -67,48 +66,27 @@ static const char* _RECOMP_LOG_LEVEL_COLORS[] = {
 
 #define _LOG_FOOTER _LOG_PRINTF_CALL("%s\n", _CRESET);
 
-#define LOG_FORMAT(log_level, format, ...) \
+#define LOG_FORMAT(log_level, ...) \
     { IF_LOG_LEVEL(log_level) { \
         _LOG_HEADER(log_level) \
-        _LOG_PRINTF_CALL(format, __VA_ARGS__); \
-        _LOG_FOOTER \
-    }};
-
-#define LOG_NO_FORMAT(log_level, format) \
-    { IF_LOG_LEVEL(log_level) { \
-        _LOG_HEADER(log_level) \
-        _LOG_PRINT_CALL(format); \
+        _LOG_PRINTF_CALL( __VA_ARGS__); \
         _LOG_FOOTER \
     }};
 
 // Logging Macros:
-#define LOG_FATAL_F(format, ...) LOG_FORMAT(RECOMP_LOG_FATAL, format, __VA_ARGS__)
-#define LOG_ERROR_F(format, ...) LOG_FORMAT(RECOMP_LOG_ERROR, format, __VA_ARGS__)
-#define LOG_WARNING_F(format, ...) LOG_FORMAT(RECOMP_LOG_WARNING, format, __VA_ARGS__)
-#define LOG_INFO_F(format, ...) LOG_FORMAT(RECOMP_LOG_INFO, format, __VA_ARGS__)
-#define LOG_DEBUG_F(format, ...) LOG_FORMAT(RECOMP_LOG_DEBUG, format, __VA_ARGS__)
-#define LOG_VERBOSE_F(format, ...) LOG_FORMAT(RECOMP_LOG_VERBOSE, format, __VA_ARGS__)
-
-#define LOG_FATAL(format), LOG_NO_FORMAT(RECOMP_LOG_FATAL, format)
-#define LOG_ERROR(format) LOG_NO_FORMAT(RECOMP_LOG_ERROR, format)
-#define LOG_WARNING(format) LOG_NO_FORMAT(RECOMP_LOG_WARNING, format)
-#define LOG_INFO(format) LOG_NO_FORMAT(RECOMP_LOG_INFO, format)
-#define LOG_DEBUG(format) LOG_NO_FORMAT(RECOMP_LOG_DEBUG, format)
-#define LOG_VERBOSE(format) LOG_NO_FORMAT(RECOMP_LOG_VERBOSE, format)
+#define LOG_FATAL(...) LOG_FORMAT(RECOMP_LOG_FATAL, __VA_ARGS__)
+#define LOG_ERROR(...) LOG_FORMAT(RECOMP_LOG_ERROR, __VA_ARGS__)
+#define LOG_WARNING(...) LOG_FORMAT(RECOMP_LOG_WARNING, __VA_ARGS__)
+#define LOG_INFO(...) LOG_FORMAT(RECOMP_LOG_INFO, __VA_ARGS__)
+#define LOG_DEBUG(...) LOG_FORMAT(RECOMP_LOG_DEBUG, __VA_ARGS__)
+#define LOG_VERBOSE(...) LOG_FORMAT(RECOMP_LOG_VERBOSE, __VA_ARGS__)
 
 // Short-hand Logging Macros:
-#define LOGF_F(format, ...) LOG_FATAL_F(format, __VA_ARGS__)
-#define LOGE_F(format, ...) LOG_ERROR_F(format, __VA_ARGS__)
-#define LOGW_F(format, ...) LOG_WARNING_F(format, __VA_ARGS__)
-#define LOGI_F(format, ...) LOG_INFO_F(format, __VA_ARGS__)
-#define LOGD_F(format, ...) LOG_DEBUG_F(format, __VA_ARGS__)
-#define LOGV_F(format, ...) LOG_VERBOSE_F(format, __VA_ARGS__)
-
-#define LOGF(format) LOG_FATAL(format)
-#define LOGE(format) LOG_ERROR(format)
-#define LOGW(format) LOG_WARNING(format)
-#define LOGI(format) LOG_INFO(format)
-#define LOGD(format) LOG_DEBUG(format)
-#define LOGV(format) LOG_VERBOSE(format)
+#define LOGF(...) LOG_FATAL(__VA_ARGS__)
+#define LOGE(...) LOG_ERROR(__VA_ARGS__)
+#define LOGW(...) LOG_WARNING(__VA_ARGS__)
+#define LOGI(...) LOG_INFO(__VA_ARGS__)
+#define LOGD(...) LOG_DEBUG(__VA_ARGS__)
+#define LOGV(...) LOG_VERBOSE(__VA_ARGS__)
 
 #endif
