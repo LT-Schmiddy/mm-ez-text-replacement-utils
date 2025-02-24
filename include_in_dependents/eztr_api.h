@@ -36,7 +36,7 @@ EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 
 #define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
     static u16 id; static u8 is_set = 0; if (setter != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
-    "\e[1;31mThe textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
+    "The textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
     ); setter->out_success = 0;} else { id = setter->new_id; is_set = 1; setter->out_success = 1;}} return id; }
 
 #endif
@@ -1054,16 +1054,18 @@ EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 val
 /**
  * @brief Prints the contents of a message buffer to the console.
  * 
- * Each value in the header will be labeled. The content region
+ * Each value in the header will be labeled. The content region will stop printing after the '\xBF' termination character.
  * 
- * @param buf 
+ * @param buf The message buffer to print.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_Print(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Prints the contents of a message buffer to the console.
  * 
- * @param buf 
+ * Each value in the header will be labeled. The content region the entire 1279 bytes of the content region.
+ * 
+ * @param buf The message buffer to print.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_PrintFull(EZTR_MsgBuffer* buf));
 

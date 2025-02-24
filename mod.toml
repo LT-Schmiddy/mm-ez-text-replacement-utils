@@ -67,10 +67,18 @@ additional_files = [
 [[manifest.config_options]]
 id = "recomp_log_level"
 name = "Log Level"
-description = "Log additional information to the console for debugging."
+description = "Log additional information to the console for debugging. (Only applies to debug builds of Zelda64Recomp)."
 type = "Enum"
 options = [ "NONE", "FATAL", "ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
 default = "ERROR"
+
+[[manifest.config_options]]
+id = "recomp_log_colors"
+name = "Colors"
+description = "Use ANSI color codes to make log messages visually distinct. (Only applies to debug builds of Zelda64Recomp)"
+type = "Enum"
+options = [ "Off", "On" ]
+default = "On"
 
 [[manifest.config_options]]
 id = "text_dumping"

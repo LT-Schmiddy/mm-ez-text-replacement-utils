@@ -38,9 +38,6 @@ static const RecompLogLevelInfo _RECOMP_LOG_LEVEL_INFO[] = {
     {"VERBOSE", RECOMP_LOG_CONFIG_VERBOSE_COLOR},
 };
 
-
-#define _LOG_PRINTF_CALL(...) RECOMP_LOG_CONFIG_PRINTF_FUNC(__VA_ARGS__)
-
 #define IS_LOG_LEVEL(log_level) log_level <= RECOMP_LOG_CONFIG_LOG_LEVEL
 #define IF_LOG_LEVEL(log_level) if (IS_LOG_LEVEL(log_level))
 
@@ -58,11 +55,17 @@ static const RecompLogLevelInfo _RECOMP_LOG_LEVEL_INFO[] = {
 #define IF_LOG_DEBUG IF_LOG_LEVEL(RECOMP_LOG_DEBUG)
 #define IF_LOG_VERBOSE IF_LOG_LEVEL(RECOMP_LOG_VERBOSE)
 
+
+#define _GET_COLOR_STR(log_level) RECOMP_LOG_CONFIG_USE_COLORS ? _RECOMP_LOG_LEVEL_INFO[log_level].color : ""
+#define _GET_CRESET RECOMP_LOG_CONFIG_USE_COLORS ?_CRESET : ""
+
+#define _LOG_PRINTF_CALL(...) RECOMP_LOG_CONFIG_PRINTF_FUNC(__VA_ARGS__)
+
 #define _LOG_HEADER(log_level) \
-    _LOG_PRINTF_CALL("%s%s - %s (%s at line %u, in %s): ", _RECOMP_LOG_LEVEL_INFO[log_level].color, RECOMP_LOG_CONFIG_HEADER, \
+    _LOG_PRINTF_CALL("%s%s - %s (%s at line %u, in %s): ", _GET_COLOR_STR(log_level), RECOMP_LOG_CONFIG_HEADER, \
         _RECOMP_LOG_LEVEL_INFO[log_level].name, __FILE_NAME__, __LINE__, __func__);
 
-#define _LOG_FOOTER _LOG_PRINTF_CALL("%s\n", _CRESET);
+#define _LOG_FOOTER _LOG_PRINTF_CALL("%s\n", _GET_CRESET);
 
 #define LOG_FORMAT(log_level, ...) \
     { IF_LOG_LEVEL(log_level) { \
