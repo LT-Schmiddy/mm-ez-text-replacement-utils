@@ -106,7 +106,11 @@ EZTR_ON_INIT void run_tests() {
 
     validate("EZTR_MsgSContent_Cmp: Equality (Content)", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
     EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex Schmid\xBF");
-    validate("EZTR_MsgSContent_Cmp: Equality (buf3 is longer)", -1 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    validate("EZTR_MsgSContent_Cmp: Mismatch (buf3 is longer)", -1 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    buf3->data.content[0] = '\0';
+    validate("EZTR_MsgSContent_Cmp: Mismatch (buf3 is longer, but with an earlier mismatch)", 1 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    
+    buf3->data.content[0] = 'H';
     validate("EZTR_MsgSContent_Cat", 0 == EZTR_MsgSContent_Cmp(EZTR_MsgSContent_Cat(buf2->data.content, " Schmid\xBF"), buf3->data.content));
 
     // At this point, we'll consider that EZTR_MsgSContent_Cmp works as intended.

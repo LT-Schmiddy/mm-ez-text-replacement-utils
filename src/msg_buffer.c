@@ -317,17 +317,18 @@ char* MsgSContent_Cat(char* dst, char* src) {
 s32 MsgSContent_NCmp(char* str1, char* str2, size_t len) {
     size_t slen1 = MIN(MsgSContent_Len(str1), len);
     size_t slen2 = MIN(MsgSContent_Len(str2), len);
-
-    if (slen1 > slen2) {
-        return 1;
-    } else if ( slen1 < slen2) {
-        return -1;
-    }
-
-    // Strings have equal lentgh, so slen1 and slen2 are interchangable:
-    for (u32 i = 0; i < slen1; i++) {
+    
+    size_t slen = MAX(slen1, slen2);
+    for (u32 i = 0; i < slen; i++) {
         s32 diff = str1[i] - str2[i];
+        // Found a mismatch:
         if (diff != 0) {
+
+            if (str1[i] == '\xBF') {
+                return -1;
+            } else if (str2[i] == '\xBF') {
+                return 1;
+            }
             // Found a mismatch:
             return diff / ABS(diff);
         }
