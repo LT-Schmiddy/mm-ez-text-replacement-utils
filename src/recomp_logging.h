@@ -18,28 +18,26 @@ typedef enum {
     RECOMP_LOG_VERBOSE = 6
 } RecompLogLevel;
 
-static const char* _RECOMP_LOG_LEVEL_STRINGS[] = {
-    "NONE",
-    "FATAL",
-    "ERROR",
-    "WARNING",
-    "INFO",
-    "DEBUG",
-    "VERBOSE"
-};
+typedef struct {
+    char* name;
+    char* color;
+
+} RecompLogLevelInfo;
+
 
 // ANSI Color codes sourced from here:
 // https://gist.github.com/RabaDabaDoba/145049536f815903c79944599c6f952a
 #define _CRESET "\e[0m"
-static const char* _RECOMP_LOG_LEVEL_COLORS[] = {
-    _CRESET,
-    RECOMP_LOG_CONFIG_FATAL_COLOR, 
-    RECOMP_LOG_CONFIG_ERROR_COLOR, 
-    RECOMP_LOG_CONFIG_WARNING_COLOR, 
-    RECOMP_LOG_CONFIG_INFO_COLOR, 
-    RECOMP_LOG_CONFIG_DEBUG_COLOR, 
-    RECOMP_LOG_CONFIG_VERBOSE_COLOR, 
+static const RecompLogLevelInfo _RECOMP_LOG_LEVEL_INFO[] = {
+    {"NONE", _CRESET},
+    {"FATAL", RECOMP_LOG_CONFIG_FATAL_COLOR},
+    {"ERROR", RECOMP_LOG_CONFIG_ERROR_COLOR},
+    {"WARNING", RECOMP_LOG_CONFIG_WARNING_COLOR},
+    {"INFO", RECOMP_LOG_CONFIG_INFO_COLOR},
+    {"DEBUG", RECOMP_LOG_CONFIG_DEBUG_COLOR},
+    {"VERBOSE", RECOMP_LOG_CONFIG_VERBOSE_COLOR},
 };
+
 
 #define _LOG_PRINTF_CALL(...) RECOMP_LOG_CONFIG_PRINTF_FUNC(__VA_ARGS__)
 
@@ -61,8 +59,8 @@ static const char* _RECOMP_LOG_LEVEL_COLORS[] = {
 #define IF_LOG_VERBOSE IF_LOG_LEVEL(RECOMP_LOG_VERBOSE)
 
 #define _LOG_HEADER(log_level) \
-    _LOG_PRINTF_CALL("%s%s - %s (%s at line %u, in %s): ", _RECOMP_LOG_LEVEL_COLORS[log_level], RECOMP_LOG_CONFIG_HEADER, \
-        _RECOMP_LOG_LEVEL_STRINGS[log_level], __FILE_NAME__, __LINE__, __func__);
+    _LOG_PRINTF_CALL("%s%s - %s (%s at line %u, in %s): ", _RECOMP_LOG_LEVEL_INFO[log_level].color, RECOMP_LOG_CONFIG_HEADER, \
+        _RECOMP_LOG_LEVEL_INFO[log_level].name, __FILE_NAME__, __LINE__, __func__);
 
 #define _LOG_FOOTER _LOG_PRINTF_CALL("%s\n", _CRESET);
 
