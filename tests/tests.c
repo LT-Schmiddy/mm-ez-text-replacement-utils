@@ -15,8 +15,8 @@ RECOMP_IMPORT("*", void recomp_free_config_string(char* str));
 int cases = 0;
 int cases_passed = 0; 
 
-EZTR_DEFINE_CUSTOM_MSG_HANDLE(EZTR_test_message);
-EZTR_DEFINE_CUSTOM_MSG_HANDLE(EZTR_test_message2);
+EZTR_DEFINE_CUSTOM_MSG_HANDLE(test_message);
+EZTR_DEFINE_CUSTOM_MSG_HANDLE(test_message2);
 
 EZTR_MSG_CALLBACK(my_callback) {
     static int i = 0;
@@ -24,7 +24,7 @@ EZTR_MSG_CALLBACK(my_callback) {
     EZTR_MsgSContent_Sprintf(buf->data.content, "You've read this %i times.\xBF", i);
 
     // Tests declaring a followup message:
-    buf->data.next_message_id = EZTR_test_message(NULL);
+    buf->data.next_message_id = EZTR_HNAME(test_message)(NULL);
 }
 
 void validate(char* case_name, bool case_stmt) {
@@ -113,27 +113,27 @@ EZTR_ON_INIT void run_tests() {
     validate("EZTR_MsgSContent_Sprintf", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
     // Custom Message Stuff:
-    EZTR_Basic_AddCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    EZTR_Basic_AddCustomText(EZTR_HNAME(test_message), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX\xBF", NULL);
 
-    validate("my_message id == 0x354D", EZTR_test_message(NULL) == 0x354D);
+    validate("my_message id == 0x354D", EZTR_HNAME(test_message)(NULL) == 0x354D);
     
     // This should fail.
-    EZTR_Basic_AddCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    EZTR_Basic_AddCustomText(EZTR_HNAME(test_message), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 2\xBF", NULL);
     
     // So should this:
-    EZTR_Basic_ReplaceText(EZTR_test_message(NULL), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    EZTR_Basic_ReplaceText(EZTR_GET_ID(EZTR_HNAME(test_message)) , EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 2\xBF", NULL);
     
     // This should work.
-    EZTR_Basic_ReplaceCustomText(EZTR_test_message, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+    EZTR_Basic_ReplaceCustomText(EZTR_HNAME(test_message), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
             EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 3\xBF", NULL);
             
-    EZTR_Basic_AddCustomTextEmpty(EZTR_test_message2, my_callback);
+    EZTR_Basic_AddCustomTextEmpty(EZTR_HNAME(test_message2), my_callback);
     
-    validate("EZTR_test_message2 id == 0x354D", EZTR_test_message2(NULL) == 0x354E);
-    recomp_printf("EZTR_test_message2 id = 0x%04X\n", EZTR_test_message2(NULL));
+    validate("EZTR_test_message2 id == 0x354D", EZTR_GET_ID(EZTR_HNAME(test_message2)) == 0x354E);
+    recomp_printf("EZTR_test_message2 id = 0x%04X\n", EZTR_GET_ID(EZTR_HNAME(test_message2)));
 
     // Deku Nut message. Tests item description replacement.
     EZTR_Basic_ReplaceText(0x1709, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 

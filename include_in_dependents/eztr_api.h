@@ -140,13 +140,17 @@ typedef union {
         EZTR_MsgBuffer_Data data;
 } EZTR_MsgBuffer;
 
+
+
 /**
  * @brief Uses to set/get the actual symbol name for custom message handles
  * If you want to add a prefix/suffix to your custom message handles globally, it can be done here.
  */
+#ifdef EZTR_NO_HANDLE_PREFIX
 #define EZTR_CUSTOM_MSG_HANDLE_NAME(name) name
-// #define EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix) EZTR_CustomMsgHandle_##name_suffix
-
+#else
+#define EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix) EZTR_CustomMsgHandle_##name_suffix
+#endif
 /**
  * @brief Creates a non-exported CustomMsgHandle object
  * 
@@ -185,7 +189,14 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  * 
  * This will allow you to use and interact with custom messages from other mods.
  */
-#define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name) RECOMP_IMPORT(mod_str, u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter))
+#define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name_suffix) RECOMP_IMPORT(mod_str, u16 EZTR_CustomMsgHandle_##name_suffix(_EZTR_CustomMsgHandleSetter* setter))
+
+/**
+ * @brief Declares and imports a CustomMsgHandle object from another mod.
+ * 
+ * This will allow you to use and interact with custom messages from other mods.
+ */
+#define EZTR_IMPORT_CUSTOM_MSG_HANDLE_NO_PREFIX(mod_str, name) RECOMP_IMPORT(mod_str, u16 name(_EZTR_CustomMsgHandleSetter* setter))
 
 /**
  * @brief Gets the textId from a custom message handle.
@@ -797,7 +808,7 @@ EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStr(char* src));
  * or else you will create a memory leak.
  * 
  * @param src The content to copy into the buffer. Expected to have a header region, and be terminated with '\xBF'.
- * @param len The maximum number of bytes to copy. If a '\xBF` is encountered in `src`, the function will stop copying before len is reached.
+ * @param len The maximum number of bytes to copy. If a '\xBF` is encountered in the content region of `src`, the function will stop copying before `len` is reached.
  * @return MsgBuffer* A pointer to the buffer you created.
  */
 EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStrN(char* src, size_t len));
@@ -814,37 +825,51 @@ EZTR_IMPORT(void EZTR_MsgBuffer_Destroy(EZTR_MsgBuffer* buf));
 
 // Copy:
 /**
- * @brief Copies message buffer data from .
+ * @brief Copies data from `src` into the message buffer `dst`.
  * 
- * @param dst 
- * @param src 
- * @return u32 
+ * Unlike something like `strcoy()`, this method is safe as long as dst is a full-sized message buffer,
+ * as it will not copy beyond the message buffer size.
+ * 
+ * Because `src` is expected to have a header region, the message termination characters `\xBF` are ignored
+ * for the first 11 bytes.
+ * 
+ * @param dst The message buffer to copy into.
+ * @param src The data to copy. If you want to copy from another message buffer, use `src->raw.schar` or typecast src as `char*`.
+ * @return u32 The number of bytes copied.
  */
 EZTR_IMPORT(u32 EZTR_MsgBuffer_Copy(EZTR_MsgBuffer* dst, char* src));
 
-/**
- * @brief 
+ /**
+ * @brief Copies data from `src` into the message buffer `dst`, up to `len` bytes.
  * 
- * @param dst 
- * @param src 
- * @param len 
- * @return u32 
+ * Because `src` is expected to have a header region, the message termination characters `\xBF` are ignored
+ * for the first 11 bytes.
+ * 
+ * @param dst The message buffer to copy into.
+ * @param src The data to copy. If you want to copy from another message buffer, use `src->raw.schar` or typecast src as `char*`.
+ * @param len The maximum number of bytes to copy. If a '\xBF` is encountered in the content region of `src`, the function will stop copying before `len` is reached.
+ * @return u32 The number of bytes copied.
  */
 EZTR_IMPORT(u32 EZTR_MsgBuffer_NCopy(EZTR_MsgBuffer* dst, char* src, size_t len));
 
 /**
- * @brief 
+ * @brief Gets the size of the message buffer's stored data, in bytes.
  * 
- * @param buf 
- * @return u32 
+ * Does not include the termination character `\xBF`.
+ * 
+ * @param buf The buffer to measure.
+ * @return u32 The number of bytes the message buffer's data takes up.
  */
 EZTR_IMPORT(u32 EZTR_MsgBuffer_Len(EZTR_MsgBuffer* buf));
 
 /**
- * @brief 
+ * @brief Gets the size of the message buffer's content region, in bytes.
  * 
- * @param buf 
- * @return u32 
+ * Effectively `EZTR_MsgBuffer_Len(buf) - 11`. 
+ * Does not include the termination character `\xBF`.
+ * 
+ * @param buf The buffer to measure.
+ * @return u32 The number of bytes the message buffer's content takes up.
  */
 EZTR_IMPORT(u32 EZTR_MsgBuffer_ContentLen(EZTR_MsgBuffer* buf));
 
