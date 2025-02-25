@@ -84,7 +84,30 @@ EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 /** @}*/
 
 /**
- * \defgroup Handles
+ * \defgroup CustomMsgHandle
+ * 
+ * This page contains all of the information in custom message handles an how to use them.
+ * 
+ * It's worth noting that a custom message handle is actually a function, defined through macros.
+ * In brief, here are the important things to know:
+ * * The handler's only argument is a pointer that EZTR uses internally. Modders don't need to use it.
+ * * You can retrieve the handle's textId by calling it with NULL as the argument (`handle(NULL)`)
+ * * By default, the handle can only have its textId assigned once (See below on how to change this behavior). 
+ * * Handles created using `EZTR_DEFINE_CUSTOM_MSG_HANDLE`, the recommended macro for creating custom message handles, are marked with `RECOMP_EXPORT`.
+ *
+ * This implementation was decided on to ensure that the textIds of custom messages are not lost through
+ * variable reassignments, and to facilitate mods potentially needing to access/modify each other's messages.
+ * 
+ * For those interested in the technical details: The function's only argument is used by EZTR to set the textId variable 
+ * when a custom message is assigned to it, and to check that the assignment was a success. 
+ * 
+ * The version of the handle function included in this header stores the textId in a static variable, and includes logic that
+ * will only allow the textId to be set once. If a second attempt to set the ID is made, an error message is printed. Rather than
+ * change a handle's textId, you should change the stored message at that id.
+ * 
+ * If you want to change the behavior of the handles, you can write your own custom message handle functions, but
+ * it's not recommended.
+ * 
  * @{
  */
  
@@ -289,25 +312,6 @@ typedef union {
  * or the `EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT()` macro in one of your .c files, 
  * outside of any functions.
  * 
- * It's worth noting that a custom message handle is actually a function, defined through macros.
- * In brief, here are the important things to know:
- * * The handler's only argument is a pointer that EZTR uses internally. Modders don't need to use it.
- * * You can retrieve the handle's textId by calling it with NULL as the argument (`handle(NULL)`)
- * * By default, the handle can only have its textId assigned once (See below on how to change this behavior). 
- * * Handles created using `EZTR_DEFINE_CUSTOM_MSG_HANDLE`, the recommended macro for creating custom message handles, are marked with `RECOMP_EXPORT`.
- *
- * This implementation was decided on to ensure that the textIds of custom messages are not lost through
- * variable reassignments, and to facilitate mods potentially needing to access/modify each other's messages.
- * 
- * For those interested in the technical details: The function's only argument is used by EZTR to set the textId variable 
- * when a custom message is assigned to it, and to check that the assignment was a success. 
- * 
- * The version of the handle function included in this header stores the textId in a static variable, and includes logic that
- * will only allow the textId to be set once. If a second attempt to set the ID is made, an error message is printed. Rather than
- * change a handle's textId, you should change the stored message at that id.
- * 
- * If you want to change the behavior of the handles, you can write your own custom message handle functions, but
- * it's not recommended.
  * 
  */
 typedef u16 (*EZTR_CustomMsgHandle)(_EZTR_CustomMsgHandleSetter* setter);

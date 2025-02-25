@@ -2,7 +2,18 @@
 
 This is an API for modders that enables easily replacing in-game text and dialog.
 
-For example, the following code is used to replace the all dialog related the Razor Sword's breaking after 100 uses.
+To use this API in your own projects, include `MM_EZ_Text_Replacer_API:2.0.0` as a dependency in your `mod.toml`,
+and download the API header from GitHub [here](https://github.com/LT-Schmiddy/mm-ez-text-replacement-utils/blob/main/include_in_dependents/eztr_api.h).
+
+The main header contains a large amound of EZTR's documentation, but more information can be found in the online documentation [here](https://lt-schmiddy.github.io/docs/EZTR_for_Zelda64Recomp/index.html).
+
+In addition to simple text replacements, v2.0.0 offers:
+
+* Dynamically generates messages using a callback system.
+* Support for adding new message entries. Use EZTR to quickly implement additional dialog for your mods.
+* Tools and functions for and generating manipulating message strings, including a specialized version of the `printf` family of functions.
+
+EZ Text Replacer is simple to use. For example, the following code is used to replace the all dialog related the Razor Sword's breaking after 100 uses.
 
 ```C
 #include "eztr_api.h"
@@ -62,15 +73,10 @@ EZTR_ON_INIT void replace_msgs() {
 }
 ```
 
-To use this API in your own projects, include `MM_EZ_Text_Replacer_API:1.1.0` as a dependency in your `mod.toml`,
-and download the API header from GitHub [here](https://github.com/LT-Schmiddy/mm-ez-text-replacement-utils/blob/main/include_in_dependents/eztr_api.h).
+## Credits
 
-More detailed usage instructions can be found on GitHub [here](https://github.com/LT-Schmiddy/mm-ez-text-replacement-utils/blob/main/docs/Basic_API.md).
+Special thanks to:
 
-The API is fairly simple at the moment, but will be expanded in future updates. Planned features include:
-
-* Dynamic message replacement.
-* Support for adding new message entries.
-* Callbacks at message load time.
-* Message header manipulation.
-* and more!
+* [https://github.com/mpaland/printf](https://github.com/mpaland/printf) for their printf implementation.
+* [https://github.com/embeddedartistry/libc](https://github.com/embeddedartistry/libc) for various libc headers needed to compile this mod.
+* [https://github.com/Decompollaborate/libgcc_vr4300](https://github.com/Decompollaborate/libgcc_vr4300) for linking against to provide additional math operations.
