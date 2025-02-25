@@ -6,20 +6,26 @@ Because the message content are terminated.
 
 There are a few major differences to note between the standard `printf` functions and EZTR's implementations:
 
-* `\xBF` Termination
-* Pipe-Escaped Byte Syntax
-* Display of Control Characters
-* The `%m` Type Specifier
+* \ref bf_termination
+* \ref pipe_escaped_bytes
+* \ref m_type_specifier
+* \ref non_printable_bytes
 
-### `\xBF` Termination
+### `\xBF` Termination {#bf_termination}
 
-### Pipe-Escaped Byte Syntax
+Because message strings use the `\0` null character as an indicator to
+
+See \ref the_message_buffer for more information.
+
+### Pipe-Escaped Byte Syntax {#pipe_escaped_bytes}
 
 Lorem Ipsum
 
-### The `%m` Type Specifier
+### The `%%m` Type Specifier {#m_type_specifier}
 
 Lorem Ipsum
+
+### Non-Printable Bytes {#non_printable_bytes}
 
 ## Format Specification
 

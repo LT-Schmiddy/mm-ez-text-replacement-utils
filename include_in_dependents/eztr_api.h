@@ -9,14 +9,6 @@
 #include "modding.h"
 #include "global.h"
 
-/**
- * @brief The mod id string for EZTR.
- * 
- * The `eztr_api.h` imports all the functions and events needed for EZTR, 
- * so you probably won't need to use this directly.
- */
-#define EZTR_MOD_ID_STR "MM_EZ_Text_Replacer_API"
-
 #ifdef DOXYGEN
 #define EZTR_IMPORT(func) func
 #define EZTR_PACK_STRUCT 
@@ -31,8 +23,6 @@ typedef struct {
     u8 out_success;
 } _EZTR_CustomMsgHandleSetter;
 
-EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
-
 #define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
     static u16 id; static u8 is_set = 0; if (setter != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
     "The textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
@@ -40,6 +30,23 @@ EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 
 #endif
 
+/**
+ * \defgroup General 
+ * @{
+ */
+
+
+/**
+ * @brief The mod id string for EZTR.
+ * 
+ * The `eztr_api.h` imports all the functions and events needed for EZTR, 
+ * so you probably won't need to use this directly.
+ */
+#define EZTR_MOD_ID_STR "MM_EZ_Text_Replacer_API"
+
+#ifndef DOXYGEN
+EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
+#endif
 
 #define EZTR_MSG_HIGHEST_ID 0x354C
 /**
@@ -73,6 +80,142 @@ EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
 
 #define EZTR_MSG_ENDING_CHAR '\xBF'
 #define EZTR_PIPE_CHAR '|'
+
+/** @}*/
+
+/**
+ * \defgroup Handles
+ * @{
+ */
+ 
+/**
+ * @brief Uses to set/get the actual symbol name for custom message handles
+ * If you want to add a prefix/suffix to your custom message handles globally, it can be done here.
+ */
+#ifdef EZTR_NO_HANDLE_PREFIX
+#define EZTR_CUSTOM_MSG_HANDLE_NAME(name) name
+#else
+#define EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix) EZTR_CustomMsgHandle_##name_suffix
+#endif
+/**
+ * @brief Creates a non-exported CustomMsgHandle object
+ * 
+ * Most mods are not installed in a vacuum. You should consider exporting your custom message handles
+ * so that other mods can access the messages you define if need be (compatibility patches, addons, etc.)
+ * 
+ */
+#define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
+u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
+__EZTR_CUSTOM_MSG_HANDLE_BODY(name)
+
+/**
+ * @brief Creates a CustomMsgHandle object
+ * 
+ * This is the primary method for creating handles for custom messages. You'll need to use this macro
+ * inside one of your .c files (outside of any functions) to create the handle itself. Use 
+ * `EZTR_DECLARE_CUSTOM_MSG_HANDLE` to access the handle from other files.
+ * 
+ * See the `EZTR_CustomMsgHandle` documentation for more information about handles and how they work.
+ * 
+ */
+#define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
+u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
+__EZTR_CUSTOM_MSG_HANDLE_BODY(name)
+
+/**
+ * @brief Creates a declaration for a CustomMsgHandle object.
+ * 
+ * Use this reference handles created in other .c files. Also works in headers.
+ * 
+ */
+#define EZTR_DECLARE_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter)
+
+/**
+ * @brief Declares and imports a CustomMsgHandle object from another mod.
+ * 
+ * This will allow you to use and interact with custom messages from other mods.
+ */
+#define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name_suffix) RECOMP_IMPORT(mod_str, u16 EZTR_CustomMsgHandle_##name_suffix(_EZTR_CustomMsgHandleSetter* setter))
+
+/**
+ * @brief Declares and imports a CustomMsgHandle object from another mod.
+ * 
+ * This will allow you to use and interact with custom messages from other mods.
+ */
+#define EZTR_IMPORT_CUSTOM_MSG_HANDLE_NO_PREFIX(mod_str, name) RECOMP_IMPORT(mod_str, u16 name(_EZTR_CustomMsgHandleSetter* setter))
+
+/**
+ * @brief Gets the textId from a custom message handle.
+ * 
+ * A more readable alternative to `handle(NULL)`
+ * 
+ */
+#define EZTR_GET_CUSTOM_MSG_ID(handle) handle(NULL)
+
+// Shorthand:
+/**
+ * @brief Shorthand for `EZTR_CUSTOM_MSG_HANDLE_NAME()`
+ * 
+ * Useful if you want to use global prefixes.
+ * 
+ */
+#define EZTR_HNAME(name_suffix) EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix)
+
+/**
+ * @brief Gets the textId from a custom message handle.
+ * 
+ * A more readable alternative to `handle(NULL)`, and shorthand for `EZTR_GET_CUSTOM_MSG_ID()`
+ * 
+ * Note that this macro won't apply the global prefix if it's enabled. You'll need to use something like
+ * `EZTR_GET_CUSTOM_MSG_ID(EZTR_HNAME(my_handle))` or `EZTR_GET_ID(EZTR_HNAME(my_handle))`.
+ */
+#define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
+
+
+/** @}*/
+/**
+ * @brief A macro to easily create message callback functions.
+ * 
+ * This macro can be used to create both the function definition and declaration (if one is needed);
+ * 
+ * * To create the definition, use `EZTR_MSG_CALLBACK(my_callback) {...}`
+ * * To create the declaration, use `EZTR_MSG_CALLBACK(my_callback);`
+ * 
+ * `my_callback` can then be passed to `EZTR_Basic_ReplaceText_WithCallback()` or 
+ * `EZTR_Basic_ReplaceText_EmptyWithCallback()` as the callback argument.
+ * 
+ */
+#define EZTR_MSG_CALLBACK(fname) void fname(EZTR_MsgBuffer* buf, u16 textId, PlayState* play)
+
+/**
+ * @brief Used to declare a function that should run after EZTR has finished initializing.
+ * 
+ * This is where you should declare all of your text replacements. You don't want to declare them during a 
+ * `recomp_on_init` event, since EZTR may not have initialized itself yet, and attempting to declare text
+ * replacements before that will cause a crash. Additionally, declaring messaged here will ensure that mod 
+ * priority order is respected when declaring replacements.
+ * 
+ * Example: `EZTR_ON_INIT void declare_my_text() {...}`
+ * 
+ */
+#define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
+
+/**
+ * @brief Used by certain members of `EZTR_MsgData` (and the message header generally) to indicate that said member is not in use.
+ * 
+ * The header members in question are:
+ * 
+ * * `next_message_id`
+ * * `first_item_rupees`
+ * * `second_item_rupees`
+ * 
+ */
+#define EZTR_NO_VALUE 0xffff
+
+/**
+ * \defgroup Types
+ * @{
+ */
 
 /**
  * @brief The message buffers type as defined in the Majora's Mask decompilation.
@@ -139,90 +282,6 @@ typedef union {
         EZTR_MsgBuffer_Data data;
 } EZTR_MsgBuffer;
 
-
-
-/**
- * @brief Uses to set/get the actual symbol name for custom message handles
- * If you want to add a prefix/suffix to your custom message handles globally, it can be done here.
- */
-#ifdef EZTR_NO_HANDLE_PREFIX
-#define EZTR_CUSTOM_MSG_HANDLE_NAME(name) name
-#else
-#define EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix) EZTR_CustomMsgHandle_##name_suffix
-#endif
-/**
- * @brief Creates a non-exported CustomMsgHandle object
- * 
- * Most mods are not installed in a vacuum. You should consider exporting your custom message handles
- * so that other mods can access the messages you define if need be (compatibility patches, addons, etc.)
- * 
- */
-#define EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(name) \
-u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
-__EZTR_CUSTOM_MSG_HANDLE_BODY(name)
-
-/**
- * @brief Creates a CustomMsgHandle object
- * 
- * This is the primary method for creating handles for custom messages. You'll need to use this macro
- * inside one of your .c files (outside of any functions) to create the handle itself. Use 
- * `EZTR_DECLARE_CUSTOM_MSG_HANDLE` to access the handle from other files.
- * 
- * See the `EZTR_CustomMsgHandle` documentation for more information about handles and how they work.
- * 
- */
-#define EZTR_DEFINE_CUSTOM_MSG_HANDLE(name) RECOMP_EXPORT \
-u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
-__EZTR_CUSTOM_MSG_HANDLE_BODY(name)
-
-/**
- * @brief Creates a declaration for a CustomMsgHandle object.
- * 
- * Use this reference handles created in other .c files. Also works in headers.
- * 
- */
-#define EZTR_DECLARE_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter)
-
-/**
- * @brief Declares and imports a CustomMsgHandle object from another mod.
- * 
- * This will allow you to use and interact with custom messages from other mods.
- */
-#define EZTR_IMPORT_CUSTOM_MSG_HANDLE(mod_str, name_suffix) RECOMP_IMPORT(mod_str, u16 EZTR_CustomMsgHandle_##name_suffix(_EZTR_CustomMsgHandleSetter* setter))
-
-/**
- * @brief Declares and imports a CustomMsgHandle object from another mod.
- * 
- * This will allow you to use and interact with custom messages from other mods.
- */
-#define EZTR_IMPORT_CUSTOM_MSG_HANDLE_NO_PREFIX(mod_str, name) RECOMP_IMPORT(mod_str, u16 name(_EZTR_CustomMsgHandleSetter* setter))
-
-/**
- * @brief Gets the textId from a custom message handle.
- * 
- * A more readable alternative to `handle(NULL)`
- * 
- */
-#define EZTR_GET_CUSTOM_MSG_ID(handle) handle(NULL)
-
-
-// Shorthand:
-/**
- * @brief Shorthand for `EZTR_CUSTOM_MSG_HANDLE_NAME()`
- * 
- * Useful if you want to use global prefixes.
- * 
- */
-#define EZTR_HNAME(name_suffix) EZTR_CUSTOM_MSG_HANDLE_NAME(name_suffix)
-
-/**
- * @brief Gets the textId from a custom message handle.
- * 
- * A more readable alternative to `handle(NULL)`, and shorthand for `EZTR_GET_CUSTOM_MSG_ID()`
- * 
- */
-#define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
-
 /**
  * @brief The type declaration for custom message handle.
  * 
@@ -256,50 +315,10 @@ typedef u16 (*EZTR_CustomMsgHandle)(_EZTR_CustomMsgHandleSetter* setter);
 /**
  * @brief The function pointer type for message callbacks. 
  * 
- * To easily create functions that match this type, see the `EZTR_MSG_CALLBACK` macro.
+ * To easily create functions that match this type, see the `EZTR_MSG_CALLBACK()` macro.
  * 
  */
 typedef void (*EZTR_MsgCallback)(EZTR_MsgBuffer* buf, u16 textId, PlayState* play);
-
-/**
- * @brief A macro to easily create message callback functions.
- * 
- * This macro can be used to create both the function definition and declaration (if one is needed);
- * 
- * * To create the definition, use `EZTR_MSG_CALLBACK(my_callback) {...}`
- * * To create the declaration, use `EZTR_MSG_CALLBACK(my_callback);`
- * 
- * `my_callback` can then be passed to `EZTR_Basic_ReplaceText_WithCallback()` or 
- * `EZTR_Basic_ReplaceText_EmptyWithCallback()` as the callback argument.
- * 
- */
-#define EZTR_MSG_CALLBACK(fname) void fname(EZTR_MsgBuffer* buf, u16 textId, PlayState* play)
-
-/**
- * @brief Used to declare a function that should run after EZTR has finished initializing.
- * 
- * This is where you should declare all of your text replacements. You don't want to declare them during a 
- * `recomp_on_init` event, since EZTR may not have initialized itself yet, and attempting to declare text
- * replacements before that will cause a crash. Additionally, declaring messaged here will ensure that mod 
- * priority order is respected when declaring replacements.
- * 
- * Example: `EZTR_ON_INIT void declare_my_text() {...}`
- * 
- */
-#define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
-
-/**
- * @brief Used by certain members of `EZTR_MsgData` (and the message header generally) to indicate that said member is not in use.
- * 
- * The header members in question are:
- * 
- * * `next_message_id`
- * * `first_item_rupees`
- * * `second_item_rupees`
- * 
- */
-#define EZTR_NO_VALUE 0xffff
-
 
 /**
  * @brief Used in the message header to indicate the style of textbox used for the message.
@@ -595,6 +614,16 @@ typedef enum {
     EZTR_ICON_NO_ICON = 0xFE
 } EZTR_TextBoxIcon;
 
+/** @}*/
+
+/**
+ * \defgroup Basic_Replacement
+ * 
+ * These functions are your primary means of declaring replacement
+ * 
+ * @{
+ */
+
 
 /**
  * @brief Declare a replacement of a vanilla message by copying from a buffer defined by the user.
@@ -666,6 +695,13 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText(
  * complete message buffer dynamically. See `EZTR_MsgCallback` for more information.
  */
 EZTR_IMPORT(void EZTR_Basic_ReplaceTextEmpty(u16 textId, EZTR_MsgCallback callback));
+/** @} */
+
+/** 
+ * \defgroup Basic_CustomMessages 
+ * @{
+ * 
+ */
 
 /**
  * @brief Declare a brand new (i.e: custom) message by copying from a buffer defined by the user.
@@ -773,6 +809,14 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 te
  * complete message buffer dynamically. See `EZTR_MsgCallback` for more information.
  */
 EZTR_IMPORT(void EZTR_Basic_ReplaceCustomTextEmpty(EZTR_CustomMsgHandle handle, EZTR_MsgCallback callback));
+
+/** @} */
+
+/**
+ * \defgroup MsgBuffer 
+ * @{
+ */
+
 
 /**
  * @brief Creates a new message buffer object on the heap.
@@ -1079,6 +1123,15 @@ EZTR_IMPORT(void EZTR_MsgBuffer_PrintFull(EZTR_MsgBuffer* buf));
  */
 EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
 
+/** @}*/
+
+
+/**
+ * \defgroup MsgSContent 
+ * @{
+ */
+
+
 /**
  * @brief Sets the message message content as empty.A_BTN_STATE_IDLE
  * 
@@ -1289,5 +1342,6 @@ EZTR_IMPORT(int EZTR_MsgSContent_Vprintf(const char* format, va_list va));
  */
 EZTR_IMPORT(int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...));
 
+/** @}*/
 
 #endif
