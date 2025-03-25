@@ -31,6 +31,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         name: ${{ github.ref }}
+        tag: ${{ github.ref_name }}
         body_path: ${{ github.workspace }}/thunderstore_package/CHANGELOG.md
         files: |
           ${{steps.create-thunderstore-package.outputs.artifact-id}}
