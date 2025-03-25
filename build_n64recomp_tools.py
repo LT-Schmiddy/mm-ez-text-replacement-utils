@@ -85,6 +85,7 @@ def rebuild_tools(config_flags: list[str] = [], build_flags: list[str] = [] ):
         config_flags = [
             "-G",
             "Ninja"
+            "-DCMAKE_BUILD_TYPE=Release"
         ]
     
     cmake_config_args = [deps["cmake"]] + config_flags + [str(N64Recomp_module_root)]    
