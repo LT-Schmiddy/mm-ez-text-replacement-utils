@@ -13,9 +13,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Set up Clang
+      uses: egor-tensin/setup-clang@v1
+      with:
+        version: latest
+        platform: x64
     - name: run-buildscript
       run: |-
-        apt install clang lld
         python3 ./build_mod.py
     - name: get-artifacts
       uses: actions/upload-artifact@v4
