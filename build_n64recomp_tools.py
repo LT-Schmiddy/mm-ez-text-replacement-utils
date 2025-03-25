@@ -84,7 +84,7 @@ def rebuild_tools(config_flags: list[str] = [], build_flags: list[str] = [] ):
     if len(config_flags) == 0 and deps['ninja'] is not None:
         config_flags = [
             "-G",
-            "Ninja"
+            "Ninja",
             "-DCMAKE_BUILD_TYPE=Release"
         ]
     
