@@ -33,5 +33,6 @@ jobs:
         body_path: ${{ github.workspace }}/thunderstore_package/CHANGELOG.md
         files: |
           ./build/mod/*.nrm
+          ./include_in_dependents/*.h
         make_latest: true
     
