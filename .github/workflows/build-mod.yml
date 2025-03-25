@@ -4,15 +4,14 @@ on:
   push:
     branches: [ "main" ]
     tags:
-      - "release/"
+      - "release/*"
   pull_request:
     branches: [ "main" ]
-
 jobs:
   build:
-
+    outputs:
+      thunderstore-package: ${{ steps.create-thunderstore-package.outputs.artifact-id }}
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Set up Clang
@@ -21,10 +20,20 @@ jobs:
     - name: run-buildscript
       run: |-
         python3 ./create_thunderstore_package.py
-    - name: get-artifacts
+    - name: create-thunderstore-package
       uses: actions/upload-artifact@v4
       with:
         name: ThunderstorePackage
         path: |
           ./thunderstore_package/*
+          
+    - name: publish-release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        name: ${{ github.ref }}
+        body_path: ${{ github.workspace }}/thunderstore_package/CHANGELOG.md
+        files: |
+          ${{steps.create-thunderstore-package.outputs.artifact-id}}
+        make_latest: true
     
