@@ -15,6 +15,8 @@ def _get_tool_path(tool_name: str) -> str:
     
     for i in possible_paths:
         if i.exists():
+            if os.name != "nt":
+                os.chmod(i, 0x755)
             return i
     
     raise RuntimeError(f"Couldn't find executable file '{tool_name}' in any of the following locations:\n" 
