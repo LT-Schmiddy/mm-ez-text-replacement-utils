@@ -1,10 +1,9 @@
-name: C/C++ CI
-
+name: Build and Publish mod
 on:
   push:
     branches: [ "main" ]
     tags:
-      - "release/*"
+      - "release/v*.*.*"
   pull_request:
     branches: [ "main" ]
 jobs:
@@ -29,6 +28,7 @@ jobs:
           
     - name: publish-release
       uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         name: ${{ github.ref }}
         tag: ${{ github.ref_name }}
