@@ -32,6 +32,6 @@ jobs:
         name: ${{ github.ref }}
         body_path: ${{ github.workspace }}/thunderstore_package/CHANGELOG.md
         files: |
-          ${{steps.create-thunderstore-package.outputs.artifact-id}}
+          ./build/mod/*.nrm
         make_latest: true
     
