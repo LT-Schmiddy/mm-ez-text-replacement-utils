@@ -1,9 +1,8 @@
 name: Build and Publish mod
 on:
   push:
-    branches: [ "main" ]
     tags:
-      - "release/v*.*.*"
+      - "v*.*.*"
   pull_request:
     branches: [ "main" ]
 jobs:
@@ -31,7 +30,6 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         name: ${{ github.ref }}
-        tag: ${{ github.ref_name }}
         body_path: ${{ github.workspace }}/thunderstore_package/CHANGELOG.md
         files: |
           ${{steps.create-thunderstore-package.outputs.artifact-id}}
