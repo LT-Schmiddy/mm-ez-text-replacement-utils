@@ -127,8 +127,7 @@ def create_package():
         create_archive(package_dir, bm.project_root.joinpath(f"{manifest["name"]}.thunderstore.zip"))
     else:
         print("Files are missing.")
-    
-        
+
         
 
 if __name__ == '__main__':
