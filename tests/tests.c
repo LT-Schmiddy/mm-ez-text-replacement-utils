@@ -1,6 +1,8 @@
 #include <modding.h>
 #include <eztr_api.h>
+#include <eztr_msg_macros.h>
 #include "global.h"
+
 
 RECOMP_IMPORT("*", int recomp_printf(const char* fmt, ...));
 RECOMP_IMPORT("*", void* recomp_alloc(size_t size));
@@ -142,7 +144,7 @@ EZTR_ON_INIT void run_tests() {
 
     // Deku Nut message. Tests item description replacement.
     EZTR_Basic_ReplaceText(0x1709, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
-        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX 4\xBF", NULL);
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, EZTR_MSG_COLOR_RED "HELLO ALEX 4"EZTR_MSG_COLOR_DEFAULT EZTR_MSG_END, NULL);
 
 
     EZTR_MsgBuffer_Destroy(buf1);
