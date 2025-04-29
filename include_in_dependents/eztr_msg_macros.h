@@ -1,6 +1,11 @@
 #ifndef __EZTR_MSG_MACROS__
 #define __EZTR_MSG_MACROS__
 
+/*! \file eztr_msg_macros.h
+    \version 2.1.0-x
+    \brief Experimental header. Contains macros for the various message control codes. Will be integrated into `eztr_api.h` in version 2.1.0.
+*/
+
 #define EZTR_MSG_COLOR_DEFAULT "\x00"
 #define EZTR_MSG_COLOR_RED "\x01"
 #define EZTR_MSG_COLOR_GREEN "\x02"
