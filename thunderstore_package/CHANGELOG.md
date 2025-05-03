@@ -2,7 +2,8 @@
 
 ## 2.0.1
 
-* No code changes. Removes version numbers from mod filename.
+* Fixed a memory leak when replacing a message that already has an entry in the MsgTable.
+* Removes version numbers from mod filename.
 
 ## v2.0.0
 

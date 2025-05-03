@@ -72,6 +72,9 @@ void MsgEntryCluster_StoreBuffer(MsgEntryCluster* cluster, u16 textId, MsgBuffer
         cluster->entries[pos] = MsgEntry_Create(textId);
         cluster->entries[pos]->textId = textId;
         cluster->count++;
+    } else {
+        LOGD("Deleting old stored textID 0x%04X message buffer.", textId);
+        recomp_free(cluster->entries[pos]->buf_store);
     }
 
     cluster->entries[pos]->len = MsgBuffer_Len(entry);
