@@ -13,9 +13,9 @@ There are a few major differences to note between the standard `printf` function
 
 ### `\xBF` Termination {#bf_termination}
 
-Because message strings use the `\0` null character as an indicator to
+Message strings do not use the `\0` null character to terminate, as is done in standard ASCII. Therefore, the `format` argument of any of EZTR's printf functions will need to be purposefully terminated with `\xBF` by the programmer.
 
-See \ref the_message_buffer for more information.
+See \ref the_message_buffer for more information on message control codes and massage termination.
 
 ### Pipe-Escaped Byte Syntax {#pipe_escaped_bytes}
 
@@ -26,6 +26,8 @@ Lorem Ipsum
 Lorem Ipsum
 
 ### Non-Printable Bytes {#non_printable_bytes}
+
+When printing to the console using `EZTR_MsgSContent_Printf` or `EZTR_MsgSContent_PrintfLine`, all control codes are displayed according to EZTR's `text_dumping_byte_format` option. This does not apply to any other printf function, which preserves the control bytes.
 
 ## Format Specification
 

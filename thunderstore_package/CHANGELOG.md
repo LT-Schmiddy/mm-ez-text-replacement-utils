@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+* No code changes. Removes version numbers from mod filename.
+
 ## v2.0.0
 
 Added:
