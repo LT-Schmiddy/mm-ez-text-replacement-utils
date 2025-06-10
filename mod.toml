@@ -83,9 +83,11 @@ default = "On"
 [[manifest.config_options]]
 id = "text_dumping"
 name = "Text Dumping"
-description = "Print information to console on each message as it's loaded, and before any text replacement happens. Useful for creating your own text replacements."
+description = """Print information to console on each message as it's loaded, and before any text replacement happens. Useful for creating your own text replacements. 
+
+Setting this option to Full will dump the entire memory region of the of the message buffer, not just the message content itself."""
 type = "Enum"
-options = [ "Off", "On" ]
+options = [ "Off", "On", "Full" ]
 default = "Off"
 
 [[manifest.config_options]]

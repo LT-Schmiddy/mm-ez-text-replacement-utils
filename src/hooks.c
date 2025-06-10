@@ -1,5 +1,7 @@
 #include "hooks.h"
 
+#define TEXT_DUMPING_FULL TEXT_DUMPING == 2
+
 PlayState* Message_OpenText_stored_play = NULL;
 RECOMP_HOOK("Message_OpenText") void before_handle_main_text_replacement(PlayState* play, u16 p_textId) {
     Message_OpenText_stored_play = play;
@@ -14,7 +16,12 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
     LOGV("Message_OpenText Hook: 0x%04X (%i).", (u32)textId, (u32)textId);
 
     if (TEXT_DUMPING) {
-        dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
+        if (TEXT_DUMPING_FULL) {
+            dump_full_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
+        } else {
+            dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
+        }
+        
     }
 
     MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, Message_OpenText_stored_play);
@@ -84,14 +91,19 @@ RECOMP_HOOK_RETURN("func_801514B0") void handle_item_desc() {
     MessageContext* msgCtx = &play->msgCtx;
     Font* font = &msgCtx->font;
     Player* player = GET_PLAYER(play);
-    
+
+    u16 textId = msgCtx->currentTextId;
     if (TEXT_DUMPING) {
-        dump_buffer("Game", msgCtx->currentTextId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
+        if (TEXT_DUMPING_FULL) {
+            dump_full_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
+        } else {
+            dump_buffer("Game", textId, msgCtx->msgLength, (MsgBuffer*)&font->msgBuf);
+        }
     }
 
-    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, msgCtx->currentTextId, play);
+    MsgBuffer* buf = MsgTable_LoadBufferCallback(ETZR_mainTable, textId, play);
     if (buf != NULL) {
-        LOGI("Replacing Text 0x%04X (%i).", (u32)msgCtx->currentTextId, (u32)msgCtx->currentTextId);     
+        LOGI("Replacing Text 0x%04X (%i).", (u32)textId, (u32)textId);     
 
         msgCtx->msgLength = MsgBuffer_Len(buf) + 1;
         MsgBuffer_Copy((MsgBuffer*)&font->msgBuf, buf->raw.schar);
