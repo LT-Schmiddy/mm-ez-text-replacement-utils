@@ -2,7 +2,17 @@
 #include "custom_includes/stdbool.h"
 #include "custom_includes/stdint.h"
 
+#define MSG_TABLE_LOCK_CHECK(table) \
+if (table->locked){  \
+    LOGE("Cannot modify MsgTable after it has been locked\n"); \
+    return; \
+} \
 
+#define MSG_TABLE_LOCK_CHECK_BOOL(table) \
+if (table->locked){  \
+    LOGE("Cannot modify MsgTable after it has been locked\n"); \
+    return false; \
+} \
 
 // Entry Functions:
 MsgEntry* MsgEntry_Create(u16 textId) {
@@ -92,6 +102,7 @@ MsgTable* MsgTable_Create() {
     }
     retVal->cluster_count = 0;
     retVal->highest_msg_id = MSG_HIGHEST_ID;
+    retVal->locked = false;
     LOGI("Message Table Created.\n");
     return retVal;
 }
@@ -127,6 +138,8 @@ MsgBuffer* MsgTable_LoadBuffer(MsgTable* table, u16 textId) {
 }
 
 void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCallback callback) {
+    MSG_TABLE_LOCK_CHECK(table);
+
     SPLIT_TEXT_ID(textId, cl, pos);
     if (table->clusters[cl] == NULL) {
         table->clusters[cl] = MsgEntryCluster_Create(cl);
@@ -137,6 +150,8 @@ void MsgTable_StoreBuffer(MsgTable* table, u16 textId, MsgBuffer* entry, MsgCall
 }
 
 void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback) {
+    MSG_TABLE_LOCK_CHECK(table);
+
     MsgBuffer* buf = MsgBuffer_Create();
     // Copy to table:
     MsgTable_StoreBuffer(table, textId, buf, callback);
@@ -144,6 +159,8 @@ void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback
 }
 
 bool MsgTable_StoreNewCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback) {
+    MSG_TABLE_LOCK_CHECK_BOOL(table);
+
     u16 new_id = table->highest_msg_id + 1;
     // Setting the handle ID:
     CustomMsgHandleSetter s;
@@ -159,6 +176,8 @@ bool MsgTable_StoreNewCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgB
 }
 
 bool MsgTable_StoreNewCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback) {
+    MSG_TABLE_LOCK_CHECK_BOOL(table);
+
     u16 new_id = table->highest_msg_id + 1;
     
     // Setting the handle ID:
@@ -187,6 +206,8 @@ u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
 }
 
 void MsgTable_ChangeCallback(MsgTable* table, u16 textId, MsgCallback callback) {
+    MSG_TABLE_LOCK_CHECK(table);
+
     MsgEntry* search = MsgTable_GetEntry(table, textId);
     if (search != NULL) {
         search->callback = callback;
