@@ -151,8 +151,20 @@ EZTR_ON_INIT void run_tests() {
     EZTR_MsgBuffer_Destroy(buf1);    EZTR_MsgBuffer_Destroy(buf2);
     EZTR_MsgBuffer_Destroy(buf3);
     recomp_printf("Passed %i out of %i cases.\n", cases_passed, cases);
-
-}
+    
+    EZTR_Basic_ReplaceText(
+            0x1D01,
+            EZTR_STANDARD_TEXT_BOX_I,
+            0,
+            EZTR_ICON_NO_ICON,
+            EZTR_NO_VALUE,
+            EZTR_NO_VALUE,
+            EZTR_NO_VALUE,
+            true,
+            "" EZTR_MSG_SFX "izMy name is " EZTR_MSG_COLOR_PINK "Tingle" EZTR_MSG_COLOR_DEFAULT "!" EZTR_MSG_NEWLINE "I think I am the same as you, sir." EZTR_MSG_NEWLINE "A forest fairy!" EZTR_MSG_NEWLINE "" EZTR_MSG_BOX_BREAK2 "Alas, though I am already age 35," EZTR_MSG_NEWLINE "no fairy has come to me yet..." EZTR_MSG_NEWLINE "" EZTR_MSG_CARRIAGE_RETURN "" EZTR_MSG_BOX_BREAK2 "My father tells me to grow up" EZTR_MSG_NEWLINE "and act my age, but why?" EZTR_MSG_NEWLINE "" EZTR_MSG_CARRIAGE_RETURN "" EZTR_MSG_BOX_BREAK2 "I tell you...Tingle is the very" EZTR_MSG_NEWLINE "reincarnation of a fairy!" EZTR_MSG_EVENT "" EZTR_MSG_END "",
+            NULL
+    );
+    }
 
 RECOMP_CALLBACK("*", recomp_on_play_init) void on_play_init(PlayState* play) {
     // This should fail:

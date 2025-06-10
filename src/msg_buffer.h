@@ -67,8 +67,10 @@ u16 MsgBuffer_GetFirstItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 pos);
 u16 MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
+void MsgBuffer_PrintCCode(u16 textid, MsgBuffer* buf);
 void MsgBuffer_Print(MsgBuffer* buf);
 void MsgBuffer_PrintFull(MsgBuffer* buf);
+void MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf);
 char* MsgBuffer_GetContentPtr(MsgBuffer* buf);
 // Msg Content:
 

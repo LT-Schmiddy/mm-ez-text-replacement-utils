@@ -8,7 +8,7 @@
 id = "MM_EZ_Text_Replacer_API"
 
 # Version of this mod.
-version = "2.0.1"
+version = "2.1.0"
 
 # The name that will show up for this mod in the mod menu. This should be human readable.
 display_name = "EZ Text Replacer API"
@@ -87,6 +87,14 @@ description = "Print information to console on each message as it's loaded, and 
 type = "Enum"
 options = [ "Off", "On" ]
 default = "Off"
+
+[[manifest.config_options]]
+id = "dump_text_as_c_code"
+name = "Dump Text as C Code"
+description = "When enabled, text dumps will be formatted as text-replacement calls to EZTR's API."
+type = "Enum"
+options = [ "Off", "On" ]
+default = "On"
 
 [[manifest.config_options]]
 id = "text_dumping_byte_format"

@@ -328,9 +328,13 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  * replacements before that will cause a crash. Additionally, declaring messaged here will ensure that mod 
  * priority order is respected when declaring replacements.
  * 
+ * As of version 2.1.0, EZTR now enforces that message all calls to `EZTR_Basic_*` functions must be made here.
+ * 
  * Example: `EZTR_ON_INIT void declare_my_text() {...}`
  * 
  */
+#define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
+
 #define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
 
 /**
