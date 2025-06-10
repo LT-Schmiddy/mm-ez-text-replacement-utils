@@ -350,7 +350,7 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  * 
  */
 #define EZTR_ON_DUMP_BUFFER(func_name) \
-    RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnDumpBuffer) func_name((const char* category, u16 textId, s32 len, EZTR_MsgBuffer* buf))
+    RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnDumpBuffer) void func_name(const char* category, u16 textId, s32 len, EZTR_MsgBuffer* buf)
 
 /**
  * @brief Used to declare a callback function for when EZTR dumps the entire message buffer. Normally, EZTR only prints that message to the game console,
@@ -367,7 +367,7 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  * 
  */
 #define EZTR_ON_DUMP_BUFFER_FULL(func_name) \
-    RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnDumpBufferFull) func_name((const char* category, u16 textId, s32 len, EZTR_MsgBuffer* buf))
+    RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnDumpBufferFull) void func_name(const char* category, u16 textId, s32 len, EZTR_MsgBuffer* buf)
 
 /**
  * @brief Used by certain members of `EZTR_MsgData` (and the message header generally) to indicate that said member is not in use.
