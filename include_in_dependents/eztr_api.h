@@ -335,7 +335,39 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  */
 #define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
 
-#define EZTR_ON_INIT RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnInit)
+/**
+ * @brief Used to declare a callback function for when EZTR dumps a message. Normally, EZTR only prints that message to the game console,
+ * but this callback will allow you to do other things with that information. This `EZTR_ON_DUMP_BUFFER` event is only called when EZTR's 
+ * text dump setting is set to `On`.
+ * 
+ * This is a feature intended for developers, for the creation of EZTR-related tools. It should not be used for gameplay.
+ *
+ * The functions parameters are  
+ * * `const char* category`, currently only returns 'Game'.
+ * * `u16 textId`, the ID of the message being dumped.
+ * * ` s32 len`, the size of the message in bytes.
+ * * `EZTR_MsgBuffer* buf`, the message buffer itself.
+ * 
+ */
+#define EZTR_ON_DUMP_BUFFER(func_name) \
+    RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnDumpBuffer) func_name((const char* category, u16 textId, s32 len, EZTR_MsgBuffer* buf))
+
+/**
+ * @brief Used to declare a callback function for when EZTR dumps the entire message buffer. Normally, EZTR only prints that message to the game console,
+ * but this callback will allow you to do other things with that information. This `EZTR_ON_DUMP_BUFFER` event is only called when EZTR's 
+ * text dump setting is set to `Full`.
+ * 
+ * This is a feature intended for developers, for the creation of EZTR-related tools. It should not be used for gameplay.
+ *
+ * The functions parameters are  
+ * * `const char* category`, currently only returns 'Game'.
+ * * `u16 textId`, the ID of the message being dumped.
+ * * ` s32 len`, the size of the message in bytes.
+ * * `EZTR_MsgBuffer* buf`, the message buffer itself.
+ * 
+ */
+#define EZTR_ON_DUMP_BUFFER_FULL(func_name) \
+    RECOMP_CALLBACK("MM_EZ_Text_Replacer_API", EZTR_OnDumpBufferFull) func_name((const char* category, u16 textId, s32 len, EZTR_MsgBuffer* buf))
 
 /**
  * @brief Used by certain members of `EZTR_MsgData` (and the message header generally) to indicate that said member is not in use.
@@ -1223,6 +1255,15 @@ EZTR_IMPORT(void EZTR_MsgBuffer_SetSecondItemRupees(EZTR_MsgBuffer* buf, u16 val
 EZTR_IMPORT(void EZTR_MsgBuffer_Print(EZTR_MsgBuffer* buf));
 
 /**
+ * @brief Prints the contents of a message buffer to the console, formatted as a `EZTR_Basic_ReplaceText` call.
+ * 
+ * The string literal for the content will end with the '\xBF' termination character.
+ * 
+ * @param buf The message buffer to print.
+ */
+EZTR_IMPORT(void EZTR_MsgBuffer_PrintCCode(EZTR_MsgBuffer* buf));
+
+/**
  * @brief Prints the contents of a message buffer to the console.
  * 
  * Each value in the header will be labeled. The this function prints the entire 1279 bytes of the content region.
@@ -1230,6 +1271,15 @@ EZTR_IMPORT(void EZTR_MsgBuffer_Print(EZTR_MsgBuffer* buf));
  * @param buf The message buffer to print.
  */
 EZTR_IMPORT(void EZTR_MsgBuffer_PrintFull(EZTR_MsgBuffer* buf));
+
+/**
+ * @brief Prints the contents of a message buffer to the console, formatted as a `EZTR_Basic_ReplaceText` call.
+ * 
+ * The this function prints the entire 1279 bytes of the content region.
+ * 
+ * @param buf The message buffer to print.
+ */
+EZTR_IMPORT(void EZTR_MsgBuffer_PrintFullCCode(EZTR_MsgBuffer* buf));
 
 /**
  * @brief Gets a pointer to the beginning of the content region for a desired message buffer.
