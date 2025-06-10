@@ -173,52 +173,6 @@ void MsgSContent_SetEmpty(char* cont) {
     // }
 }
 
-
-void MsgBuffer_PrintCCode(u16 textId, MsgBuffer* buf) {
-    // Loading Header Info:
-    u8 text_box_type = 0;
-    u8 text_box_y_pos = 0;
-    u8 display_icon = 0;
-    u16 next_message_id = 0xffff;
-    u16 first_item_rupees = 0xffff;
-    u16 second_item_rupees = 0xffff;
-
-    memcpy(&text_box_type, &buf->raw.schar[0], sizeof(u8));
-    memcpy(&text_box_y_pos, &buf->raw.schar[1], sizeof(u8));
-    memcpy(&display_icon, &buf->raw.schar[2], sizeof(u8));
-    memcpy(&next_message_id, &buf->raw.schar[3], sizeof(u16));
-    memcpy(&first_item_rupees, &buf->raw.schar[5], sizeof(u16));
-    memcpy(&second_item_rupees, &buf->raw.schar[7], sizeof(u16));
-
-    // Printing Output:
-    recomp_printf("EZTR_Basic_ReplaceText(\n\t0x%04X,\n", textId);
-    recomp_printf("\t%s,\n", eztr_textbox_names[text_box_type]);
-    recomp_printf("\t%i,\n", text_box_y_pos);
-    recomp_printf("\t%s,\n", eztr_icon_names[display_icon]);
-
-    if (next_message_id == 0xffff) {
-        recomp_printf("\tEZTR_NO_VALUE,\n");
-    } else {
-        recomp_printf("\t0x%04X,\n", next_message_id);
-    }
-    if (first_item_rupees == 0xffff) {
-        recomp_printf("\tEZTR_NO_VALUE,\n");
-    } else {
-        recomp_printf("\t%i,\n", first_item_rupees);
-    }
-
-    if (second_item_rupees == 0xffff) {
-        recomp_printf("\tEZTR_NO_VALUE,\n");
-    } else {
-        recomp_printf("\t%i,\n", second_item_rupees);
-    }
-
-    recomp_printf("\ttrue,\n\t\"");
-    // Printing Message Content:
-    MsgSContent_Printf("%m\xBF", buf->data.content);
-    recomp_printf("\",\n\tNULL\n);\n\n");
-}
-
 void MsgBuffer_Print(MsgBuffer* buf) {
     // Loading Header Info:
     u8 text_box_type = 0;
@@ -266,7 +220,8 @@ void MsgBuffer_Print(MsgBuffer* buf) {
     recomp_printf("\"\n\n");
 }
 
-void MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf) {
+
+void MsgBuffer_PrintCCode(u16 textId, MsgBuffer* buf) {
     // Loading Header Info:
     u8 text_box_type = 0;
     u8 text_box_y_pos = 0;
@@ -307,11 +262,7 @@ void MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf) {
 
     recomp_printf("\ttrue,\n\t\"");
     // Printing Message Content:
-    for (s32 i = MSG_HEADER_SIZE; i < MSG_BUFFER_SIZE; i++) {
-        char c = buf->raw.schar[i];
-
-        print_char(c);
-    }
+    MsgSContent_Printf("%m\xBF", buf->data.content);
     recomp_printf("\",\n\tNULL\n);\n\n");
 }
 
@@ -363,6 +314,56 @@ void MsgBuffer_PrintFull(MsgBuffer* buf) {
         print_char(c);
     }
      recomp_printf("\"\n\n");
+}
+
+
+void MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf) {
+    // Loading Header Info:
+    u8 text_box_type = 0;
+    u8 text_box_y_pos = 0;
+    u8 display_icon = 0;
+    u16 next_message_id = 0xffff;
+    u16 first_item_rupees = 0xffff;
+    u16 second_item_rupees = 0xffff;
+
+    memcpy(&text_box_type, &buf->raw.schar[0], sizeof(u8));
+    memcpy(&text_box_y_pos, &buf->raw.schar[1], sizeof(u8));
+    memcpy(&display_icon, &buf->raw.schar[2], sizeof(u8));
+    memcpy(&next_message_id, &buf->raw.schar[3], sizeof(u16));
+    memcpy(&first_item_rupees, &buf->raw.schar[5], sizeof(u16));
+    memcpy(&second_item_rupees, &buf->raw.schar[7], sizeof(u16));
+
+    // Printing Output:
+    recomp_printf("EZTR_Basic_ReplaceText(\n\t0x%04X,\n", textId);
+    recomp_printf("\t%s,\n", eztr_textbox_names[text_box_type]);
+    recomp_printf("\t%i,\n", text_box_y_pos);
+    recomp_printf("\t%s,\n", eztr_icon_names[display_icon]);
+
+    if (next_message_id == 0xffff) {
+        recomp_printf("\tEZTR_NO_VALUE,\n");
+    } else {
+        recomp_printf("\t0x%04X,\n", next_message_id);
+    }
+    if (first_item_rupees == 0xffff) {
+        recomp_printf("\tEZTR_NO_VALUE,\n");
+    } else {
+        recomp_printf("\t%i,\n", first_item_rupees);
+    }
+
+    if (second_item_rupees == 0xffff) {
+        recomp_printf("\tEZTR_NO_VALUE,\n");
+    } else {
+        recomp_printf("\t%i,\n", second_item_rupees);
+    }
+
+    recomp_printf("\ttrue,\n\t\"");
+    // Printing Message Content:
+    for (s32 i = MSG_HEADER_SIZE; i < MSG_BUFFER_SIZE; i++) {
+        char c = buf->raw.schar[i];
+
+        print_char(c);
+    }
+    recomp_printf("\",\n\tNULL\n);\n\n");
 }
 
 // MsgSConetent Functions - Parallel to C String Functions.

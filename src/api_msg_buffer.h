@@ -35,10 +35,10 @@ u16 EZTR_MsgBuffer_GetFirstItemRupees(MsgBuffer* buf);
 void EZTR_MsgBuffer_SetFirstItemRupees(MsgBuffer* buf, u16 pos);
 u16 EZTR_MsgBuffer_GetSecondItemRupees(MsgBuffer* buf);
 void EZTR_MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos);
-void EZTR_MsgBuffer_PrintCCode(u16 textId, MsgBuffer* buf);
 void EZTR_MsgBuffer_Print(MsgBuffer* buf);
-void EZTR_MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf);
+void EZTR_MsgBuffer_PrintCCode(u16 textId, MsgBuffer* buf);
 void EZTR_MsgBuffer_PrintFull(MsgBuffer* buf);
+void EZTR_MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf);
 char* EZTR_MsgBuffer_GetContentPtr(MsgBuffer* buf);
 
 void EZTR_MsgSContent_SetEmpty(char* cont);
