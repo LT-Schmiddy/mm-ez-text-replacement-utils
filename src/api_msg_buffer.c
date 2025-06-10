@@ -81,8 +81,14 @@ RECOMP_EXPORT u16 EZTR_MsgBuffer_GetSecondItemRupees(MsgBuffer* buf) {
 RECOMP_EXPORT void EZTR_MsgBuffer_SetSecondItemRupees(MsgBuffer* buf, u16 pos) {
     MsgBuffer_SetSecondItemRupees(buf, pos);
 }
+RECOMP_EXPORT void EZTR_MsgBuffer_PrintCCode(u16 textId, MsgBuffer* buf) {
+    MsgBuffer_PrintCCode(textId, buf);
+}
 RECOMP_EXPORT void EZTR_MsgBuffer_Print(MsgBuffer* buf) {
     MsgBuffer_Print(buf);
+}
+RECOMP_EXPORT void EZTR_MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf) {
+    MsgBuffer_PrintFullCCode(textId, buf);
 }
 RECOMP_EXPORT void EZTR_MsgBuffer_PrintFull(MsgBuffer* buf) {
     MsgBuffer_PrintFull(buf);
