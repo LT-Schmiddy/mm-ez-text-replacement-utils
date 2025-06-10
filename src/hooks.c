@@ -30,8 +30,6 @@ RECOMP_HOOK_RETURN("Message_OpenText") void handle_main_text_replacement() {
 
         LOGV("msgCtx->msgLength: %i\n", msgCtx->msgLength); 
         IF_LOG_VERBOSE MsgBuffer_Print((MsgBuffer*)&font->msgBuf);
-        // Not completely sure, but using memcpy causes issues if the message is too long.
-        // We'll just copy char by char.
 
 
         // print_buf(&font->msgBuf, entry->len);
