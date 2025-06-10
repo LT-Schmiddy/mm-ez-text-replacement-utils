@@ -70,7 +70,7 @@ void print_char(char character) {
         if (recomp_get_config_u32("text_dumping_cc_macros") && msg_control_code_names[(u8)character] != NULL) {
             recomp_printf("\" %s \"", msg_control_code_names[(u8)character]);
         } else if (recomp_get_config_u32("text_dumping_byte_format")) {
-            char out_str[5] = "\\x00";
+            char out_str[9]= " \"\\x00\" ";
             write_byte_to_hex(character,&out_str[2]);
             recomp_printf("%s", out_str);
         } else {
