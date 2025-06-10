@@ -1,5 +1,5 @@
 #include "util.h"
-
+#include "msg_control_codes.h"
 static char const _hex[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 char toupper(char c) {
@@ -67,7 +67,9 @@ void print_char(char character) {
     if (is_printable_char(character)) {
         recomp_printf("%c", character);
     } else {
-        if (recomp_get_config_u32("text_dumping_byte_format")) {
+        if (recomp_get_config_u32("text_dumping_cc_macros") && msg_control_code_names[(u8)character] != NULL) {
+            recomp_printf("\" %s \"", msg_control_code_names[(u8)character]);
+        } else if (recomp_get_config_u32("text_dumping_byte_format")) {
             char out_str[5] = "\\x00";
             write_byte_to_hex(character,&out_str[2]);
             recomp_printf("%s", out_str);

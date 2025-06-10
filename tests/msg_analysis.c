@@ -1,6 +1,6 @@
 #include <modding.h>
 #include <eztr_api.h>
-#include <x_eztr_msg_macros.h>
+// #include <x_eztr_msg_macros.h>
 
 #include "global.h"
 #include "z64font.h"

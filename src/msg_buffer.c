@@ -173,7 +173,6 @@ void MsgSContent_SetEmpty(char* cont) {
     // }
 }
 
-
 void MsgBuffer_Print(MsgBuffer* buf) {
     // Loading Header Info:
     u8 text_box_type = 0;

@@ -96,4 +96,10 @@ type = "Enum"
 options = [ "Pipes (|__)", "Escapes (\\x__)" ]
 default = "Pipes (|__)"
 
-
+[[manifest.config_options]]
+id = "text_dumping_cc_macros"
+name = "Text Dumping Control Code Macros"
+description = "Print the EZTR control code macro instead of a byte value when dumping, when available"
+type = "Enum"
+options = [ "Off", "On" ]
+default = "On"
