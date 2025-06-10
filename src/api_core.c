@@ -3,6 +3,8 @@
 MsgTable* ETZR_mainTable;
 
 RECOMP_DECLARE_EVENT(EZTR_OnInit());
+RECOMP_DECLARE_EVENT(EZTR_OnDumpBuffer(const char* category, u16 textId, s32 len, MsgBuffer* buf));
+RECOMP_DECLARE_EVENT(EZTR_OnDumpBufferFull(const char* category, u16 textId, s32 len, MsgBuffer* buf));
 
 RECOMP_CALLBACK("*", recomp_on_init) void on_startup () {
     ETZR_mainTable = MsgTable_Create();
