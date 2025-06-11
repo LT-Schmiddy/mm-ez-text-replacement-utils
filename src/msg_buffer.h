@@ -7,6 +7,7 @@
 #include "api_enums.h"
 #include "msg_buffer_printf.h"
 
+extern const char* msg_control_code_names[];
 extern const char* eztr_textbox_names[];
 extern const char* eztr_icon_names[];
 
