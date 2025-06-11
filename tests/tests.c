@@ -145,7 +145,7 @@ EZTR_ON_INIT void run_tests() {
 
     // Deku Nut message. Tests item description replacement.
     EZTR_Basic_ReplaceText(0x1709, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
-        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, true, EZTR_MSG_COLOR_RED "HELLO ALEX |A9 4" EZTR_MSG_COLOR_DEFAULT EZTR_MSG_END, NULL);
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, true, EZTR_CC_COLOR_RED "HELLO ALEX |A9 4" EZTR_CC_COLOR_DEFAULT EZTR_CC_END, NULL);
 
 
     EZTR_MsgBuffer_Destroy(buf1);    EZTR_MsgBuffer_Destroy(buf2);
@@ -161,7 +161,7 @@ EZTR_ON_INIT void run_tests() {
             EZTR_NO_VALUE,
             EZTR_NO_VALUE,
             true,
-            "" EZTR_MSG_SFX "izMy name is " EZTR_MSG_COLOR_PINK "Tingle" EZTR_MSG_COLOR_DEFAULT "!" EZTR_MSG_NEWLINE "I think I am the same as you, sir." EZTR_MSG_NEWLINE "A forest fairy!" EZTR_MSG_NEWLINE "" EZTR_MSG_BOX_BREAK2 "Alas, though I am already age 35," EZTR_MSG_NEWLINE "no fairy has come to me yet..." EZTR_MSG_NEWLINE "" EZTR_MSG_CARRIAGE_RETURN "" EZTR_MSG_BOX_BREAK2 "My father tells me to grow up" EZTR_MSG_NEWLINE "and act my age, but why?" EZTR_MSG_NEWLINE "" EZTR_MSG_CARRIAGE_RETURN "" EZTR_MSG_BOX_BREAK2 "I tell you...Tingle is the very" EZTR_MSG_NEWLINE "reincarnation of a fairy!" EZTR_MSG_EVENT "" EZTR_MSG_END "",
+            "" EZTR_CC_SFX "izMy name is " EZTR_CC_COLOR_PINK "Tingle" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_NEWLINE "I think I am the same as you, sir." EZTR_CC_NEWLINE "A forest fairy!" EZTR_CC_NEWLINE "" EZTR_CC_BOX_BREAK2 "Alas, though I am already age 35," EZTR_CC_NEWLINE "no fairy has come to me yet..." EZTR_CC_NEWLINE "" EZTR_CC_CARRIAGE_RETURN "" EZTR_CC_BOX_BREAK2 "My father tells me to grow up" EZTR_CC_NEWLINE "and act my age, but why?" EZTR_CC_NEWLINE "" EZTR_CC_CARRIAGE_RETURN "" EZTR_CC_BOX_BREAK2 "I tell you...Tingle is the very" EZTR_CC_NEWLINE "reincarnation of a fairy!" EZTR_CC_EVENT "" EZTR_CC_END "",
             NULL
     );
     }
@@ -169,5 +169,5 @@ EZTR_ON_INIT void run_tests() {
 RECOMP_CALLBACK("*", recomp_on_play_init) void on_play_init(PlayState* play) {
     // This should fail:
     EZTR_Basic_ReplaceText(0x1709, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
-        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, true, EZTR_MSG_COLOR_RED "HELLO ALEX 2468 |A9 4"EZTR_MSG_COLOR_DEFAULT EZTR_MSG_END, NULL);
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, true, EZTR_CC_COLOR_RED "HELLO ALEX 2468 |A9 4"EZTR_CC_COLOR_DEFAULT EZTR_CC_END, NULL);
 }
