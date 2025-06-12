@@ -13,21 +13,40 @@ There are a few major differences to note between the standard `printf` function
 
 ### `\xBF` Termination {#bf_termination}
 
-Message strings do not use the `\0` null character to terminate, as is done in standard ASCII. Therefore, the `format` argument of any of EZTR's printf functions will need to be purposefully terminated with `\xBF` by the programmer.
+Message strings do not use the `\0` null character to terminate, as is done in standard ASCII. Instead, strings are terminated with `\xBF`, and `\0`
+is used as the control code to set the text color back to normal. As a result of this, EZTR cannot assume your string arguments will be `\0` terminated either.
+It is expected that any message data argument of a `EZTR_MsgSContent_*` function will manually terminated with `\xBF` by the programmer.
 
 See \ref the_message_buffer for more information on message control codes and massage termination.
 
 ### Pipe-Escaped Byte Syntax {#pipe_escaped_bytes}
 
-Lorem Ipsum
+Because of the non-standard encoding that Majora's Mask uses for control characters, EZTR offers an optional special syntax for handling these in the form of
+"Pipe-escaped bytes". When used, single bytes can be written in your string using the syntax `|XX`, where each `X` is a hexidecimal character. Note that this
+only does a single byte at a time, so the correct way to write 2 bytes would be `|XX|XX` and not `|XXXX` (unlike the `\x` escape sequence used by C, where `\xXXXX` would be a valid expression of two bytes). This is a useful feature if you need to load message data from an external, ASCII or Unicode-based source.
 
-### The `%%m` Type Specifier {#m_type_specifier}
+Pipe-escaped bytes are used in 3 places:
 
-Lorem Ipsum
+* The `format` argument of any of the normal `EZTR_MsgSContent_*Printf` functions (the ones with `NoPipe` in the name are alternate versions without this behavior).
+* Passing message content to any `EZTR_MsgSContent_*Printf` (including the `NoPipe` versions) using the `%m` type specifier.
+* The content `content` argument of `EZTR_Basic_ReplaceText`, `EZTR_Basic_AddCustomText`, and `EZTR_Basic_ReplaceCustomText`, provided the `pipe_escaped_bytes` argument is set to true.
+
+Note that this feature is entirely optional. EZTR is fully capable of processing control code bytes directly (such as using C escape sequences in string literals).
+
+### The `%%m` and `%%n` Type Specifiers {#m_type_specifier}
+
+Because the `%s` string specifier in C expects the argument to be `\0` terminated, the specifier cannot be easily used to pass in control codes and
+formatting data. To solve this, `EZTR_MsgSContent_*Printf` have two unique specifiers: `%%m` and `%%n`. These specifiers function identically to `%s`
+except they assume that the corresponding argument is Majora's Mask message data and thus `\xBF` terminated.
+
+That is to say, when using `%%m` and `%%n` to pass in message data, terminate your argument with `\xBF`. This argument termination will not be copied into the output string
+(much like how `*printf` doesn't copy in the `\0` null terminator from `%s` arguments).
+
+The only difference between `%%m` and `%%n` is that `%%m` processes pipe-escaped bytes, whereas `%%n` does not.
 
 ### Non-Printable Bytes {#non_printable_bytes}
 
-When printing to the console using `EZTR_MsgSContent_Printf` or `EZTR_MsgSContent_PrintfLine`, all control codes are displayed according to EZTR's `text_dumping_byte_format` option. This does not apply to any other printf function, which preserves the control bytes.
+When printing to the console using `EZTR_MsgSContent_Printf`, `EZTR_MsgSContent_PrintfLine`, or the `NoPipe` variants thereof, all control codes are displayed according to EZTR's `text_dumping_byte_format` and `text_dumping_cc_macros` options. This does not apply to any other printf functions, which preserves the control bytes.
 
 ## Format Specification
 
@@ -49,7 +68,8 @@ The following format specifiers are supported:
 | g or G | Scientific or decimal floating point |
 | c      | Single character |
 | s      | String of characters. To offer parity with standard C, it is assumed that this string is null-terminated. |
-| m      | Message content string. This is a unique type implemented by EZTR.  |
+| m      | Message content string using pipe-escaped bytes. This is a unique type implemented by EZTR.  |
+| m      | Message content string NOT using pipe-escaped bytes. This is a unique type implemented by EZTR.  |
 | p      | Pointer address |
 | %      | A % followed by another % character will write a single % |
 
@@ -109,6 +129,6 @@ int length = sprintf(NULL, "Hello, world"); // length is set to 12
 
 ## Credits
 
-Special thanks to [mpaland on GitHub](https://github.com/mpaland/) for creating this [embedded printf library](https://github.com/mpaland/printf), as EZTR's printf logic a modified version of this project. The documentation on this page is partially copied from there as well.
+Special thanks to [mpaland on GitHub](https://github.com/mpaland/) for creating this [embedded printf library](https://github.com/mpaland/printf), as EZTR's printf logic is a modified version of this project. The documentation on this page is partially copied from there as well.
 
 ([https://github.com/mpaland/printf](https://github.com/mpaland/printf))
