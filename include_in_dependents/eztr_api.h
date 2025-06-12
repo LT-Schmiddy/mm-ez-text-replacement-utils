@@ -134,7 +134,7 @@ typedef struct {
 } _EZTR_CustomMsgHandleSetter;
 
 #define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
-    static u16 id; static u8 is_set = 0; if (setter != NULL) { if (is_set) { _EXTR_ReportErrorMessage( \
+    static u16 id; static u8 is_set = 0; if (setter != NULL) { if (is_set) { _EZTR_ReportErrorMessage( \
     "The textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
     ); setter->out_success = 0;} else { id = setter->new_id; is_set = 1; setter->out_success = 1;}} return id; }
 
@@ -156,6 +156,7 @@ typedef struct {
 
 #ifndef DOXYGEN
 EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
+EZTR_IMPORT( void _EZTR_ReportErrorMessage(char* error_msg));
 #endif
 
 #define EZTR_MSG_HIGHEST_ID 0x354C
@@ -256,12 +257,21 @@ u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter) \
 __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
 
 /**
- * @brief Creates a declaration for a CustomMsgHandle object.
+ * @brief Creates a declaration for a CustomMsgHandle object. 
  * 
  * Use this reference handles created in other .c files. Also works in headers.
  * 
  */
 #define EZTR_DECLARE_CUSTOM_MSG_HANDLE(name) u16 EZTR_CUSTOM_MSG_HANDLE_NAME(name)(_EZTR_CustomMsgHandleSetter* setter)
+
+/**
+ * @brief Creates a declaration for a CustomMsgHandle object. Alternative to `EZTR_DECLARE_CUSTOM_MSG_HANDLE`.
+ * 
+ * Use this reference handles created in other .c files. Also works in headers.
+ * 
+ */
+#define EZTR_EXTERN_CUSTOM_MSG_HANDLE(name) EZTR_DECLARE_CUSTOM_MSG_HANDLE(name)
+
 
 /**
  * @brief Declares and imports a CustomMsgHandle object from another mod.
@@ -304,6 +314,16 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
  */
 #define EZTR_GET_ID(handle) EZTR_GET_CUSTOM_MSG_ID(handle)
 
+
+/**
+ * @brief Gets the textId from a custom message handle.
+ * 
+ * A more readable alternative to `EZTR_CustomMsgHandle_##handle(NULL)`.
+ * 
+ * This macro WILL apply the global prefix if it's enabled, and can be considered shorthand for
+ * `EZTR_GET_CUSTOM_MSG_ID(EZTR_HNAME(my_handle))` or `EZTR_GET_ID(EZTR_HNAME(my_handle))`.
+ */
+#define EZTR_GET_ID_H(handle) EZTR_GET_CUSTOM_MSG_ID(EZTR_CUSTOM_MSG_HANDLE_NAME(handle))
 
 /** @}*/
 /**

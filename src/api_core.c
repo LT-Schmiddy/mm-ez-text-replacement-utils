@@ -14,7 +14,13 @@ RECOMP_CALLBACK("*", recomp_on_init) void on_startup () {
     LOGI("EZTR Initialization Complete.");
 }
 
+ 
 
-RECOMP_EXPORT void _EXTR_ReportErrorMessage(char* error_msg) {
+RECOMP_EXPORT void _EZTR_ReportErrorMessage(char* error_msg) {
     LOGE("Dependent mod reported an error: %s", error_msg);
+}
+
+// Compatability patch for an old typo:
+RECOMP_EXPORT void _EXTR_ReportErrorMessage(char* error_msg) {
+    _EZTR_ReportErrorMessage(error_msg);
 }
