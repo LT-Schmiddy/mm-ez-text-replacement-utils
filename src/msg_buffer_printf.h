@@ -88,6 +88,7 @@ int MsgSContent_NoPipe_Printf(const char* format, ...);
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
 // #define sprintf sprintf_
+int MsgSContent_Sprintf(char* buffer, const char* format, ...);
 int MsgSContent_NoPipe_Sprintf(char* buffer, const char* format, ...);
 
 

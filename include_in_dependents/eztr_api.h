@@ -1510,6 +1510,93 @@ EZTR_IMPORT(int EZTR_MsgSContent_Vprintf(const char* format, va_list va));
  */
 EZTR_IMPORT(int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...));
 
+/**
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
+EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Printf(const char* format, ...));
+
+/**
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
+EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_PrintfLine(const char* format, ...));
+
+/**
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * Unlike `EZTR_MsgSContent_Printf()`, this function will append a newline to the end of 
+ * console output.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * @param buffer 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
+EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Sprintf(char* buffer, const char* format, ...));
+
+/**
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * @param buffer 
+ * @param count 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
+EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Snprintf(char* buffer, size_t count, const char* format, ...));
+
+/**
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * @param buffer 
+ * @param count 
+ * @param format 
+ * @param va 
+ * @return int 
+ */
+EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Vsnprintf(char* buffer, size_t count, const char* format, va_list va));
+
+/**
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * @param format 
+ * @param va 
+ * @return int 
+ */
+EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Vprintf(const char* format, va_list va));
+
+/**
+ * @brief A modified version of printf, specially designed to handle message content.
+ * 
+ * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * @param out 
+ * @param arg 
+ * @param format 
+ * @param ... 
+ * @return int 
+ */
+EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...));
+
 /** @}*/
 
 #endif
