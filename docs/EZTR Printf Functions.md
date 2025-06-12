@@ -69,7 +69,7 @@ The following format specifiers are supported:
 | c      | Single character |
 | s      | String of characters. To offer parity with standard C, it is assumed that this string is null-terminated. |
 | m      | Message content string using pipe-escaped bytes. This is a unique type implemented by EZTR.  |
-| m      | Message content string NOT using pipe-escaped bytes. This is a unique type implemented by EZTR.  |
+| n      | Message content string NOT using pipe-escaped bytes. This is a unique type implemented by EZTR.  |
 | p      | Pointer address |
 | %      | A % followed by another % character will write a single % |
 

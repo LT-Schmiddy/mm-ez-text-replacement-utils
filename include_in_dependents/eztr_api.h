@@ -1407,10 +1407,10 @@ EZTR_IMPORT(char* EZTR_MsgSContent_Cat(char* dst, char* src));
  * Similar to `strncmp()` for null-terminated strings, but with one notable difference:
  * With `strncmp()`, if two strings are equal for the first `n` characters, but one string continues after `n` while  
  * the other doesn't, the shorter string is considered 'lesser' because the null terminator `'\x00'` is naturally
- * the lowest possible ASCII value. Because strings in MM are `'\XBF'` terminated, that behavior won't apply here.
+ * the lowest possible ASCII value. Because strings in MM are `'\xBF'` terminated, that behavior won't apply here.
  * 
  * In `EZTR_MsgSContent_NCmp()`, a special case is applied: If two strings are equal for `n` characters, but the 
- * next character after `n` is `'\XBF'` in one of the strings, it is considered the lesser string regardless of 
+ * next character after `n` is `'\xBF'` in one of the strings, it is considered the lesser string regardless of 
  * what the other character is.
  * 
  * @param str1 The first message content string to compare.
@@ -1430,10 +1430,10 @@ EZTR_IMPORT(s32 EZTR_MsgSContent_NCmp(char* str1, char* str2, size_t len));
  * Similar to `strcmp()` for null-terminated strings, but with one notable difference:
  * With `strncmp()`, if two strings are equal for the first `n` characters, but one string continues after `n` while  
  * the other doesn't, the shorter string is considered 'lesser' because the null terminator `'\x00'` is naturally
- * the lowest possible ASCII value. Because strings in MM are `'\XBF'` terminated, that behavior won't apply here.
+ * the lowest possible ASCII value. Because strings in MM are `'\xBF'` terminated, that behavior won't apply here.
  * 
  * In `EZTR_MsgSContent_Cmp()`, a special case is applied: If two strings are equal for `n` characters, but the 
- * next character after `n` is `'\XBF'` in one of the strings, it is considered the lesser string regardless of 
+ * next character after `n` is `'\xBF'` in one of the strings, it is considered the lesser string regardless of 
  * what the other character is.
  * 
  * @param str1 The first message content string to compare.
