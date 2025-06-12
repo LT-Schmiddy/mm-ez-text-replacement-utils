@@ -77,21 +77,22 @@ void _out_fct(char character, void* buffer, size_t idx, size_t maxlen) {
 }
 
 // internal vsnprintf
-int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer_msg, const size_t max_len, const char* format, const size_t max_format_len, va_list va) {
+int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* buffer_msg, const size_t max_len, const char* format, const size_t max_format_len, va_list va) {
     unsigned int flags, width, precision, n;
     size_t idx = 0U;
     char* buffer = (char*)buffer_msg;
     const char* start = format;
-
     if (!buffer) {
         // use null output function
         out = _out_null;
     }
+
+    unsigned int fmt_pipe_escaped_bytes = true;
     bool main_should_quit = false;
     while (*format != MSG_ENDING_CHAR && !main_should_quit && (size_t)(format - start) < max_format_len) {
         // format specifier?  %[flags][width][.precision][length]
 
-        if (*format == PIPE_CHAR) {
+        if (buf_pipe_escaped_bytes && *format == PIPE_CHAR) {
             // Pipe-escaped byte;
             format++;
             if (*format == PIPE_CHAR) {
@@ -342,7 +343,9 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer_msg, const size_t max_
                 format++;
                 break;
             }
-            // To Modify: Message Buffer flag:
+            // Message Buffer flag:
+            case 'n' : 
+                fmt_pipe_escaped_bytes = false;
             case 'm' : {
                 char* p = pf_va_arg(va, char*);
                 unsigned int l = MIN(MsgSContent_Len(p), (precision ? precision : MSG_CONTENT_SIZE));
@@ -358,7 +361,7 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer_msg, const size_t max_
                 bool str_should_quit = false;
                 while (*p != MSG_ENDING_CHAR && !str_should_quit && (!(flags & PF_FLAGS_PRECISION) || precision--)) {
                     // Handle pipe-escaped byte:
-                    if (*p == PIPE_CHAR) {
+                    if (fmt_pipe_escaped_bytes && *p == PIPE_CHAR) {
                         p++;
                         if (*p == PIPE_CHAR) {
                             out(PIPE_CHAR, buffer, idx++, max_len);
@@ -386,6 +389,8 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer_msg, const size_t max_
                     }
                 }
                 format++;
+                // Set it back to true for next time.
+                fmt_pipe_escaped_bytes = true;
                 break;
             }
 
@@ -419,7 +424,6 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer_msg, const size_t max_
         }
     }
 
-
     out(MSG_ENDING_CHAR, buffer, idx < max_len ? idx : max_len - 1U, max_len);
 
     // termination
@@ -434,7 +438,7 @@ int MsgSContent_PrintfLn(const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
-    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_char, true, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
     recomp_printf("\n");
     pf_va_end(va);
     return ret;
@@ -444,7 +448,7 @@ int MsgSContent_Printf(const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
-    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_char, true, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
@@ -452,7 +456,34 @@ int MsgSContent_Printf(const char* format, ...) {
 int MsgSContent_Sprintf(char* buffer, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, MSG_CONTENT_SIZE, format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, true, buffer, MSG_CONTENT_SIZE, format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+int MsgSContent_NoPipe_PrintfLn(const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, false, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    recomp_printf("\n");
+    pf_va_end(va);
+    return ret;
+}
+
+int MsgSContent_NoPipe_Printf(const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, false, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+int MsgSContent_NoPipe_Sprintf(char* buffer, const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, false, buffer, MSG_CONTENT_SIZE, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }

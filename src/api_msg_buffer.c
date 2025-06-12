@@ -128,7 +128,7 @@ RECOMP_EXPORT int EZTR_MsgSContent_Printf(const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
-    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_char, true, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
@@ -137,7 +137,7 @@ RECOMP_EXPORT int EZTR_MsgSContent_PrintfLine(const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
-    const int ret = _MsgSContent_Vsnprintf(_out_char, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_char, true, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
     recomp_printf("\n");
     pf_va_end(va);
     return ret;
@@ -146,7 +146,7 @@ RECOMP_EXPORT int EZTR_MsgSContent_PrintfLine(const char* format, ...) {
 RECOMP_EXPORT int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, MSG_CONTENT_SIZE, format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, true, buffer, MSG_CONTENT_SIZE, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
@@ -155,7 +155,7 @@ RECOMP_EXPORT int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...
 RECOMP_EXPORT int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const char* format, ...) {
     va_list va;
     pf_va_start(va, format);
-    const int ret = _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, true, buffer, count, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }
@@ -163,12 +163,12 @@ RECOMP_EXPORT int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const ch
 
 RECOMP_EXPORT int EZTR_MsgSContent_Vprintf(const char* format, va_list va) {
     char buffer[1];
-    return _MsgSContent_Vsnprintf(_out_char, (char*)buffer, (size_t)-1, format, (size_t)-1, va);
+    return _MsgSContent_Vsnprintf(_out_char, true, (char*)buffer, (size_t)-1, format, (size_t)-1, va);
 }
 
 
 RECOMP_EXPORT int EZTR_MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, va_list va) {
-    return _MsgSContent_Vsnprintf(_out_buffer, buffer, count, format, (size_t)-1, va);
+    return _MsgSContent_Vsnprintf(_out_buffer, true, buffer, count, format, (size_t)-1, va);
 }
 
 
@@ -176,7 +176,65 @@ RECOMP_EXPORT int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* a
     va_list va;
     pf_va_start(va, format);
     const out_fct_wrap_type out_fct_wrap = { out, arg };
-    const int ret = _MsgSContent_Vsnprintf(_out_fct, (char*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
+    const int ret = _MsgSContent_Vsnprintf(_out_fct, true, (char*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+// NoPipe versions
+RECOMP_EXPORT int EZTR_MsgSContent_NoPipe_Printf(const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, false, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+RECOMP_EXPORT int EZTR_MsgSContent_NoPipe_PrintfLine(const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, false, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    recomp_printf("\n");
+    pf_va_end(va);
+    return ret;
+}
+
+RECOMP_EXPORT int EZTR_MsgSContent_NoPipe_Sprintf(char* buffer, const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, false, buffer, MSG_CONTENT_SIZE, format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+
+RECOMP_EXPORT int EZTR_MsgSContent_NoPipe_Snprintf(char* buffer, size_t count, const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    const int ret = _MsgSContent_Vsnprintf(_out_buffer, false, buffer, count, format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+
+RECOMP_EXPORT int EZTR_MsgSContent_NoPipe_Vprintf(const char* format, va_list va) {
+    char buffer[1];
+    return _MsgSContent_Vsnprintf(_out_char, false, (char*)buffer, (size_t)-1, format, (size_t)-1, va);
+}
+
+
+RECOMP_EXPORT int EZTR_MsgSContent_NoPipe_Vsnprintf(char* buffer, size_t count, const char* format, va_list va) {
+    return _MsgSContent_Vsnprintf(_out_buffer, false, buffer, count, format, (size_t)-1, va);
+}
+
+
+RECOMP_EXPORT int EZTR_MsgSContent_NoPipe_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...) {
+    va_list va;
+    pf_va_start(va, format);
+    const out_fct_wrap_type out_fct_wrap = { out, arg };
+    const int ret = _MsgSContent_Vsnprintf(_out_fct, false, (char*)(uintptr_t)&out_fct_wrap, (size_t)-1, format, (size_t)-1, va);
     pf_va_end(va);
     return ret;
 }

@@ -62,7 +62,7 @@ void _out_null(char character, void* buffer, size_t idx, size_t maxlen);
 void _out_char(char character, void* buffer, size_t idx, size_t maxlen);
 void _out_fct(char character, void* buffer, size_t idx, size_t maxlen);
 // int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const char* format, va_list va);
-int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t max_len, const char* format, const size_t max_format_len, va_list va);
+int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* buffer, const size_t max_len, const char* format, const size_t max_format_len, va_list va);
 
 /**
  * Tiny printf implementation
@@ -76,6 +76,8 @@ int _MsgSContent_Vsnprintf(out_fct_type out, char* buffer, const size_t max_len,
 int MsgSContent_PrintfLn(const char* format, ...);
 int MsgSContent_Printf(const char* format, ...);
 
+int MsgSContent_NoPipe_PrintfLn(const char* format, ...);
+int MsgSContent_NoPipe_Printf(const char* format, ...);
 
 
 /**
@@ -86,7 +88,7 @@ int MsgSContent_Printf(const char* format, ...);
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
 // #define sprintf sprintf_
-int MsgSContent_Sprintf(char* buffer, const char* format, ...);
+int MsgSContent_NoPipe_Sprintf(char* buffer, const char* format, ...);
 
 
 

@@ -58,4 +58,12 @@ int EZTR_MsgSContent_Vsnprintf(char* buffer, size_t count, const char* format, v
 int EZTR_MsgSContent_Vprintf(const char* format, va_list va);
 int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...);
 
+int EZTR_MsgSContent_NoPipe_PrintfLine(const char* format, ...);
+int EZTR_MsgSContent_NoPipe_Printf(const char* format, ...);
+int EZTR_MsgSContent_NoPipe_Sprintf(char* buffer, const char* format, ...);
+int EZTR_MsgSContent_NoPipe_Snprintf(char* buffer, size_t count, const char* format, ...);
+int EZTR_MsgSContent_NoPipe_Vsnprintf(char* buffer, size_t count, const char* format, va_list va);
+int EZTR_MsgSContent_NoPipe_Vprintf(const char* format, va_list va);
+int EZTR_MsgSContent_NoPipe_Fctprintf(void (*out)(char character, void* arg), void* arg, const char* format, ...);
+
 #endif

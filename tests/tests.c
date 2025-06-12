@@ -117,8 +117,13 @@ EZTR_ON_INIT void run_tests() {
     validate("EZTR_MsgSContent_Cat", 0 == EZTR_MsgSContent_Cmp(EZTR_MsgSContent_Cat(buf2->data.content, " Schmid\xBF"), buf3->data.content));
 
     // At this point, we'll consider that EZTR_MsgSContent_Cmp works as intended.
-    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %m\xBF", "Schmid\xBF");
-    validate("EZTR_MsgSContent_Sprintf", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex Schmid|00\xBF");
+    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %m\xBF", "Schmid||00\xBF");
+    EZTR_MsgSContent_PrintfLine("%n\xBF", buf2->data.content);
+    validate("EZTR_MsgSContent_Sprintf %%m", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %n\xBF", "Schmid|00\xBF");
+    EZTR_MsgSContent_PrintfLine("%n\xBF", buf2->data.content);
+    validate("EZTR_MsgSContent_Sprintf %%n", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
     // Custom Message Stuff:
     EZTR_Basic_AddCustomText(EZTR_HNAME(test_message), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
