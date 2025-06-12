@@ -59,7 +59,7 @@ EZTR_Basic_ReplaceCustomText(EZTR_HNAME(external_custom_message_handle), EZTR_ST
 
 Instructions on more advanced features, as well a technical information about how custom messages work, is found below.
 
-## A Word on Implementation Decisions
+### A Word on Implementation Decisions
 
 Before we continue, I'd like to take a moment and explain some things. In order to understand the advanced usage, you first need to understand certain, 'under-the-hood' details of the custom message system. And before I divulge that information, I'd like to explain why I settled on this implementation.
 
@@ -114,10 +114,53 @@ RECOMP_EXPORT u16 EZTR_CustomMsgHandle_my_custom_message_handle(_EZTR_CustomMsgH
 }
 ```
 
-First of all, you'll notice that the full function name has the prefix `EZTR_CustomMsgHandle_`. This is meant to distinguish it as a custom message handle, and not an ordinary function. You'll also notice that the function is marked as an RECOMP_EXPORT.
+First of all, you'll notice that the full function name has the prefix `EZTR_CustomMsgHandle_`. This is meant to distinguish it as a custom message handle, and not an ordinary function. The `HNAME(my_custom_message_handle)` macro expands to full function name, and used for readability. You'll also notice that the function is marked as `RECOMP_EXPORT` automatically.
 
 As you can see, the message id is stored in a static variable within the function. There's also a different static variable that records whether the handle has been assigned to before.
 
-When being assigned, EZTR calls the handle function with a pointer to a configuration struct. If the handle hasn't been set before, the ID is read and the operation is marked as a success in the struct (so EZTR knows that the provided ID was accepted). If the handle was assigned to before, an error message is printed (using a private function in EZTR's API), and the operation is marked as a failure in the struct (so EZTR knows it can try that ID value again). In either case, the function returns the message ID. Is assignment was reported as a success, EZTR will check the returned ID against the value in the configuration struct to ensure that the handle function is working correctly.
+When being assigned, EZTR calls the handle function with a pointer to a configuration struct. If the handle hasn't been set before, the ID is read and the operation is marked as a success in the struct (so EZTR knows that the provided ID was accepted). If the handle was assigned to before, an error message is printed (using a private function in EZTR's API), and the operation is marked as a failure in the struct (so EZTR knows it can use that ID value again). In either case, the function returns the message ID. Is assignment was reported as a success, EZTR will check the returned ID against the value in the configuration struct to ensure that the handle function is working correctly.
 
-If the function is called with the configuration pointer set to `NULL`, no assignment operation is attempted. In all cases, the function will return the message ID value.
+If the function is called with the configuration pointer set to `NULL`, no assignment operation is attempted. In all cases, the function will return the message ID value. That means that a handle's ID can be accessed by calling `EZTR_CustomMsgHandle_my_custom_message_handle(NULL)`. In fact, this is exactly
+how the various `GET_ID` macros work.
+
+### Disabling the Handle Prefix
+
+If you want to disable use of the `EZTR_CustomMsgHandle_` prefix, you can use declaring `#define EZTR_NO_HANDLE_PREFIX` before including `eztr_api.h`,
+or by adding `-DEZTR_NO_HANDLE_PREFIX` to your compilation flags. If you do this, you won't need to use `HNAME` when referencing your handle by name, but
+it's recommended that you then add your own prefix instead.
+
+If another mod has the handle prefix disabled, you can import it's handles by using:
+
+```C
+EZTR_IMPORT_CUSTOM_MSG_HANDLE_NO_PREFIX("other_mod_id", external_custom_message_handle);
+```
+
+### Disabling Handle Exports
+
+If, for some reason, you don't want to export a particular message handle, you can use the macro:
+
+```C
+EZTR_DEFINE_CUSTOM_MSG_HANDLE_NO_EXPORT(my_custom_message_handle);
+```
+
+This macro functions the same as `EZTR_DEFINE_CUSTOM_MSG_HANDLE`, but doesn't add `RECOMP_EXPORT`.
+
+This is not recommended.
+
+### Using Handles as Variables and Arguments
+
+EZTR provided a type definition for custom message handles called `EZTR_CustomMsgHandle`, which is defined as
+
+```C
+typedef u16 (*EZTR_CustomMsgHandle)(_EZTR_CustomMsgHandleSetter* setter);
+```
+
+This will allow you do use a custom message handle as you would a regular function pointer. Obviously, you won't need to use the `HNAME` macro
+when you do this.
+
+Note that the `EZTR_GET_ID_H` macro is shorthand for `EZTR_GET_ID(EZTR_HNAME(my_handle))`, and therefore shouldn't be used with function pointers.
+Use `EZTR_GET_ID` instead.
+
+### Further Info:
+
+For more information on EZTR Custom Message Handles, you can find the complete documentation of all involved macros and types under [CustomMsgHandle](@ref CustomMsgHandle).
