@@ -161,6 +161,6 @@ when you do this.
 Note that the `EZTR_GET_ID_H` macro is shorthand for `EZTR_GET_ID(EZTR_HNAME(my_handle))`, and therefore shouldn't be used with function pointers.
 Use `EZTR_GET_ID` instead.
 
-### Further Info:
+### Further Info
 
 For more information on EZTR Custom Message Handles, you can find the complete documentation of all involved macros and types under [CustomMsgHandle](@ref CustomMsgHandle).
