@@ -21,6 +21,22 @@ int cases_passed = 0;
 EZTR_DEFINE_CUSTOM_MSG_HANDLE(test_message);
 EZTR_DEFINE_CUSTOM_MSG_HANDLE(test_message2);
 
+u16 bad_handle(_EZTR_CustomMsgHandleSetter* setter) {
+    static u16 id;
+    static u8 is_set = 0;
+    if (setter != NULL) {
+        if (is_set) {
+            _EZTR_ReportErrorMessage("The textId of EZTR_CustomMsgHandle 'my_custom_message_handle' has already been set and will not be updated.");
+            setter->out_success = 0;
+        } else { 
+            id = setter->new_id;
+            is_set = 1;
+            setter->out_success = 1;
+        }
+    } 
+    return id - 1; 
+}
+
 EZTR_MSG_CALLBACK(my_callback) {
     static int i = 0;
     i++;
@@ -126,6 +142,11 @@ EZTR_ON_INIT void run_tests() {
     validate("EZTR_MsgSContent_Sprintf %%n", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
     // Custom Message Stuff:
+    // Checking against a bad handle. Should result in an error:
+    EZTR_Basic_AddCustomText(bad_handle, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX\xBF", NULL);
+
+
     EZTR_Basic_AddCustomText(EZTR_HNAME(test_message), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO ALEX\xBF", NULL);
 

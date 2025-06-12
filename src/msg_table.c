@@ -163,16 +163,14 @@ bool MsgTable_StoreNewCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgB
 
     u16 new_id = table->highest_msg_id + 1;
     // Setting the handle ID:
-    CustomMsgHandleSetter s;
-    s.new_id = new_id;
-    handle(&s);
+    bool success = CustomMsgHandle_AssignAndValidate(handle, new_id);
 
-    if (s.out_success) {
+    if (success) {
         table->highest_msg_id = new_id;
         MsgTable_StoreBuffer(table, new_id, entry, callback);
     }
 
-    return s.out_success;
+    return success;
 }
 
 bool MsgTable_StoreNewCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle, MsgCallback callback) {
@@ -181,16 +179,14 @@ bool MsgTable_StoreNewCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle,
     u16 new_id = table->highest_msg_id + 1;
     
     // Setting the handle ID:
-    CustomMsgHandleSetter s;
-    s.new_id = new_id;
-    handle(&s);
+    bool success = CustomMsgHandle_AssignAndValidate(handle, new_id);
 
-    if (s.out_success) {
+    if (success) {
         table->highest_msg_id = new_id;
         MsgTable_StoreBufferEmpty(table, new_id, callback);
     }
 
-    return s.out_success;
+    return success;
 }
 
 u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
