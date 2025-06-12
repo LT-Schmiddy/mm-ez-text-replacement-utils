@@ -1523,6 +1523,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Printf(const char* format, ...));
 
 /**
  * @brief A modified version of printf, specially designed to handle message content.
+ * This version does not use pipe-escaped byte handling in the main formatting argument.
  * 
  * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
@@ -1534,6 +1535,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_PrintfLine(const char* format, ...));
 
 /**
  * @brief A modified version of printf, specially designed to handle message content.
+ * This version does not use pipe-escaped byte handling in the main formatting argument.
  * 
  * Unlike `EZTR_MsgSContent_Printf()`, this function will append a newline to the end of 
  * console output.
@@ -1549,6 +1551,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Sprintf(char* buffer, const char* format
 
 /**
  * @brief A modified version of printf, specially designed to handle message content.
+ * This version does not use pipe-escaped byte handling in the main formatting argument.
  * 
  * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
@@ -1562,6 +1565,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Snprintf(char* buffer, size_t count, con
 
 /**
  * @brief A modified version of printf, specially designed to handle message content.
+ * This version does not use pipe-escaped byte handling in the main formatting argument.
  * 
  * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
@@ -1575,6 +1579,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Vsnprintf(char* buffer, size_t count, co
 
 /**
  * @brief A modified version of printf, specially designed to handle message content.
+ * This version does not use pipe-escaped byte handling in the main formatting argument.
  * 
  * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
@@ -1586,6 +1591,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Vprintf(const char* format, va_list va))
 
 /**
  * @brief A modified version of printf, specially designed to handle message content.
+ * This version does not use pipe-escaped byte handling in the main formatting argument.
  * 
  * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
