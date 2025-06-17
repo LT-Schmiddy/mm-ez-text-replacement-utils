@@ -138,7 +138,7 @@ EZTR_ON_INIT void run_tests() {
     EZTR_MsgSContent_NoPipe_PrintfLine(buf2->data.content);
     validate("EZTR_MsgSContent_Sprintf %%m", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
     EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %n\xBF", "Schmid|00\xBF");
-    EZTR_MsgSContent_NoPipe_PrintfLine("%n\xBF", buf2->data.content);
+    EZTR_MsgSContent_NoPipe_PrintfLine("%M\xBF", buf2->data.content);
     validate("EZTR_MsgSContent_Sprintf %%n", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
     // Custom Message Stuff:

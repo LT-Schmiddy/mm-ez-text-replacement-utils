@@ -346,7 +346,7 @@ int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* 
             // Message Buffer flag:
             case 'n' : 
                 fmt_pipe_escaped_bytes = false;
-            case 'm' : {
+            case 'M' : {
                 char* p = pf_va_arg(va, char*);
                 unsigned int l = MIN(MsgSContent_Len(p), (precision ? precision : MSG_CONTENT_SIZE));
                 // pre padding
