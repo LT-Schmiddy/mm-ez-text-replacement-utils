@@ -75,9 +75,13 @@ int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* 
 // #define printf printf_
 int MsgSContent_PrintfLn(const char* format, ...);
 int MsgSContent_Printf(const char* format, ...);
+int MsgSContent_PrintfLn_WArg(const char* format, ...);
+int MsgSContent_Printf_WArg(const char* format, ...);
 
 int MsgSContent_NoPipe_PrintfLn(const char* format, ...);
 int MsgSContent_NoPipe_Printf(const char* format, ...);
+int MsgSContent_NoPipe_PrintfLn_WArg(const char* format, ...);
+int MsgSContent_NoPipe_Printf_WArg(const char* format, ...);
 
 
 /**

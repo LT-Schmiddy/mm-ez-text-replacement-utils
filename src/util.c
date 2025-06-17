@@ -2,6 +2,13 @@
 #include "msg_buffer.h"
 static char const _hex[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+PrintCharConfig print_char_config = {
+    PCAB_NONE,
+    0,
+    0,
+};
+
+
 char toupper(char c) {
     if (((u8)c) >= 97 && ((u8)c) < 122) {
         return ((u8)c) - 32;
@@ -62,10 +69,36 @@ void message_id_as_hex(u16 id, char* out_str) {
     write_byte_to_hex(id_parts[1], &out_str[2]);
 }
 
+void print_char_config_reset() {
+    print_char_config.arg_byte_handling = PCAB_NONE;
+    print_char_config.arg_bytes_max = 0;
+    print_char_config.arg_bytes_remaining = 0;
+}
+
 
 void print_char(char character) {
-    if (is_printable_char(character)) {
+
+    // Handling argument bytes:
+    if (print_char_config.arg_byte_handling && print_char_config.arg_bytes_remaining > 0) {
+        
+        if (print_char_config.arg_byte_handling == PCAB_AS_WIDE_SPECIFIER && print_char_config.arg_bytes_remaining == 1) {
+            recomp_printf("%%w", character);
+        } else if (print_char_config.arg_byte_handling == PCAB_AS_BYTES) {
+            if (recomp_get_config_u32("text_dumping_byte_format")) {
+            char out_str[11]= "\" \"\\x00\" \"";
+            write_byte_to_hex(character,&out_str[5]);
+            recomp_printf("%s", out_str);
+        } else {
+            char out_str[4] = "|00";
+            write_byte_to_hex(character,&out_str[1]);
+            recomp_printf("%s", out_str);
+        }
+        }
+        print_char_config.arg_bytes_remaining--;
+    
+    } else if (is_printable_char(character)) {
         recomp_printf("%c", character);
+    
     } else {
         if (recomp_get_config_u32("text_dumping_cc_macros") && msg_control_code_names[(u8)character] != NULL) {
             recomp_printf("\" %s \"", msg_control_code_names[(u8)character]);
@@ -77,6 +110,20 @@ void print_char(char character) {
             char out_str[4] = "|00";
             write_byte_to_hex(character,&out_str[1]);
             recomp_printf("%s", out_str);
+        }
+
+        if (print_char_config.arg_byte_handling) {
+            if (
+                character == 0x14
+                || character == 0x1B
+                || character == 0x1C
+                || character == 0x1D
+                || character == 0x1E
+                || character == 0x1F
+            ) {
+                print_char_config.arg_bytes_max = 2;
+                print_char_config.arg_bytes_remaining = 2;
+            }
         }
     }
 }

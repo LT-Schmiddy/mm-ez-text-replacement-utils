@@ -481,6 +481,9 @@ int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* 
 ///////////////////////////////////////////////////////////////////////////////
 
 int MsgSContent_PrintfLn(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_BYTES;
+
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
@@ -491,6 +494,34 @@ int MsgSContent_PrintfLn(const char* format, ...) {
 }
 
 int MsgSContent_Printf(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_BYTES;
+
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, true, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+int MsgSContent_PrintfLn_WArg(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_WIDE_SPECIFIER;
+
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, true, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    recomp_printf("\n");
+    pf_va_end(va);
+    return ret;
+}
+
+int MsgSContent_Printf_WArg(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_WIDE_SPECIFIER;
+
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
@@ -508,6 +539,9 @@ int MsgSContent_Sprintf(char* buffer, const char* format, ...) {
 }
 
 int MsgSContent_NoPipe_PrintfLn(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_BYTES;
+    
     va_list va;
     pf_va_start(va, format);
     char buffer[1];
@@ -518,6 +552,34 @@ int MsgSContent_NoPipe_PrintfLn(const char* format, ...) {
 }
 
 int MsgSContent_NoPipe_Printf(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_BYTES;
+
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, false, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    pf_va_end(va);
+    return ret;
+}
+
+int MsgSContent_NoPipe_PrintfLn_WArg(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_WIDE_SPECIFIER;
+    
+    va_list va;
+    pf_va_start(va, format);
+    char buffer[1];
+    const int ret = _MsgSContent_Vsnprintf(_out_char, false, buffer, MSG_CONTENT_SIZE, (const char*)format, (size_t)-1, va);
+    recomp_printf("\n");
+    pf_va_end(va);
+    return ret;
+}
+
+int MsgSContent_NoPipe_Printf_WArg(const char* format, ...) {
+    print_char_config_reset();
+    print_char_config.arg_byte_handling = PCAB_AS_WIDE_SPECIFIER;
+
     va_list va;
     pf_va_start(va, format);
     char buffer[1];

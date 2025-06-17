@@ -308,6 +308,7 @@ void MsgBuffer_PrintFull(MsgBuffer* buf) {
 
     recomp_printf("\tContent: \"");
     // Printing Message Content:
+    print_char_config_reset();
     for (s32 i = MSG_HEADER_SIZE; i < MSG_BUFFER_SIZE; i++) {
         char c = buf->raw.schar[i];
 
@@ -358,6 +359,7 @@ void MsgBuffer_PrintFullCCode(u16 textId, MsgBuffer* buf) {
 
     recomp_printf("\t%s,\n\t\"", recomp_get_config_u32("text_dumping_byte_format") ? "false":"true");
     // Printing Message Content:
+    print_char_config_reset();
     for (s32 i = MSG_HEADER_SIZE; i < MSG_BUFFER_SIZE; i++) {
         char c = buf->raw.schar[i];
 

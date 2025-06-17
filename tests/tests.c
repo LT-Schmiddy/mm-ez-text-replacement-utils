@@ -191,7 +191,7 @@ EZTR_ON_INIT void run_tests() {
     EZTR_MsgBuffer_Destroy(buf3);
     recomp_printf("Passed %i out of %i cases.\n", cases_passed, cases);
     
-    EZTR_MsgSContent_Printf("%c\xbf", 34);
+    EZTR_MsgSContent_Printf("" EZTR_CC_SFX "izMy name is " EZTR_CC_COLOR_PINK "Tingle" EZTR_CC_COLOR_DEFAULT "!" EZTR_CC_NEWLINE "I think I am the same as you, sir." EZTR_CC_NEWLINE "A forest fairy!" EZTR_CC_NEWLINE "" EZTR_CC_BOX_BREAK2 "Alas, though I am already age 35," EZTR_CC_NEWLINE "no fairy has come to me yet..." EZTR_CC_NEWLINE "" EZTR_CC_CARRIAGE_RETURN "" EZTR_CC_BOX_BREAK2 "My father tells me to grow up" EZTR_CC_NEWLINE "and act my age, but why?" EZTR_CC_NEWLINE "" EZTR_CC_CARRIAGE_RETURN "" EZTR_CC_BOX_BREAK2 "I tell you...Tingle is the very" EZTR_CC_NEWLINE "reincarnation of a fairy!" EZTR_CC_EVENT "" EZTR_CC_END "");
 
     EZTR_Basic_ReplaceText(
             0x1D01,
