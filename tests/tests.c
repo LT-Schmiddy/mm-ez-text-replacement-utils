@@ -173,11 +173,13 @@ EZTR_ON_INIT void run_tests() {
     EZTR_Basic_ReplaceText(0x1709, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
         EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, true, EZTR_CC_COLOR_RED "HELLO ALEX |A9 4" EZTR_CC_COLOR_DEFAULT EZTR_CC_END, NULL);
 
-
+    
     EZTR_MsgBuffer_Destroy(buf1);    EZTR_MsgBuffer_Destroy(buf2);
     EZTR_MsgBuffer_Destroy(buf3);
     recomp_printf("Passed %i out of %i cases.\n", cases_passed, cases);
     
+    EZTR_MsgSContent_Printf("%c\xbf", 34);
+
     EZTR_Basic_ReplaceText(
             0x1D01,
             EZTR_STANDARD_TEXT_BOX_I,
