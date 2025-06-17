@@ -852,6 +852,48 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText(
 ));
 
 /**
+ * @brief Declare a replacement of a vanilla message by defining the header attributes and message content.
+ * 
+ * This functions identically to `EZTR_Basic_ReplaceText`, but uses EZTR's printf formatting arguments. 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * Note that this function is meant for replacing vanilla messages only. It will not allow you to use a textId greater 
+ * than 0x354C, as that is the highest textId value found in the vanilla game.
+ * If you wish to create/modify a custom message, see `EZTR_Basic_AddCustomText()` and EZTR_Basic_ReplaceCustomText()`
+ * 
+ * @param textId The id of the vanilla message you wish to replace.
+ * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
+ * @param text_box_y_pos The vertical position of the textbox on-screen.
+ * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
+ * Use `EZTR_ICON_NO_ICON` for no icon.
+ * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
+ * then `content` is copied directly into storage.
+ * @param content The new text content to display. Accepts valid EZTR printf type specifiers. If you want empty content (for use with dynamic messages), use "\xBF".
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
+ * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ * @param ... variable arguments, using EZTR's printf implementation. 
+ */
+EZTR_IMPORT(void EZTR_Basic_ReplaceTextWithArgs(
+    u16 textId, 
+    u8 text_box_type, 
+    u8 text_box_y_pos, 
+    u8 display_icon, 
+    u16 next_message_id, 
+    u16 first_item_rupees, 
+    u16 second_item_rupees, 
+    bool pipe_escape_bytes, 
+    char* content,
+    EZTR_MsgCallback callback,
+    ...
+));
+
+/**
  * @brief Declare a replacement of a vanilla message, where the replacement message is empty.
  * 
  * This is primarily used if you want the message to be completely dynamically generated.
@@ -918,6 +960,36 @@ EZTR_IMPORT(void EZTR_Basic_AddCustomText(EZTR_CustomMsgHandle handle, u8 text_b
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
 
 /**
+ * @brief Declare a brand new (i.e: custom) message by defining the header attributes and message content.
+ * 
+ * This functions identically to `EZTR_Basic_AddCustomTextWithArgs`, but uses EZTR's printf formatting arguments. 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior. 
+ * 
+ * To avoid potential ID conflicts between mods, the u16 textId for this message will be assigned by EZTR and 
+ * will be accessable via the handle. See `EZTR_CustomMsgHandle` for more information on how custom message handles work.
+ * 
+ * @param handle The handle for the new message. 
+ * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
+ * @param text_box_y_pos The vertical position of the textbox on-screen.
+ * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
+ * Use `EZTR_ICON_NO_ICON` for no icon.
+ * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
+ * then `content` is copied directly into storage.
+ * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
+ * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ * @param ... variable arguments, using EZTR's printf implementation. 
+ */
+EZTR_IMPORT(void EZTR_Basic_AddCustomTextWithArgs(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback, ...));
+
+/**
  * @brief Declare a brand new (i.e: custom) message, where the replacement message is empty.
  * 
  * This is primarily used if you want the message to be completely dynamically generated.
@@ -968,6 +1040,33 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceCustomBuffer(EZTR_CustomMsgHandle handle, EZT
  */
 EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
+
+/**
+ * @brief Declare a replacement of a custom message by defining the header attributes and message content.
+ * 
+ * This functions identically to `EZTR_Basic_ReplaceCustomText`, but uses EZTR's printf formatting arguments. 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior. 
+ * 
+ * @param handle The handle for the message being replaced. 
+ * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
+ * @param text_box_y_pos The vertical position of the textbox on-screen.
+ * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
+ * Use `EZTR_ICON_NO_ICON` for no icon.
+ * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
+ * use 0xFFFF or `EZTR_NO_VALUE`.
+ * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
+ * then `content` is copied directly into storage.
+ * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
+ * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
+ * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
+ * @param ... variable arguments, using EZTR's printf implementation. 
+ */
+EZTR_IMPORT(void EZTR_Basic_ReplaceCustomTextWithArgs(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback, ...));
 
 /**
  * @brief Declare a replacement of a custom message, where the replacement message is empty.
@@ -1447,7 +1546,7 @@ EZTR_IMPORT(s32 EZTR_MsgSContent_Cmp(char* str1, char* str2));
  * @brief A modified version of printf, specially designed to handle message content.
  * This version uses pipe-escaped byte handling in the main formatting argument.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param ... 
@@ -1459,7 +1558,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_Printf(const char* format, ...));
  * @brief A modified version of printf, specially designed to handle message content.
  * This version uses pipe-escaped byte handling in the main formatting argument.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param ... 
@@ -1474,7 +1573,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_PrintfLine(const char* format, ...));
  * Unlike `EZTR_MsgSContent_Printf()`, this function will append a newline to the end of 
  * console output.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param format 
@@ -1487,7 +1586,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_Sprintf(char* buffer, const char* format, ...))
  * @brief A modified version of printf, specially designed to handle message content.
  * This version uses pipe-escaped byte handling in the main formatting argument.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param count 
@@ -1501,7 +1600,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_Snprintf(char* buffer, size_t count, const char
  * @brief A modified version of printf, specially designed to handle message content.
  * This version uses pipe-escaped byte handling in the main formatting argument.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param count 
@@ -1515,7 +1614,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_Vsnprintf(char* buffer, size_t count, const cha
  * @brief A modified version of printf, specially designed to handle message content.
  * This version uses pipe-escaped byte handling in the main formatting argument.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param va 
@@ -1526,7 +1625,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_Vprintf(const char* format, va_list va));
 /**
  * @brief A modified version of printf, specially designed to handle message content.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param out 
  * @param arg 
@@ -1541,7 +1640,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* arg
  * This version does not use pipe-escaped byte handling in the main formatting argument,
  * but are still used with the `%m` type specifier.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param ... 
@@ -1554,7 +1653,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Printf(const char* format, ...));
  * This version does not use pipe-escaped byte handling in the main formatting argument,
  * but are still used with the `%m` type specifier.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param ... 
@@ -1570,7 +1669,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_PrintfLine(const char* format, ...));
  * Unlike `EZTR_MsgSContent_Printf()`, this function will append a newline to the end of 
  * console output.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param format 
@@ -1584,7 +1683,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Sprintf(char* buffer, const char* format
  * This version does not use pipe-escaped byte handling in the main formatting argument,
  * but are still used with the `%m` type specifier.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param count 
@@ -1599,7 +1698,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Snprintf(char* buffer, size_t count, con
  * This version does not use pipe-escaped byte handling in the main formatting argument,
  * but are still used with the `%m` type specifier.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param buffer 
  * @param count 
@@ -1614,7 +1713,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Vsnprintf(char* buffer, size_t count, co
  * This version does not use pipe-escaped byte handling in the main formatting argument,
  * but are still used with the `%m` type specifier.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param format 
  * @param va 
@@ -1627,7 +1726,7 @@ EZTR_IMPORT(int EZTR_MsgSContent_NoPipe_Vprintf(const char* format, va_list va))
  * This version does not use pipe-escaped byte handling in the main formatting argument,
  * but are still used with the `%m` type specifier.
  * 
- * see \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * @param out 
  * @param arg 
