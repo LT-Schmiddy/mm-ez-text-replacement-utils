@@ -137,9 +137,9 @@ EZTR_ON_INIT void run_tests() {
     EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %m\xBF", "Schmid||00\xBF");
     EZTR_MsgSContent_NoPipe_PrintfLine(buf2->data.content);
     validate("EZTR_MsgSContent_Sprintf %%m", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
-    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %n\xBF", "Schmid|00\xBF");
+    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %M\xBF", "Schmid|00\xBF");
     EZTR_MsgSContent_NoPipe_PrintfLine("%M\xBF", buf2->data.content);
-    validate("EZTR_MsgSContent_Sprintf %%n", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    validate("EZTR_MsgSContent_Sprintf %%M", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
     // Custom Message Stuff:
     // Checking against a bad handle. Should result in an error:
