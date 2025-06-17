@@ -15,116 +15,6 @@
 
 #else
 
-/**
- * \defgroup Control Code Macros 
- * \brief The following macros can be used in place of binary control codes in message definitions
- * @{
- */
-
-#define EZTR_CC_COLOR_DEFAULT "\x00"
-#define EZTR_CC_COLOR_RED "\x01"
-#define EZTR_CC_COLOR_GREEN "\x02"
-#define EZTR_CC_COLOR_BLUE "\x03"
-#define EZTR_CC_COLOR_YELLOW "\x04"
-#define EZTR_CC_COLOR_LIGHTBLUE "\x05"
-#define EZTR_CC_COLOR_PINK "\x06"
-#define EZTR_CC_COLOR_SILVER "\x07"
-#define EZTR_CC_COLOR_ORANGE "\x08"
-#define EZTR_CC_TEXT_SPEED "\x0A"
-#define EZTR_CC_HS_BOAT_ARCHERY "\x0B"
-#define EZTR_CC_STRAY_FAIRIES "\x0C"
-#define EZTR_CC_TOKENS "\x0D"
-#define EZTR_CC_POINTS_TENS "\x0E"
-#define EZTR_CC_POINTS_THOUSANDS "\x0F"
-#define EZTR_CC_BOX_BREAK "\x10"
-#define EZTR_CC_NEWLINE "\x11"
-#define EZTR_CC_BOX_BREAK2 "\x12"
-#define EZTR_CC_CARRIAGE_RETURN "\x13"
-#define EZTR_CC_SHIFT "\x14"
-#define EZTR_CC_CONTINUE "\x15"
-#define EZTR_CC_NAME "\x16"
-#define EZTR_CC_QUICKTEXT_ENABLE "\x17"
-#define EZTR_CC_QUICKTEXT_DISABLE "\x18"
-#define EZTR_CC_EVENT "\x19"
-#define EZTR_CC_PERSISTENT "\x1A"
-#define EZTR_CC_BOX_BREAK_DELAYED "\x1B"
-#define EZTR_CC_FADE "\x1C"
-#define EZTR_CC_FADE_SKIPPABLE "\x1D"
-#define EZTR_CC_SFX "\x1E"
-#define EZTR_CC_DELAY "\x1F"
-#define EZTR_CC_BTN_A "\xB0"
-#define EZTR_CC_BTN_B "\xB1"
-#define EZTR_CC_BTN_C "\xB2"
-#define EZTR_CC_BTN_L "\xB3"
-#define EZTR_CC_BTN_R "\xB4"
-#define EZTR_CC_BTN_Z "\xB5"
-#define EZTR_CC_BTN_CUP "\xB6"
-#define EZTR_CC_BTN_CDOWN "\xB7"
-#define EZTR_CC_BTN_CLEFT "\xB8"
-#define EZTR_CC_BTN_CRIGHT "\xB9"
-#define EZTR_CC_Z_TARGET "\xBA"
-#define EZTR_CC_CONTROL_PAD "\xBB"
-#define EZTR_CC_END "\xBF"
-#define EZTR_CC_BACKGROUND "\xC1"
-#define EZTR_CC_TWO_CHOICE "\xC2"
-#define EZTR_CC_THREE_CHOICE "\xC3"
-#define EZTR_CC_TIMER_POSTMAN "\xC4"
-#define EZTR_CC_TIMER_MINIGAME_1 "\xC5"
-#define EZTR_CC_TIMER_2 "\xC6"
-#define EZTR_CC_TIMER_MOON_CRASH "\xC7"
-#define EZTR_CC_TIMER_MINIGAME_2 "\xC8"
-#define EZTR_CC_TIMER_ENV_HAZARD "\xC9"
-#define EZTR_CC_TIME "\xCA"
-#define EZTR_CC_CHEST_FLAGS "\xCB"
-#define EZTR_CC_INPUT_BANK "\xCC"
-#define EZTR_CC_RUPEES_SELECTED "\xCD"
-#define EZTR_CC_RUPEES_TOTAL "\xCE"
-#define EZTR_CC_TIME_UNTIL_MOON_CRASH "\xCF"
-#define EZTR_CC_INPUT_DOGGY_RACETRACK_BET "\xD0"
-#define EZTR_CC_INPUT_BOMBER_CODE "\xD1"
-#define EZTR_CC_PAUSE_MENU "\xD2"
-#define EZTR_CC_TIME_SPEED "\xD3"
-#define EZTR_CC_OWL_WARP "\xD4"
-#define EZTR_CC_INPUT_LOTTERY_CODE "\xD5"
-#define EZTR_CC_SPIDER_HOUSE_MASK_CODE "\xD6"
-#define EZTR_CC_STRAY_FAIRIES_LEFT_WOODFALL "\xD7"
-#define EZTR_CC_STRAY_FAIRIES_LEFT_SNOWHEAD "\xD8"
-#define EZTR_CC_STRAY_FAIRIES_LEFT_GREAT_BAY "\xD9"
-#define EZTR_CC_STRAY_FAIRIES_LEFT_STONE_TOWER "\xDA"
-#define EZTR_CC_POINTS_BOAT_ARCHERY "\xDB"
-#define EZTR_CC_LOTTERY_CODE "\xDC"
-#define EZTR_CC_LOTTERY_CODE_GUESS "\xDD"
-#define EZTR_CC_HELD_ITEM_PRICE "\xDE"
-#define EZTR_CC_BOMBER_CODE "\xDF"
-#define EZTR_CC_EVENT2 "\xE0"
-#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_1 "\xE1"
-#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_2 "\xE2"
-#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_3 "\xE3"
-#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_4 "\xE4"
-#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_5 "\xE5"
-#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_6 "\xE6"
-#define EZTR_CC_HOURS_UNTIL_MOON_CRASH "\xE7"
-#define EZTR_CC_TIME_UNTIL_NEW_DAY "\xE8"
-#define EZTR_CC_HS_POINTS_BANK_RUPEES "\xF0"
-#define EZTR_CC_HS_POINTS_UNK_1 "\xF1"
-#define EZTR_CC_HS_POINTS_FISHING "\xF2"
-#define EZTR_CC_HS_TIME_BOAT_ARCHERY "\xF3"
-#define EZTR_CC_HS_TIME_HORSE_BACK_BALLOON "\xF4"
-#define EZTR_CC_HS_TIME_LOTTERY_GUESS "\xF5"
-#define EZTR_CC_HS_TOWN_SHOOTING_GALLERY "\xF6"
-#define EZTR_CC_HS_UNK_1 "\xF7"
-#define EZTR_CC_HS_UNK_3_LOWER "\xF8"
-#define EZTR_CC_HS_HORSE_BACK_BALLOON "\xF9"
-#define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_1 "\xFA"
-#define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_2 "\xFB"
-#define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_3 "\xFC"
-#define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_1 "\xFD"
-#define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_2 "\xFE"
-#define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_3 "\xFF"
-
-/** @}*/
-
-
 #define EZTR_IMPORT(func) RECOMP_IMPORT(EZTR_MOD_ID_STR, func)
 #define EZTR_PACK_STRUCT __attribute__((packed))
 
@@ -786,6 +676,116 @@ typedef enum {
 
 /** @}*/
 
+
+/**
+ * \defgroup Control Code Macros 
+ * \brief The following macros can be used in place of binary control codes in message definitions
+ * @{
+ */
+
+#define EZTR_CC_COLOR_DEFAULT "\x00"
+#define EZTR_CC_COLOR_RED "\x01"
+#define EZTR_CC_COLOR_GREEN "\x02"
+#define EZTR_CC_COLOR_BLUE "\x03"
+#define EZTR_CC_COLOR_YELLOW "\x04"
+#define EZTR_CC_COLOR_LIGHTBLUE "\x05"
+#define EZTR_CC_COLOR_PINK "\x06"
+#define EZTR_CC_COLOR_SILVER "\x07"
+#define EZTR_CC_COLOR_ORANGE "\x08"
+#define EZTR_CC_TEXT_SPEED "\x0A"
+#define EZTR_CC_HS_BOAT_ARCHERY "\x0B"
+#define EZTR_CC_STRAY_FAIRIES "\x0C"
+#define EZTR_CC_TOKENS "\x0D"
+#define EZTR_CC_POINTS_TENS "\x0E"
+#define EZTR_CC_POINTS_THOUSANDS "\x0F"
+#define EZTR_CC_BOX_BREAK "\x10"
+#define EZTR_CC_NEWLINE "\x11"
+#define EZTR_CC_BOX_BREAK2 "\x12"
+#define EZTR_CC_CARRIAGE_RETURN "\x13"
+#define EZTR_CC_SHIFT "\x14"
+#define EZTR_CC_CONTINUE "\x15"
+#define EZTR_CC_NAME "\x16"
+#define EZTR_CC_QUICKTEXT_ENABLE "\x17"
+#define EZTR_CC_QUICKTEXT_DISABLE "\x18"
+#define EZTR_CC_EVENT "\x19"
+#define EZTR_CC_PERSISTENT "\x1A"
+#define EZTR_CC_BOX_BREAK_DELAYED "\x1B"
+#define EZTR_CC_FADE "\x1C"
+#define EZTR_CC_FADE_SKIPPABLE "\x1D"
+#define EZTR_CC_SFX "\x1E"
+#define EZTR_CC_DELAY "\x1F"
+#define EZTR_CC_BTN_A "\xB0"
+#define EZTR_CC_BTN_B "\xB1"
+#define EZTR_CC_BTN_C "\xB2"
+#define EZTR_CC_BTN_L "\xB3"
+#define EZTR_CC_BTN_R "\xB4"
+#define EZTR_CC_BTN_Z "\xB5"
+#define EZTR_CC_BTN_CUP "\xB6"
+#define EZTR_CC_BTN_CDOWN "\xB7"
+#define EZTR_CC_BTN_CLEFT "\xB8"
+#define EZTR_CC_BTN_CRIGHT "\xB9"
+#define EZTR_CC_Z_TARGET "\xBA"
+#define EZTR_CC_CONTROL_PAD "\xBB"
+#define EZTR_CC_END "\xBF"
+#define EZTR_CC_BACKGROUND "\xC1"
+#define EZTR_CC_TWO_CHOICE "\xC2"
+#define EZTR_CC_THREE_CHOICE "\xC3"
+#define EZTR_CC_TIMER_POSTMAN "\xC4"
+#define EZTR_CC_TIMER_MINIGAME_1 "\xC5"
+#define EZTR_CC_TIMER_2 "\xC6"
+#define EZTR_CC_TIMER_MOON_CRASH "\xC7"
+#define EZTR_CC_TIMER_MINIGAME_2 "\xC8"
+#define EZTR_CC_TIMER_ENV_HAZARD "\xC9"
+#define EZTR_CC_TIME "\xCA"
+#define EZTR_CC_CHEST_FLAGS "\xCB"
+#define EZTR_CC_INPUT_BANK "\xCC"
+#define EZTR_CC_RUPEES_SELECTED "\xCD"
+#define EZTR_CC_RUPEES_TOTAL "\xCE"
+#define EZTR_CC_TIME_UNTIL_MOON_CRASH "\xCF"
+#define EZTR_CC_INPUT_DOGGY_RACETRACK_BET "\xD0"
+#define EZTR_CC_INPUT_BOMBER_CODE "\xD1"
+#define EZTR_CC_PAUSE_MENU "\xD2"
+#define EZTR_CC_TIME_SPEED "\xD3"
+#define EZTR_CC_OWL_WARP "\xD4"
+#define EZTR_CC_INPUT_LOTTERY_CODE "\xD5"
+#define EZTR_CC_SPIDER_HOUSE_MASK_CODE "\xD6"
+#define EZTR_CC_STRAY_FAIRIES_LEFT_WOODFALL "\xD7"
+#define EZTR_CC_STRAY_FAIRIES_LEFT_SNOWHEAD "\xD8"
+#define EZTR_CC_STRAY_FAIRIES_LEFT_GREAT_BAY "\xD9"
+#define EZTR_CC_STRAY_FAIRIES_LEFT_STONE_TOWER "\xDA"
+#define EZTR_CC_POINTS_BOAT_ARCHERY "\xDB"
+#define EZTR_CC_LOTTERY_CODE "\xDC"
+#define EZTR_CC_LOTTERY_CODE_GUESS "\xDD"
+#define EZTR_CC_HELD_ITEM_PRICE "\xDE"
+#define EZTR_CC_BOMBER_CODE "\xDF"
+#define EZTR_CC_EVENT2 "\xE0"
+#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_1 "\xE1"
+#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_2 "\xE2"
+#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_3 "\xE3"
+#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_4 "\xE4"
+#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_5 "\xE5"
+#define EZTR_CC_SPIDER_HOUSE_MASK_CODE_6 "\xE6"
+#define EZTR_CC_HOURS_UNTIL_MOON_CRASH "\xE7"
+#define EZTR_CC_TIME_UNTIL_NEW_DAY "\xE8"
+#define EZTR_CC_HS_POINTS_BANK_RUPEES "\xF0"
+#define EZTR_CC_HS_POINTS_UNK_1 "\xF1"
+#define EZTR_CC_HS_POINTS_FISHING "\xF2"
+#define EZTR_CC_HS_TIME_BOAT_ARCHERY "\xF3"
+#define EZTR_CC_HS_TIME_HORSE_BACK_BALLOON "\xF4"
+#define EZTR_CC_HS_TIME_LOTTERY_GUESS "\xF5"
+#define EZTR_CC_HS_TOWN_SHOOTING_GALLERY "\xF6"
+#define EZTR_CC_HS_UNK_1 "\xF7"
+#define EZTR_CC_HS_UNK_3_LOWER "\xF8"
+#define EZTR_CC_HS_HORSE_BACK_BALLOON "\xF9"
+#define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_1 "\xFA"
+#define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_2 "\xFB"
+#define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_3 "\xFC"
+#define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_1 "\xFD"
+#define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_2 "\xFE"
+#define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_3 "\xFF"
+
+/** @}*/
+
 /**
  * \defgroup Basic_Replacement
  * 
@@ -1029,7 +1029,7 @@ EZTR_IMPORT(EZTR_MsgBuffer* EZTR_MsgBuffer_CreateFromStrN(char* src, size_t len)
 /**
  * @brief Frees/destroys a message buffer.
  * 
- * EZTR only expects you to destroy buffers that you create youself using one of the above functions.A_BTN_STATE_IDLE
+ * EZTR only expects you to destroy buffers that you create youself using one of the above functions.
  * Buffers given to you by in `MsgCallback` functions are created and destroyed by EZTR.
  * 
  * @param buf A pointer to the message buffer to destroy.
@@ -1321,7 +1321,7 @@ EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
 
 
 /**
- * @brief Sets the message message content as empty.A_BTN_STATE_IDLE
+ * @brief Sets the message message content as empty.
  * 
  * This is accomplished by setting the first character in the message content to the '\xBF' termination character.
  * No other bytes are effected.
@@ -1538,7 +1538,8 @@ EZTR_IMPORT(int EZTR_MsgSContent_Fctprintf(void (*out)(char character, void* arg
 
 /**
  * @brief A modified version of printf, specially designed to handle message content.
- * This version uses pipe-escaped byte handling in the main formatting argument.
+ * This version does not use pipe-escaped byte handling in the main formatting argument,
+ * but are still used with the `%m` type specifier.
  * 
  * see \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
