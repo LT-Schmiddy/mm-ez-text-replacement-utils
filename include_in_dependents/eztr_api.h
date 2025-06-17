@@ -678,7 +678,7 @@ typedef enum {
 
 
 /**
- * \defgroup Control Code Macros 
+ * \defgroup Control_Code_Macros 
  * \brief The following macros can be used in place of binary control codes in message definitions
  * @{
  */
