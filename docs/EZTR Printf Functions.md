@@ -68,7 +68,7 @@ The following format specifiers are supported:
 | g or G | Scientific or decimal floating point |
 | c      | Single character |
 | s      | ASCII string of characters. To offer parity with standard C, it is assumed that this string is null-terminated. |
-| S      | ASCII string of characters. Like `%s`, it is assumed that this string is null-terminated, but pipe-escaped bytes will still be evaluated. |
+| q      | ASCII string of characters. Like `%s`, it is assumed that this string is null-terminated, but pipe-escaped bytes will still be evaluated. |
 | m      | Message content string using pipe-escaped bytes. This is a unique type implemented by EZTR. |
 | M      | Message content string NOT using pipe-escaped bytes. This is a unique type implemented by EZTR. |
 | w      | Unsigned 16-bit value to be inserted into the byte string raw. Useful for pass argument bytes following `EZTR_CC_SFX`, `EZTR_CC_DELAY`, etc. |

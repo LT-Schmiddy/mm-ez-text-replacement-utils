@@ -113,8 +113,7 @@ EZTR_ON_INIT void run_tests() {
     
     buf2->data.text_box_y_pos = 0;
     u32 b2count = EZTR_MsgSContent_Copy(buf2->data.content, "Hello Alex\xBF");
-    // recomp_printf("b2count = %u\n", b2count);
-    validate("Count == 10", b2count == 10);
+    validate("b2count == 10", b2count == 10);
 
     EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex\xBF");
     EZTR_MsgBuffer_PrintFull(buf3);
@@ -124,22 +123,36 @@ EZTR_ON_INIT void run_tests() {
     EZTR_MsgBuffer_Print(buf3);
 
     validate("EZTR_MsgSContent_Cmp: Equality (Content)", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
-    EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex Schmid\xBF");
+    EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex [REDACTED]\xBF");
     validate("EZTR_MsgSContent_Cmp: Mismatch (buf3 is longer)", -1 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
     buf3->data.content[0] = '\0';
     validate("EZTR_MsgSContent_Cmp: Mismatch (buf3 is longer, but with an earlier mismatch)", 1 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
     
     buf3->data.content[0] = 'H';
-    validate("EZTR_MsgSContent_Cat", 0 == EZTR_MsgSContent_Cmp(EZTR_MsgSContent_Cat(buf2->data.content, " Schmid\xBF"), buf3->data.content));
+    validate("EZTR_MsgSContent_Cat", 0 == EZTR_MsgSContent_Cmp(EZTR_MsgSContent_Cat(buf2->data.content, " [REDACTED]\xBF"), buf3->data.content));
 
     // At this point, we'll consider that EZTR_MsgSContent_Cmp works as intended.
-    EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex Schmid|00\xBF");
-    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %m\xBF", "Schmid||00\xBF");
-    EZTR_MsgSContent_NoPipe_PrintfLine(buf2->data.content);
+    // Testing pipe and nopipe message content type specifiers
+    EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex [REDACTED]|00\xBF");
+    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %m\xBF", "[REDACTED]||00\xBF");
     validate("EZTR_MsgSContent_Sprintf %%m", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
-    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %M\xBF", "Schmid|00\xBF");
-    EZTR_MsgSContent_NoPipe_PrintfLine("%M\xBF", buf2->data.content);
+    EZTR_MsgSContent_Sprintf(buf2->data.content, "Hello Alex %M\xBF", "[REDACTED]|00\xBF");
     validate("EZTR_MsgSContent_Sprintf %%M", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+
+    // Testing the new string typedefs
+    // Testing pipe and nopipe ASCII string type specifiers
+    EZTR_MsgSContent_Copy(buf2->data.content, "Hello Alex [REDACTED]\xBF");
+    EZTR_MsgSContent_Sprintf(buf3->data.content, "Hello Alex %s\xBF", "[REDACTED]");
+    validate("EZTR_MsgSContent_Sprintf %%s", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    EZTR_MsgSContent_Copy(buf2->data.content, "Hello Alex \x01[REDACTED]\x00\xBF");
+    EZTR_MsgSContent_Sprintf(buf3->data.content, "Hello Alex %q\xBF", "|01[REDACTED]|00");
+    validate("EZTR_MsgSContent_Sprintf %%q", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+    EZTR_MsgSContent_Sprintf(buf3->data.content, "Hello Alex %s\xBF", "|01[REDACTED]|00");
+    validate("EZTR_MsgSContent_Sprintf %%s ignores pipe-escaped bytes", 0 != EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
+
+    EZTR_MsgSContent_Copy(buf2->data.content, "Hello" EZTR_CC_BOX_BREAK_DELAYED "\x00\x01 Alex [REDACTED]\xBF");
+    EZTR_MsgSContent_Sprintf(buf3->data.content, "Hello" EZTR_CC_BOX_BREAK_DELAYED "%w Alex [REDACTED]\xBF", 1);
+    validate("EZTR_MsgSContent_Sprintf %%w", 0 == EZTR_MsgSContent_Cmp(buf2->data.content, buf3->data.content));
 
     // Custom Message Stuff:
     // Checking against a bad handle. Should result in an error:
@@ -171,10 +184,10 @@ EZTR_ON_INIT void run_tests() {
 
     // Deku Nut message. Tests item description replacement.
     EZTR_Basic_ReplaceText(0x1709, EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
-        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, true, EZTR_CC_COLOR_RED "HELLO ALEX |A9 4" EZTR_CC_COLOR_DEFAULT EZTR_CC_END, NULL);
-
+        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, true, EZTR_CC_COLOR_RED "HELLO ALEX |A9 4" EZTR_CC_COLOR_DEFAULT EZTR_CC_END, NULL);    
     
-    EZTR_MsgBuffer_Destroy(buf1);    EZTR_MsgBuffer_Destroy(buf2);
+    EZTR_MsgBuffer_Destroy(buf1);   
+    EZTR_MsgBuffer_Destroy(buf2);
     EZTR_MsgBuffer_Destroy(buf3);
     recomp_printf("Passed %i out of %i cases.\n", cases_passed, cases);
     

@@ -317,8 +317,32 @@ int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* 
                 format++;
                 break;
             }
-
-            case 's' : {
+            case 'w' : {
+                unsigned int l = 1U;
+                // pre padding
+                if (!(flags & PF_FLAGS_LEFT)) {
+                    while (l++ < width) {
+                        out(' ', buffer, idx++, max_len);
+                    }
+                }
+                // Splitting the argument into upper and lower bytes.
+                u16 val = (u16)pf_va_arg(va, int);
+                char firstByte = (0xFF00 & val) >> 8;
+                char secondByte = (0x00FF & val);
+                out(firstByte, buffer, idx++, max_len);
+                out(secondByte, buffer, idx++, max_len);
+                // post padding
+                if (flags & PF_FLAGS_LEFT) {
+                    while (l++ < width) {
+                        out(' ', buffer, idx++, max_len);
+                    }
+                }
+                format++;
+                break;
+            }
+            case 's' : 
+                fmt_pipe_escaped_bytes = false;
+            case 'q' : {
                 const char* p = pf_va_arg(va, char*);
                 unsigned int l = _strnlen_s(p, precision ? precision : (size_t)-1);
                 // pre padding
@@ -331,8 +355,28 @@ int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* 
                     }
                 }
                 // string output
-                while ((*p != 0) && (!(flags & PF_FLAGS_PRECISION) || precision--)) {
-                    out(*(p++), buffer, idx++, max_len);
+                bool str_should_quit = false;
+                while ((*p != 0) && !str_should_quit && (!(flags & PF_FLAGS_PRECISION) || precision--)) {
+                    if (fmt_pipe_escaped_bytes && *p == PIPE_CHAR) {
+                        p++;
+                        if (*p == PIPE_CHAR) {
+                            out(PIPE_CHAR, buffer, idx++, max_len);
+                            p++;
+                        }
+                        else {
+                            char out_char = hex_to_byte((char*)p);
+                            if (out_char != MSG_ENDING_CHAR) {
+                                out(out_char, buffer, idx++, max_len);
+                                p++;
+                                p++;
+                            } else {
+                                str_should_quit = true;
+                            }
+                        }
+                    } 
+                    else {
+                        out(*(p++), buffer, idx++, max_len);
+                    }
                 }
                 // post padding
                 if (flags & PF_FLAGS_LEFT) {
@@ -341,6 +385,8 @@ int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* 
                     }
                 }
                 format++;
+                // Set it back to true for next time.
+                fmt_pipe_escaped_bytes = true;
                 break;
             }
             // Message Buffer flag:
