@@ -125,7 +125,7 @@ void print_char(char character) {
                 print_char_config.arg_bytes_max = 1;
                 print_char_config.arg_bytes_remaining = 1;
             }
-            if (
+            else if (
                 character == 0x1B
                 || character == 0x1C
                 || character == 0x1D
