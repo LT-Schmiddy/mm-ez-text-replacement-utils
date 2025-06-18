@@ -97,7 +97,8 @@ void print_char(char character) {
         }
         }
         print_char_config.arg_bytes_remaining--;
-
+        
+        // Reset this since we're done.
         if (!print_char_config.arg_bytes_remaining) {
             print_char_config.arg_bytes_max = 0;
         }
