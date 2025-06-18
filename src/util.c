@@ -82,7 +82,9 @@ void print_char(char character) {
     if (print_char_config.arg_byte_handling && print_char_config.arg_bytes_remaining > 0) {
         
         if (print_char_config.arg_byte_handling == PCAB_AS_WIDE_SPECIFIER && print_char_config.arg_bytes_remaining == 1) {
+            // Wide specifier. Useful for generating dumps that use printf args.
             recomp_printf("%%w", character);
+
         } else if (print_char_config.arg_byte_handling == PCAB_AS_BYTES) {
             if (recomp_get_config_u32("text_dumping_byte_format")) {
             char out_str[11]= "\" \"\\x00\" \"";
@@ -95,6 +97,10 @@ void print_char(char character) {
         }
         }
         print_char_config.arg_bytes_remaining--;
+
+        if (!print_char_config.arg_bytes_remaining) {
+            print_char_config.arg_bytes_max = 0;
+        }
     
     } else if (is_printable_char(character)) {
         recomp_printf("%c", character);
@@ -115,7 +121,12 @@ void print_char(char character) {
         if (print_char_config.arg_byte_handling) {
             if (
                 character == 0x14
-                || character == 0x1B
+            ) {
+                print_char_config.arg_bytes_max = 1;
+                print_char_config.arg_bytes_remaining = 1;
+            }
+            if (
+                character == 0x1B
                 || character == 0x1C
                 || character == 0x1D
                 || character == 0x1E
