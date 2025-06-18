@@ -28,21 +28,31 @@ only does a single byte at a time, so the correct way to write 2 bytes would be 
 Pipe-escaped bytes are used in 3 places:
 
 * The `format` argument of any of the normal `EZTR_MsgSContent_*Printf` functions (the ones with `NoPipe` in the name are alternate versions without this behavior).
-* Passing message content to any `EZTR_MsgSContent_*Printf` (including the `NoPipe` versions) using the `%m` type specifier.
-* The content `content` argument of `EZTR_Basic_ReplaceText`, `EZTR_Basic_AddCustomText`, and `EZTR_Basic_ReplaceCustomText`, provided the `pipe_escaped_bytes` argument is set to true.
+* Passing message content to any `EZTR_MsgSContent_*Printf` (including the `NoPipe` versions) using the `%m` or `%q` type specifiers.
+* The `content` argument of `EZTR_Basic_ReplaceText`, `EZTR_Basic_AddCustomText`, and `EZTR_Basic_ReplaceCustomText`, provided the `pipe_escaped_bytes` argument is set to true.
 
 Note that this feature is entirely optional. EZTR is fully capable of processing control code bytes directly (such as using C escape sequences in string literals).
 
-### The `%%m` and `%%n` Type Specifiers {#m_type_specifier}
+### The `%%m` and `%%M` Type Specifiers {#m_type_specifier}
 
 Because the `%s` string specifier in C expects the argument to be `\0` terminated, the specifier cannot be easily used to pass in control codes and
-formatting data. To solve this, `EZTR_MsgSContent_*Printf` have two unique specifiers: `%%m` and `%%n`. These specifiers function identically to `%s`
+formatting data. To solve this, `EZTR_MsgSContent_*Printf` have two unique specifiers: `%%m` and `%%M`. These specifiers function identically to `%s`
 except they assume that the corresponding argument is Majora's Mask message data and thus `\xBF` terminated.
 
-That is to say, when using `%%m` and `%%n` to pass in message data, terminate your argument with `\xBF`. This argument termination will not be copied into the output string
-(much like how `*printf` doesn't copy in the `\0` null terminator from `%s` arguments).
+That is to say, when using `%%m` and `%%M` to pass in message data, terminate your argument with `\xBF`. This argument termination will not be copied
+into the output string (much like how `*printf` doesn't copy in the `\0` null terminator from `%s` arguments).
 
-The only difference between `%%m` and `%%n` is that `%%m` processes pipe-escaped bytes, whereas `%%n` does not.
+The only difference between `%%m` and `%%M` is that `%%m` processes pipe-escaped bytes, whereas `%%M` does not.
+
+### Other Type Specifiers {#other_type_specifiers}
+
+EZTR also has two other unique type specifiers not standard to C: `%%q` and `%%w`.
+
+`%%q` is a `\0` null terminated string, like `%%s`, except that it also processes pipe-escaped bytes. This allows you to pass in message content strings using
+the pipe-escaped byte syntax, but without needing to manually add `\xBF` or `|BF` at the end of the argument, making this type specifier useful for copying message data from external applications or sources. Note that this specifier stops writing to the buffer ONLY when the `\0` byte is encountered, and
+not as a pipe-escaped byte. Therefore, if `|BF` or `|00` is encountered, it will be converted into corresponding byte, but writing will continue anyway.
+
+`%%w` is similar to the `%%c`
 
 ### Non-Printable Bytes {#non_printable_bytes}
 
