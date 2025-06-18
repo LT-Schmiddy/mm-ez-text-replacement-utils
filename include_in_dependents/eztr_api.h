@@ -4,7 +4,7 @@
 /*! \file eztr_api.h
     \version 2.1.0
     \brief The main header for EZTR
-*/
+ */
 
 #include "modding.h"
 #include "global.h"
@@ -671,7 +671,8 @@ typedef enum {
     EZTR_ICON_NOTHING_91 = 0xFB,
     EZTR_ICON_NOTHING_92 = 0xFC,
     EZTR_ICON_NOTHING_93 = 0xFD,
-    EZTR_ICON_NO_ICON = 0xFE
+    EZTR_ICON_NO_ICON = 0xFE,
+    EZTR_ICON_MAX = 0xFE
 } EZTR_TextBoxIcon;
 
 /** @}*/
@@ -680,728 +681,576 @@ typedef enum {
 /**
  * \defgroup Control_Code_Macros 
  * \brief The following macros can be used in place of binary control codes in message definitions
+ * 
+ * Most of this information was pulled from [the CloudModding wiki](https://wiki.cloudmodding.com/mm/Text_Format).
+ * 
  * @{
  */
 /**
-* @brief Following Text Color: Default
-* 
-* Default is usually white, but may be black (ie: for notebook updates).
-* 
-*/
+ * @brief Following Text Color: Default
+ * 
+ * Default is usually white, but may be black (ie: for notebook updates).
+ * 
+ */
 #define EZTR_CC_COLOR_DEFAULT "\x00"
 
 /**
-* @brief Following Text Color: Red
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Red
+ */
 #define EZTR_CC_COLOR_RED "\x01"
 
 /**
-* @brief Following Text Color: Green
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Green
+ */
 #define EZTR_CC_COLOR_GREEN "\x02"
 
 /**
-* @brief Following Text Color: Blue
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Blue
+ */
 #define EZTR_CC_COLOR_BLUE "\x03"
 
 /**
-* @brief Following Text Color: Yellow
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Yellow
+ */
 #define EZTR_CC_COLOR_YELLOW "\x04"
 
 /**
-* @brief Following Text Color: Turquoise
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Turquoise
+ */
 #define EZTR_CC_COLOR_LIGHTBLUE "\x05"
 
 /**
-* @brief Following Text Color: Pink
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Pink
+ */
 #define EZTR_CC_COLOR_PINK "\x06"
 
 /**
-* @brief Following Text Color: Silver
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Silver
+ */
 #define EZTR_CC_COLOR_SILVER "\x07"
 
 /**
-* @brief Following Text Color: Orange
-* 
-* 
-* 
-*/
+ * @brief Following Text Color: Orange
+ */
 #define EZTR_CC_COLOR_ORANGE "\x08"
 
 /**
-* @brief Slows down text (not used)
-* 
-* Text normally prints 2 letters at a time. 0A acts as a null character. So 0A0A prints nothing not even a space when normally 2 letters are printed.
-* 
-*/
+ * @brief Slows down text (not used)
+ * 
+ * Text normally prints 2 letters at a time. 0A acts as a null character. So 0A0A prints nothing not even a space when normally 2 letters are printed.
+ * 
+ */
 #define EZTR_CC_TEXT_SPEED "\x0a"
 
 /**
-* @brief Print: Hits Required to Win Jungle Cruise Reward
-* 
-* 
-* 
-*/
+ * @brief Print: Hits Required to Win Jungle Cruise Reward
+ */
 #define EZTR_CC_HS_BOAT_ARCHERY "\x0b"
 
+/**
+ * @brief Print: Stray Fairies Collected in Current Dungeon
+ * 
+ */
 #define EZTR_CC_STRAY_FAIRIES "\x0c"
 
 /**
-* @brief Print: Gold Skulltulas Collected in Current Spider House
-* 
-* 
-* 
-*/
+ * @brief Print: Gold Skulltulas Collected in Current Spider House
+ */
 #define EZTR_CC_TOKENS "\x0d"
 
 /**
-* @brief Print: 0
-* 
-* 
-* 
-*/
+ * @brief Print: 0
+ */
 #define EZTR_CC_POINTS_TENS "\x0e"
 
 /**
-* @brief Print: 0
-* 
-* 
-* 
-*/
+ * @brief Print: 0
+ */
 #define EZTR_CC_POINTS_THOUSANDS "\x0f"
 
 /**
-* @brief Box Break I
-* 
-* Used when four lines of text have been printed, but can technically be used anywhere. More robust than 12/000B? [?]
-* 
-*/
+ * @brief Box Break I
+ * 
+ * Used when four lines of text have been printed, but can technically be used anywhere. More robust than 12/000B? [?]
+ * 
+ */
 #define EZTR_CC_BOX_BREAK "\x10"
 
 /**
-* @brief Line Break
-* 
-* 
-* 
-*/
+ * @brief Line Break
+ */
 #define EZTR_CC_NEWLINE "\x11"
 
 /**
-* @brief Box Break II
-* 
-* Used when three lines of text have been printed. Usually preceded by a 13/000C character.
-* 
-*/
+ * @brief Box Break II
+ * 
+ * Used when three lines of text have been printed. Usually preceded by a 13/000C character.
+ * 
+ */
 #define EZTR_CC_BOX_BREAK2 "\x12"
 
 /**
-* @brief Reset Cursor Position to Start of Current Line
-* 
-* Used as a filler when there are fewer than four lines of text. Usually preceded by a newline when two lines of text have been printed.
-* 
-*/
+ * @brief Reset Cursor Position to Start of Current Line
+ * 
+ * Used as a filler when there are fewer than four lines of text. Usually preceded by a newline when two lines of text have been printed.
+ * 
+ */
 #define EZTR_CC_CARRIAGE_RETURN "\x13"
 
 /**
-* @brief Print: xx Spaces
-* 
-* 
-* 
-*/
+ * @brief Print: xx Spaces
+ * 
+ * The value of the next byte will control how many spaces to print.
+ * 
+ */
 #define EZTR_CC_SHIFT "\x14"
 
 /**
-* @brief Disable Text Skip I
-* 
-* Triangle box. Does not play sound.
-* 
-*/
+ * @brief Disable Text Skip I
+ * 
+ * Triangle box. Does not play sound.
+ * 
+ */
 #define EZTR_CC_CONTINUE "\x15"
 
 /**
-* @brief Print: Player Name
-* 
-* 
-* 
-*/
+ * @brief Print: Player Name
+ */
 #define EZTR_CC_NAME "\x16"
 
 /**
-* @brief Enable: Instantaneous Text
-* 
-* 
-* 
-*/
+ * @brief Enable: Instantaneous Text
+ */
 #define EZTR_CC_QUICKTEXT_ENABLE "\x17"
 
 /**
-* @brief Disable: Instantaneous Text
-* 
-* 
-* 
-*/
+ * @brief Disable: Instantaneous Text
+ */
 #define EZTR_CC_QUICKTEXT_DISABLE "\x18"
 
 /**
-* @brief Disable Text Skip II
-* 
-* Triangle box. Plays "Text Finished" sound.
-* 
-*/
+ * @brief Disable Text Skip II
+ * 
+ * Triangle box. Plays "Text Finished" sound.
+ * 
+ */
 #define EZTR_CC_EVENT "\x19"
 
 /**
-* @brief Disable Text Box Close
-* 
-* Used for shop item descriptions.
-* 
-*/
+ * @brief Disable Text Box Close
+ * 
+ * Used for shop item descriptions.
+ * 
+ */
 #define EZTR_CC_PERSISTENT "\x1a"
 
 /**
-* @brief Delay for xxxx Before Printing Remaining Text
-* 
-* 
-* 
-*/
+ * @brief Delay for xxxx Before Printing Remaining Text
+ * 
+ * The next two bytes determine the length of the delay.
+ * 
+ */
 #define EZTR_CC_BOX_BREAK_DELAYED "\x1b"
 
 /**
-* @brief Keep Text on Screen for xxxx Before Closing
-* 
-* Player can move around while text is displayed.
-* 
-*/
+ * @brief Keep Text on Screen for xxxx Before Closing
+ * 
+ * The next two bytes determine the length of the delay.
+ * 
+ * Player can move around while text is displayed.
+ * 
+ */
 #define EZTR_CC_FADE "\x1c"
 
 /**
-* @brief Delay for xxxx Before Ending Conversation
-* 
-* 
-* 
-*/
+ * @brief Delay for xxxx Before Ending Conversation
+ * 
+ * The next two bytes determine the length of the delay.
+ * 
+ */
 #define EZTR_CC_FADE_SKIPPABLE "\x1d"
 
 /**
-* @brief Play Sound Effect xxxx
-* 
-* See Sound Effects.
-* 
-*/
+ * @brief Play Sound Effect xxxx
+ * 
+ * The next two bytes will be the ID of the sound effect. The ID values are the same as the ones used with `Audio_PlaySfx`.
+ * 
+ */
 #define EZTR_CC_SFX "\x1e"
 
 /**
-* @brief Delay for xxxx Before Resuming Text Flow
-* 
-* 
-* 
-*/
+ * @brief Delay for xxxx Before Resuming Text Flow
+ * 
+ * The next two bytes determine the length of the delay.
+ * 
+ */
 #define EZTR_CC_DELAY "\x1f"
 
+
+/**
+ * @brief Displays the A Button icon
+ */
 #define EZTR_CC_BTN_A "\xb0"
 
+/**
+ * @brief Displays the B button icon
+ */
 #define EZTR_CC_BTN_B "\xb1"
 
+/**
+ * @brief Displays the C buttons icon
+ */
 #define EZTR_CC_BTN_C "\xb2"
 
+/**
+ * @brief Displays the L button icon
+ */
 #define EZTR_CC_BTN_L "\xb3"
 
+/**
+ * @brief Displays the R button icon
+ */
 #define EZTR_CC_BTN_R "\xb4"
 
+/**
+ * @brief Displays the Z button icon
+ */
 #define EZTR_CC_BTN_Z "\xb5"
 
+/**
+ * @brief Displays the C-up button icon
+ */
 #define EZTR_CC_BTN_CUP "\xb6"
 
+/**
+ * @brief Displays the C-down button icon
+ */
 #define EZTR_CC_BTN_CDOWN "\xb7"
 
+/**
+ * @brief Displays the C-left button icon
+ */
 #define EZTR_CC_BTN_CLEFT "\xb8"
 
+/**
+ * @brief Displays the C-right button icon
+ */
 #define EZTR_CC_BTN_CRIGHT "\xb9"
 
+/**
+ * @brief DDisplays the Z targeting icon
+ */
 #define EZTR_CC_Z_TARGET "\xba"
 
+/**
+ * @brief Displays the Control Pad icon
+ */
 #define EZTR_CC_CONTROL_PAD "\xbb"
 
 /**
-* @brief Message End Marker
-* 
-* This is the termination character for message content.
-* 
-*/
+ * @brief Message End Marker
+ * 
+ * This is the termination character for message content.
+ * 
+ */
 #define EZTR_CC_END "\xbf"
 
 /**
-* @brief Ocarina Song Failure
-* 
-* Draws red X across the text box on the screen & centers text vertically/pushes it out.
-* 
-*/
+ * @brief Ocarina Song Failure
+ * 
+ * Draws red X across the text box on the screen & centers text vertically/pushes it out.
+ * 
+ */
 #define EZTR_CC_BACKGROUND "\xc1"
 
 /**
-* @brief Initialize Selection: Two Choices
-* 
-* 
-* 
-*/
+ * @brief Initialize Selection: Two Choices
+ */
 #define EZTR_CC_TWO_CHOICE "\xc2"
 
 /**
-* @brief Initialize Selection: Three Choices
-* 
-* 
-* 
-*/
+ * @brief Initialize Selection: Three Choices
+ */
 #define EZTR_CC_THREE_CHOICE "\xc3"
 
 /**
-* @brief Print: Postman's Counting Game Results
-* 
-* 
-* 
-*/
+ * @brief Print: Postman's Counting Game Results
+ */
 #define EZTR_CC_TIMER_POSTMAN "\xc4"
 
 /**
-* @brief Timer Value
-* 
-* 
-* 
-*/
+ * @brief Timer Value
+ */
 #define EZTR_CC_TIMER_MINIGAME_1 "\xc5"
 
 /**
-* @brief Timer Value
-* 
-* 
-* 
-*/
+ * @brief Timer Value
+ */
 #define EZTR_CC_TIMER_2 "\xc6"
 
 /**
-* @brief Print: Remaining Time Till Moon Falls (Clock Tower Roof)
-* 
-* 
-* 
-*/
+ * @brief Print: Remaining Time Till Moon Falls (Clock Tower Roof)
+ */
 #define EZTR_CC_TIMER_MOON_CRASH "\xc7"
 
 /**
-* @brief Print: Deku Scrub Playground Results
-* 
-* 
-* 
-*/
+ * @brief Print: Deku Scrub Playground Results
+ */
 #define EZTR_CC_TIMER_MINIGAME_2 "\xc8"
 
 /**
-* @brief Timer Value
-* 
-* 
-* 
-*/
+ * @brief Timer Value
+ */
 #define EZTR_CC_TIMER_ENV_HAZARD "\xc9"
 
 /**
-* @brief Timer Value
-* 
-* 
-* 
-*/
+ * @brief Timer Value
+ */
 #define EZTR_CC_TIME "\xca"
 
 /**
-* @brief Print: Shooting Gallery Minigame Results
-* 
-* 
-* 
-*/
+ * @brief Print: Shooting Gallery Minigame Results
+ */
 #define EZTR_CC_CHEST_FLAGS "\xcb"
 
 /**
-* @brief Display Prompt: Withdraw or Deposit Rupees
-* 
-* 
-* 
-*/
+ * @brief Display Prompt: Withdraw or Deposit Rupees
+ */
 #define EZTR_CC_INPUT_BANK "\xcc"
 
 /**
-* @brief Print: Number of Rupees Entered or Bet
-* 
-* 
-* 
-*/
+ * @brief Print: Number of Rupees Entered or Bet
+ */
 #define EZTR_CC_RUPEES_SELECTED "\xcd"
 
 /**
-* @brief Print: Total Rupees in Bank or Won by Betting
-* 
-* 
-* 
-*/
+ * @brief Print: Total Rupees in Bank or Won by Betting
+ */
 #define EZTR_CC_RUPEES_TOTAL "\xce"
 
 /**
-* @brief Print: Time Remaining in Hours & Minutes
-* 
-* 
-* 
-*/
+ * @brief Print: Time Remaining in Hours & Minutes
+ */
 #define EZTR_CC_TIME_UNTIL_MOON_CRASH "\xcf"
 
 /**
-* @brief Display Prompt: Rupees to Bet
-* 
-* 
-* 
-*/
+ * @brief Display Prompt: Rupees to Bet
+ */
 #define EZTR_CC_INPUT_DOGGY_RACETRACK_BET "\xd0"
 
 /**
-* @brief Display Prompt: Bombers' Code
-* 
-* 
-* 
-*/
+ * @brief Display Prompt: Bombers' Code
+ */
 #define EZTR_CC_INPUT_BOMBER_CODE "\xd1"
 
 /**
-* @brief Item Prompt
-* 
-* Delays closing the text box.
-* 
-*/
+ * @brief Item Prompt
+ * 
+ * Delays closing the text box.
+ * 
+ */
 #define EZTR_CC_PAUSE_MENU "\xd2"
 
 /**
-* @brief [?]
-* 
-* 
-* 
-*/
+ * @brief [?]
+ */
 #define EZTR_CC_TIME_SPEED "\xd3"
 
 /**
-* @brief Print: Song of Soaring Destination
-* 
-* 
-* 
-*/
+ * @brief Print: Song of Soaring Destination
+ */
 #define EZTR_CC_OWL_WARP "\xd4"
 
 /**
-* @brief Display Prompt: Lottery Number
-* 
-* 
-* 
-*/
+ * @brief Display Prompt: Lottery Number
+ */
 #define EZTR_CC_INPUT_LOTTERY_CODE "\xd5"
 
 /**
-* @brief Print: 123456
-* 
-* Each number's color is indicative of the Spider House mask code.
-* 
-*/
+ * @brief Print: 123456
+ * 
+ * Each number's color is indicative of the Spider House mask code.
+ * 
+ */
 #define EZTR_CC_SPIDER_HOUSE_MASK_CODE "\xd6"
 
 /**
-* @brief Print: Remaining Stray Fairies in Woodfall Temple
-* 
-* 
-* 
-*/
+ * @brief Print: Remaining Stray Fairies in Woodfall Temple
+ */
 #define EZTR_CC_STRAY_FAIRIES_LEFT_WOODFALL "\xd7"
 
 /**
-* @brief Print: Remaining Stray Fairies in Snowhead Temple
-* 
-* 
-* 
-*/
+ * @brief Print: Remaining Stray Fairies in Snowhead Temple
+ */
 #define EZTR_CC_STRAY_FAIRIES_LEFT_SNOWHEAD "\xd8"
 
 /**
-* @brief Print: Remaining Stray Fairies in Great Bay Temple
-* 
-* 
-* 
-*/
+ * @brief Print: Remaining Stray Fairies in Great Bay Temple
+ */
 #define EZTR_CC_STRAY_FAIRIES_LEFT_GREAT_BAY "\xd9"
 
 /**
-* @brief Print: Remaining Stray Fairies in Stone Tower Temple
-* 
-* 
-* 
-*/
+ * @brief Print: Remaining Stray Fairies in Stone Tower Temple
+ */
 #define EZTR_CC_STRAY_FAIRIES_LEFT_STONE_TOWER "\xda"
 
 /**
-* @brief Print: Jungle Cruise Minigame Results
-* 
-* 
-* 
-*/
+ * @brief Print: Jungle Cruise Minigame Results
+ */
 #define EZTR_CC_POINTS_BOAT_ARCHERY "\xdb"
 
 /**
-* @brief Print: Winning Lottery Numbers
-* 
-* 
-* 
-*/
+ * @brief Print: Winning Lottery Numbers
+ */
 #define EZTR_CC_LOTTERY_CODE "\xdc"
 
 /**
-* @brief Print: Player's Lottery Numbers
-* 
-* 
-* 
-*/
+ * @brief Print: Player's Lottery Numbers
+ */
 #define EZTR_CC_LOTTERY_CODE_GUESS "\xdd"
 
 /**
-* @brief Print: Item Value in Rupees
-* 
-* Default: 51 Rupees
-* 
-*/
+ * @brief Print: Item Value in Rupees
+ * 
+ * Default: 51 Rupees
+ * 
+ */
 #define EZTR_CC_HELD_ITEM_PRICE "\xde"
 
 /**
-* @brief Print: Bombers' Code
-* 
-* 
-* 
-*/
+ * @brief Print: Bombers' Code
+ */
 #define EZTR_CC_BOMBER_CODE "\xdf"
 
 /**
-* @brief End Conversation
-* 
-* Used exclusively for NPCs. Usually followed by a BF/0500 command.
-* 
-*/
+ * @brief End Conversation
+ * 
+ * Used exclusively for NPCs. Usually followed by a BF/0500 command.
+ * 
+ */
 #define EZTR_CC_EVENT2 "\xe0"
 
 /**
-* @brief Print: Color of Oceanside Spider House Mask 1
-* 
-* 
-* 
-*/
+ * @brief Print: Color of Oceanside Spider House Mask 1
+ */
 #define EZTR_CC_SPIDER_HOUSE_MASK_CODE_1 "\xe1"
 
 /**
-* @brief Print: Color of Oceanside Spider House Mask 2
-* 
-* 
-* 
-*/
+ * @brief Print: Color of Oceanside Spider House Mask 2
+ */
 #define EZTR_CC_SPIDER_HOUSE_MASK_CODE_2 "\xe2"
 
 /**
-* @brief Print: Color of Oceanside Spider House Mask 3
-* 
-* 
-* 
-*/
+ * @brief Print: Color of Oceanside Spider House Mask 3
+ */
 #define EZTR_CC_SPIDER_HOUSE_MASK_CODE_3 "\xe3"
 
 /**
-* @brief Print: Color of Oceanside Spider House Mask 4
-* 
-* 
-* 
-*/
+ * @brief Print: Color of Oceanside Spider House Mask 4
+ */
 #define EZTR_CC_SPIDER_HOUSE_MASK_CODE_4 "\xe4"
 
 /**
-* @brief Print: Color of Oceanside Spider House Mask 5
-* 
-* 
-* 
-*/
+ * @brief Print: Color of Oceanside Spider House Mask 5
+ */
 #define EZTR_CC_SPIDER_HOUSE_MASK_CODE_5 "\xe5"
 
 /**
-* @brief Print: Color of Oceanside Spider House Mask 6
-* 
-* 
-* 
-*/
+ * @brief Print: Color of Oceanside Spider House Mask 6
+ */
 #define EZTR_CC_SPIDER_HOUSE_MASK_CODE_6 "\xe6"
 
 /**
-* @brief Print: Remaining Time Till Moon Falls
-* 
-* 
-* 
-*/
+ * @brief Print: Remaining Time Till Moon Falls
+ */
 #define EZTR_CC_HOURS_UNTIL_MOON_CRASH "\xe7"
 
 /**
-* @brief Print: Remaining Time Till Morning in Hours & Minutes
-* 
-* 
-* 
-*/
+ * @brief Print: Remaining Time Till Morning in Hours & Minutes
+ */
 #define EZTR_CC_TIME_UNTIL_NEW_DAY "\xe8"
 
 /**
-* @brief Print: Total Rupees in Bank
-* 
-* 
-* 
-*/
+ * @brief Print: Total Rupees in Bank
+ */
 #define EZTR_CC_HS_POINTS_BANK_RUPEES "\xf0"
 
 /**
-* @brief Print: 0
-* 
-* 
-* 
-*/
+ * @brief Print: 0
+ */
 #define EZTR_CC_HS_POINTS_UNK_1 "\xf1"
 
 /**
-* @brief Print: 0
-* 
-* 
-* 
-*/
+ * @brief Print: 0
+ */
 #define EZTR_CC_HS_POINTS_FISHING "\xf2"
 
 /**
-* @brief Print: 0"10'
-* 
-* 
-* 
-*/
+ * @brief Print: 0"10'
+ */
 #define EZTR_CC_HS_TIME_BOAT_ARCHERY "\xf3"
 
 /**
-* @brief Print: :0"00'
-* 
-* 
-* 
-*/
+ * @brief Print: :0"00'
+ */
 #define EZTR_CC_HS_TIME_HORSE_BACK_BALLOON "\xf4"
 
 /**
-* @brief Print: Timer or Highscore in 00"00' Format [?]
-* 
-* SRAM Offset: 0xEF2
-* 
-*/
+ * @brief Print: Timer or Highscore in 00"00' Format [?]
+ * 
+ * SRAM Offset: 0xEF2
+ * 
+ */
 #define EZTR_CC_HS_TIME_LOTTERY_GUESS "\xf5"
 
 /**
-* @brief Print: Town Shooting Gallery Highscore
-* 
-* 
-* 
-*/
+ * @brief Print: Town Shooting Gallery Highscore
+ */
 #define EZTR_CC_HS_TOWN_SHOOTING_GALLERY "\xf6"
 
 /**
-* @brief Print: 00'00"00
-* 
-* 
-* 
-*/
+ * @brief Print: 00'00"00
+ */
 #define EZTR_CC_HS_UNK_1 "\xf7"
 
 /**
-* @brief Print: Magic Bean Price
-* 
-* 
-* 
-*/
+ * @brief Print: Magic Bean Price
+ */
 #define EZTR_CC_HS_UNK_3_LOWER "\xf8"
 
 /**
-* @brief Print: Epona Balloon Archery Highscore I
-* 
-* 
-* 
-*/
+ * @brief Print: Epona Balloon Archery Highscore I
+ */
 #define EZTR_CC_HS_HORSE_BACK_BALLOON "\xf9"
 
 /**
-* @brief Print: Deku Scrub Playground Highscore (Day 1)
-* 
-* 
-* 
-*/
+ * @brief Print: Deku Scrub Playground Highscore (Day 1)
+ */
 #define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_1 "\xfa"
 
 /**
-* @brief Print: Deku Scrub Playground Highscore (Day 2)
-* 
-* 
-* 
-*/
+ * @brief Print: Deku Scrub Playground Highscore (Day 2)
+ */
 #define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_2 "\xfb"
 
 /**
-* @brief Print: Deku Scrub Playground Highscore (Day 3)
-* 
-* 
-* 
-*/
+ * @brief Print: Deku Scrub Playground Highscore (Day 3)
+ */
 #define EZTR_CC_HS_DEKU_PLAYGROUND_DAY_3 "\xfc"
 
 /**
-* @brief Print: Broken Character [?]
-* 
-* 
-* 
-*/
+ * @brief Print: Broken Character [?]
+ */
 #define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_1 "\xfd"
 
 /**
-* @brief [?]
-* 
-* 
-* 
-*/
+ * @brief [?]
+ */
 #define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_2 "\xfe"
 
 /**
-* @brief [?]
-* 
-* 
-* 
-*/
+ * @brief [?]
+ */
 #define EZTR_CC_DEKU_PLAYGROUND_NAME_DAY_3 "\xff"
 
 /** @}*/
