@@ -817,44 +817,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceBuffer(u16 textId, EZTR_MsgBuffer* buf, EZTR_
  * 
  * This is probably the easiest method to declare replacement text. 
  * 
- * Note that this function is meant for replacing vanilla messages only. It will not allow you to use a textId greater 
- * than 0x354C, as that is the highest textId value found in the vanilla game.
- * If you wish to create/modify a custom message, see `EZTR_Basic_AddCustomText()` and EZTR_Basic_ReplaceCustomText()`
- * 
- * @param textId The id of the vanilla message you wish to replace.
- * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
- * @param text_box_y_pos The vertical position of the textbox on-screen.
- * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
- * Use `EZTR_ICON_NO_ICON` for no icon.
- * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
- * then `content` is copied directly into storage.
- * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
- * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
- * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
- */
-EZTR_IMPORT(void EZTR_Basic_ReplaceText(
-    u16 textId, 
-    u8 text_box_type, 
-    u8 text_box_y_pos, 
-    u8 display_icon, 
-    u16 next_message_id, 
-    u16 first_item_rupees, 
-    u16 second_item_rupees, 
-    bool pipe_escape_bytes, 
-    char* content,
-    EZTR_MsgCallback callback
-));
-
-/**
- * @brief Declare a replacement of a vanilla message by defining the header attributes and message content.
- * 
- * This functions identically to `EZTR_Basic_ReplaceText`, but uses EZTR's printf formatting arguments. 
+ * The `content` argument uses EZTR's printf formatting arguments, specified after `callback`. 
  * See \ref prinf_functions for more information on EZTR's custom printf behavior.
  * 
  * Note that this function is meant for replacing vanilla messages only. It will not allow you to use a textId greater 
@@ -879,7 +842,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceText(
  * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
  * @param ... variable arguments, using EZTR's printf implementation. 
  */
-EZTR_IMPORT(void EZTR_Basic_ReplaceTextWithArgs(
+EZTR_IMPORT(void EZTR_Basic_ReplaceText(
     u16 textId, 
     u8 text_box_type, 
     u8 text_box_y_pos, 
@@ -936,33 +899,7 @@ EZTR_IMPORT(void EZTR_Basic_AddCustomBuffer(EZTR_CustomMsgHandle handle, EZTR_Ms
  * 
  * This is probably the easiest method to declare new messages. 
  * 
- * To avoid potential ID conflicts between mods, the u16 textId for this message will be assigned by EZTR and 
- * will be accessable via the handle. See `EZTR_CustomMsgHandle` for more information on how custom message handles work.
- * 
- * @param handle The handle for the new message. 
- * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
- * @param text_box_y_pos The vertical position of the textbox on-screen.
- * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
- * Use `EZTR_ICON_NO_ICON` for no icon.
- * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
- * then `content` is copied directly into storage.
- * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
- * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
- * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
- */
-EZTR_IMPORT(void EZTR_Basic_AddCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
-    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
-
-/**
- * @brief Declare a brand new (i.e: custom) message by defining the header attributes and message content.
- * 
- * This functions identically to `EZTR_Basic_AddCustomTextWithArgs`, but uses EZTR's printf formatting arguments. 
+ * The `content` argument uses EZTR's printf formatting arguments, specified after `callback`. 
  * See \ref prinf_functions for more information on EZTR's custom printf behavior. 
  * 
  * To avoid potential ID conflicts between mods, the u16 textId for this message will be assigned by EZTR and 
@@ -986,7 +923,7 @@ EZTR_IMPORT(void EZTR_Basic_AddCustomText(EZTR_CustomMsgHandle handle, u8 text_b
  * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
  * @param ... variable arguments, using EZTR's printf implementation. 
  */
-EZTR_IMPORT(void EZTR_Basic_AddCustomTextWithArgs(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+EZTR_IMPORT(void EZTR_Basic_AddCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback, ...));
 
 /**
@@ -1021,30 +958,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceCustomBuffer(EZTR_CustomMsgHandle handle, EZT
  * 
  * This is probably the easiest method to replace custom messages, even those defined by other mods.
  * 
- * @param handle The handle for the message being replaced. 
- * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
- * @param text_box_y_pos The vertical position of the textbox on-screen.
- * @param display_icon Displays an icon in the textbox. Use the `EZTR_TextBoxIcon` enum for more readable values. 
- * Use `EZTR_ICON_NO_ICON` for no icon.
- * @param next_message_id The next message to display. If there is no next message, or the next message is determined by code,
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param first_item_rupees The price of the first item being offered for sale, if one exists. If there is no item, 
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param second_item_rupees The price of the second item being offered for sale, if one exists. If there is no item, 
- * use 0xFFFF or `EZTR_NO_VALUE`.
- * @param pipe_escape_bytes If true, `content` is passed through `EZTR_MsgBuffer_Sprintf("%m", content)`. If false, 
- * then `content` is copied directly into storage.
- * @param content The new text content to display. If you want empty content (for use with dynamic messages), use "\xBF".
- * @param callback A function pointer to call right before this text is displayed. Useful for dynamic messages. 
- * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
- */
-EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
-    u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback));
-
-/**
- * @brief Declare a replacement of a custom message by defining the header attributes and message content.
- * 
- * This functions identically to `EZTR_Basic_ReplaceCustomText`, but uses EZTR's printf formatting arguments. 
+ * The `content` argument uses EZTR's printf formatting arguments, specified after `callback`.
  * See \ref prinf_functions for more information on EZTR's custom printf behavior. 
  * 
  * @param handle The handle for the message being replaced. 
@@ -1065,7 +979,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 te
  * Set as NULL if you don't want to use a callback. See `EZTR_MsgCallback` for more information.
  * @param ... variable arguments, using EZTR's printf implementation. 
  */
-EZTR_IMPORT(void EZTR_Basic_ReplaceCustomTextWithArgs(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
+EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 text_box_type, u8 text_box_y_pos, u8 display_icon, 
     u16 next_message_id, u16 first_item_rupees, u16 second_item_rupees, bool pipe_escape_bytes, char* content, EZTR_MsgCallback callback, ...));
 
 /**
