@@ -44,15 +44,26 @@ into the output string (much like how `*printf` doesn't copy in the `\0` null te
 
 The only difference between `%%m` and `%%M` is that `%%m` processes pipe-escaped bytes, whereas `%%M` does not.
 
-### Other Type Specifiers {#other_type_specifiers}
-
-EZTR also has two other unique type specifiers not standard to C: `%%q` and `%%w`.
+### The `%%q` Type Specifiers {#q_type_specifiers}
 
 `%%q` is a `\0` null terminated string, like `%%s`, except that it also processes pipe-escaped bytes. This allows you to pass in message content strings using
 the pipe-escaped byte syntax, but without needing to manually add `\xBF` or `|BF` at the end of the argument, making this type specifier useful for copying message data from external applications or sources. Note that this specifier stops writing to the buffer ONLY when the `\0` byte is encountered, and
 not as a pipe-escaped byte. Therefore, if `|BF` or `|00` is encountered, it will be converted into corresponding byte, but writing will continue anyway.
 
-`%%w` is similar to the `%%c`
+### The `%%w` Type Specifiers {#w_type_specifiers}
+
+`%%w` is a two-byte version of the `%%c` flag. Although Majora's Mask doesn't make use of wide characters in displaying text, several control codes will use
+the following two bytes as an argument that affects their behavior. The `%%w` specifier makes it easy to set the argument value via a printf argument.
+
+The control codes that use this behavior are:
+
+* `EZTR_CC_BOX_BREAK_DELAYED` (hex value `0x1B`)
+* `EZTR_CC_FADE` (hex value `0x1C`)
+* `EZTR_CC_FADE_SKIPPABLE` (hex value `0x1D`)
+* `EZTR_CC_SFX` (hex value `0x1E`)
+* `EZTR_CC_DELAY` (hex value `0x1F`)
+
+Control code `EZTR_CC_SHIFT` (hex value `0x14`) uses a single following byte as its argument, and thus the value for that can be specified with `%%c`.
 
 ### Non-Printable Bytes {#non_printable_bytes}
 
@@ -79,11 +90,13 @@ The following format specifiers are supported:
 | c      | Single character |
 | s      | ASCII string of characters. To offer parity with standard C, it is assumed that this string is null-terminated. |
 | q      | ASCII string of characters. Like `%s`, it is assumed that this string is null-terminated, but pipe-escaped bytes will still be evaluated. |
-| m      | Message content string using pipe-escaped bytes. This is a unique type implemented by EZTR. |
-| M      | Message content string NOT using pipe-escaped bytes. This is a unique type implemented by EZTR. |
+| m      | Message content string using pipe-escaped bytes. |
+| M      | Message content string NOT using pipe-escaped bytes. |
 | w      | Unsigned 16-bit value to be inserted into the byte string raw. Useful for pass argument bytes following `EZTR_CC_SFX`, `EZTR_CC_DELAY`, etc. |
 | p      | Pointer address |
 | %      | A % followed by another % character will write a single % |
+
+Specifiers `%%m`, `%%M`, `%%q`, and `%%w` are unique to EZTR.
 
 ### Supported Flags
 
