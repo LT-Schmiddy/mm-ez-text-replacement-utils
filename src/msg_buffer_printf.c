@@ -365,13 +365,9 @@ int _MsgSContent_Vsnprintf(out_fct_type out, bool buf_pipe_escaped_bytes, char* 
                         }
                         else {
                             char out_char = hex_to_byte((char*)p);
-                            if (out_char != MSG_ENDING_CHAR) {
-                                out(out_char, buffer, idx++, max_len);
-                                p++;
-                                p++;
-                            } else {
-                                str_should_quit = true;
-                            }
+                            out(out_char, buffer, idx++, max_len);
+                            p++;
+                            p++;
                         }
                     } 
                     else {
