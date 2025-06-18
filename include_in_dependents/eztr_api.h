@@ -806,6 +806,16 @@ typedef enum {
 #define EZTR_CC_SHIFT "\x14"
 
 /**
+ * @brief Print: %c Spaces
+ * 
+ * The value of the next byte will control how many spaces to print.
+ * This macro adds a `%c` flag after the control code, enabling you to set the argument byte using EZTR's printf handling.
+ * 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
+ */
+#define EZTR_CC_SHIFT_ARGC "\x14%c"
+
+/**
  * @brief Disable Text Skip I
  * 
  * Triangle box. Does not play sound.
@@ -853,6 +863,17 @@ typedef enum {
 #define EZTR_CC_BOX_BREAK_DELAYED "\x1b"
 
 /**
+ * @brief Delay for xxxx Before Printing Remaining Text
+ * 
+ * The next two bytes determine the length of the delay.
+ * This macro adds a `%w` flag after the control code, enabling you to set the argument bytes using EZTR's printf handling.
+ * 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
+ */
+#define EZTR_CC_BOX_BREAK_DELAYED_ARGW "\x1b%w"
+
+
+/**
  * @brief Keep Text on Screen for xxxx Before Closing
  * 
  * The next two bytes determine the length of the delay.
@@ -863,12 +884,35 @@ typedef enum {
 #define EZTR_CC_FADE "\x1c"
 
 /**
+ * @brief Keep Text on Screen for xxxx Before Closing
+ * 
+ * The next two bytes determine the length of the delay.
+ * This macro adds a `%w` flag after the control code, enabling you to set the argument bytes using EZTR's printf handling.
+ * 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
+ * 
+ * Player can move around while text is displayed.
+ * 
+ */
+#define EZTR_CC_FADE_ARGW "\x1c%w"
+
+/**
  * @brief Delay for xxxx Before Ending Conversation
  * 
  * The next two bytes determine the length of the delay.
  * 
  */
 #define EZTR_CC_FADE_SKIPPABLE "\x1d"
+
+/**
+ * @brief Delay for xxxx Before Ending Conversation
+ *
+ * The next two bytes determine the length of the delay.
+ * This macro adds a `%w` flag after the control code, enabling you to set the argument bytes using EZTR's printf handling.
+ * 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
+ */
+#define EZTR_CC_FADE_SKIPPABLE_ARGW "\x1d%w"
 
 /**
  * @brief Play Sound Effect xxxx
@@ -879,6 +923,16 @@ typedef enum {
 #define EZTR_CC_SFX "\x1e"
 
 /**
+ * @brief Play Sound Effect xxxx
+ * 
+ * The next two bytes will be the ID of the sound effect. The ID values are the same as the ones used with `Audio_PlaySfx`.
+ * This macro adds a `%w` flag after the control code, enabling you to set the argument bytes using EZTR's printf handling.
+ * 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
+ */
+#define EZTR_CC_SFX_ARGW "\x1e%w"
+
+/**
  * @brief Delay for xxxx Before Resuming Text Flow
  * 
  * The next two bytes determine the length of the delay.
@@ -886,6 +940,15 @@ typedef enum {
  */
 #define EZTR_CC_DELAY "\x1f"
 
+/**
+ * @brief Delay for xxxx Before Resuming Text Flow
+ * 
+ * The next two bytes determine the length of the delay.
+ * This macro adds a `%w` flag after the control code, enabling you to set the argument bytes using EZTR's printf handling.
+ * 
+ * See \ref prinf_functions for more information on EZTR's custom printf behavior.
+ */
+#define EZTR_CC_DELAY_ARGW "\x1f%w"
 
 /**
  * @brief Displays the A Button icon
