@@ -32,6 +32,9 @@ typedef struct {
 
 /**
  * \defgroup General 
+ * 
+ * \brief General API information.
+ * 
  * @{
  */
 
@@ -85,7 +88,9 @@ EZTR_IMPORT( void _EZTR_ReportErrorMessage(char* error_msg));
 /** @}*/
 
 /**
- * \defgroup CustomMsgHandle
+ * \defgroup CustomMsgHandle 
+ * 
+ * \brief Macros and types used for working with the handles for custom messages.
  * 
  * This page contains all of the information in custom message handles an how to use them.
  * 
@@ -300,6 +305,9 @@ __EZTR_CUSTOM_MSG_HANDLE_BODY(name)
 
 /**
  * \defgroup Types
+ * 
+ * \brief Type definitions that EZTR uses for Majora's Mask messages.
+ * 
  * @{
  */
 
@@ -687,7 +695,7 @@ typedef enum {
 
 /**
  * \defgroup Control_Code_Macros 
- * \brief The following macros can be used in place of binary control codes in message definitions
+ * \brief Macros for the various control codes and non-printable bytes used in the Majora's Mask text encoding.
  * 
  * Most of this information was pulled from [the CloudModding wiki](https://wiki.cloudmodding.com/mm/Text_Format).
  * 
@@ -1327,8 +1335,9 @@ typedef enum {
 
 /**
  * \defgroup Basic_Replacement
+ * \brief functions for replacing vanilla messages.
  * 
- * These functions are your primary means of declaring replacement
+ * These functions are currently your primary means of declaring replacements, using Majora's Mask's built-in dialog handling.
  * 
  * @{
  */
@@ -1413,6 +1422,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceTextEmpty(u16 textId, EZTR_MsgCallback callba
 
 /** 
  * \defgroup Basic_CustomMessages 
+ * \brief Functions for creating and replacing new messages.
  * @{
  * 
  */
@@ -1536,6 +1546,7 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceCustomTextEmpty(EZTR_CustomMsgHandle handle, 
 
 /**
  * \defgroup MsgBuffer 
+ * \brief Functions for high-level message buffer operations.
  * @{
  */
 
@@ -1868,6 +1879,7 @@ EZTR_IMPORT(char* EZTR_MsgBuffer_GetContentPtr(EZTR_MsgBuffer* buf));
 
 /**
  * \defgroup MsgSContent 
+ * \brief Functions for manipulating message text content.
  * @{
  */
 

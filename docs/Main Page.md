@@ -111,3 +111,16 @@ When enabled, EZTR prints message data to the Zelda64Recompiled console whenever
 * Print the EZTR control code macro from [Control_Code_Macros](@ref Control_Code_Macros) (when available) when dumping a non-printable byte.
 
 Additionally, you may want to check out the [EZTR Dump To Disk Extension](https://thunderstore.io/c/zelda-64-recompiled/p/LT_Schmiddy/EZTR_Dump_To_Disk_Extention/), which can generate a preformatted C file with all the messages you've dumped.
+
+## More Information
+
+The complete `eztr_api.h` header is documented on this site. For more information, visit the various topic pages for each part of the API:
+
+* [General](@ref General) - General API Information
+* [CustomMsgHandle](@ref CustomMsgHandle) - Macros and types used for working with the handles for custom messages.
+* [Types](@ref Types) - Type definitions that EZTR uses for Majora's Mask messages.
+* [Control_Code_Macros](@ref Control_Code_Macros) - Macros for the various control codes and non-printable bytes used in the Majora's Mask text encoding.
+* [Basic_Replacement](@ref Basic_Replacement) - Functions for replacing vanilla messages.
+* [Basic_CustomMessages](@ref Basic_CustomMessages) - Functions for creating and replacing new messages.
+* [MsgBuffer](@ref MsgBuffer) - Functions for high-level message buffer operations.
+* [MsgSContent](@ref MsgSContent) - Functions for manipulating message text content.
