@@ -5,13 +5,13 @@
 
 # Unique ID of this mod. Pick something long enough that it'll never be the same as any other mod.
 # The name displayed in the mod management menu is separate from this so this doesn't need to be human readable.
-id = "Tests_For_MM_EZ_Text_Replacer_API"
+id = "Load_Order_Test_3_MM_EZ_Text_Replacer_API"
 
 # Version of this mod.
 version = "2.0.0"
 
 # The name that will show up for this mod in the mod menu. This should be human readable.
-display_name = "Tests For EZ Text Replacer API"
+display_name = "Load Order Test 3 For EZ Text Replacer API"
 
 # The description that will show up when this mod is displayed in the mod menu. This should be human readable.
 description =  """
@@ -52,7 +52,7 @@ native_libraries = [
 elf_path = "build/tests/tests.elf"
 
 # Output mod filename.
-mod_filename = "Tests_For_MM_EZ_Text_Replacer_API_2.0.0"
+mod_filename = "Load_Order_Test_3_MM_EZ_Text_Replacer_API"
 
 # Reference symbol files.
 func_reference_syms_file = "Zelda64RecompSyms/mm.us.rev1.syms.toml"
