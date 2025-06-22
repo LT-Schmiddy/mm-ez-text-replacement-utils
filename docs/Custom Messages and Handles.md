@@ -16,7 +16,7 @@ To define a custom message, you'll need to create a handle for it. To do that, a
 EZTR_DEFINE_CUSTOM_MSG_HANDLE(my_custom_message_handle);
 ```
 
-To access this handle in another C file, use the following to extern it in (works in C files or headers.):
+To access this handle in another C file, use the following to extern it in (works in C files or headers):
 
 ```C
 EZTR_DECLARE_CUSTOM_MSG_HANDLE(my_custom_message_handle);

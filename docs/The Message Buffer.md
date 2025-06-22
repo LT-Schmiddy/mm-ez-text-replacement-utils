@@ -1,8 +1,8 @@
 # The Message Buffer {#the_message_buffer}
 
-This document provides high-level information about the text handling in Majora's Mask, and the text manipulation tools provided by EZTR.
+This document provides high-level information about the text handling in Majora's Mask, and the text manipulation tools provided by EZTR. This is not mean to be an in-depth guide to everything related to EZTR and Majora's Mask text, but a quick overview to get you started with EZTR.
 
-This is not mean to be an in-depth guide to everything related to EZTR and Majora's Mask text, but a quick overview to point you in the right direction.
+If you want a more in-depth look at Majora's Mask text handling, I recommend this page: [https://wiki.cloudmodding.com/mm/Text_Format](https://wiki.cloudmodding.com/mm/Text_Format)
 
 ## Text in Majora's Mask
 
@@ -11,22 +11,20 @@ to text in vanilla Majora's Mask should be applicable to EZTR.
 
 In brief, the first 11 bytes of a message are a header, with the content of the message itself following after. The header is laid out in the following way:
 
-* (1 byte) The text box type/style.
+* (1 byte) The text box type/style. [EZTR_TextBoxType](@ref EZTR_TextBoxType) provides readable names for each textbox type.
 * (1 byte) The text box's Y position on screen.
-* (1 byte) What icon (if any) to display with the text.
-* (2 bytes) The ID of the next message to display.
-* (2 bytes) The cost of the first item being offered for sale, in rupees.
-* (2 bytes) The cost of the second item being offered for sale, in rupees.
+* (1 byte) What icon (if any) to display with the text. [EZTR_TextBoxIcon](@ref EZTR_TextBoxIcon) provides readable names for each textbox UI icon.
+* (2 bytes) The ID of the next message to display. f there is no next message, or the next message is determined by code, use `0xFFFF` or the `EZTR_NO_VALUE` macro.
+* (2 bytes) The cost of the first item being offered for sale, in rupees. If there is no item, use `0xFFFF` or the `EZTR_NO_VALUE` macro.
+* (2 bytes) The cost of the second item being offered for sale, in rupees. If there is no item, use `0xFFFF` or the `EZTR_NO_VALUE` macro.
 * 2 bytes of padding.
 
 All data after the header is considered part of the message content.
 
-The text encoding of the message content is non-standard: while all the printable characters are standard ASCII, the control codes are not. Of particular note, the termination character is `\xBF` rather than `\x00` (also written as `\0`).
+The text encoding of the message content is non-standard: while all the printable characters are standard ASCII, the control codes are not. Of particular note, the termination character is `\xBF` rather than `\x00` (also written as `\0`). Most of the control codes are documented on the [Control_Code_Macros](@ref Control_Code_Macros) page.
 
 The header and content regions combined cannot be more than 1280 bytes, as that is the maximum size of the vanilla buffer. Since the header is 11 bytes,
 that leaves a remaining 1269 bytes for the content region.
-
-Additional information about the Majora's Mask text formatting can be found here: [https://wiki.cloudmodding.com/mm/Text_Format](https://wiki.cloudmodding.com/mm/Text_Format)
 
 ## When to Work with Message Buffer
 
@@ -55,11 +53,11 @@ these functions are designed to operate on any `\xBF` terminated `char` array, n
 if you want to operate on a message buffer's content, you'll need a pointer to the buffer's content region. You can get this using the
 [EZTR_MsgBuffer_GetContentPtr](@ref EZTR_MsgBuffer_GetContentPtr) function, or the `data.content` member of [EZTR_MsgBuffer](@ref EZTR_MsgBuffer).
 
-## The Message Buffer and Callbacks
+## The Message Buffer and Callbacks {#message_buffer_and_callbacks}
 
 The most common time you'll use a message buffer directly is when using EZTR's message callbacks to create dynamically generated messages.
 
-EZTR makes message callbacks easy to set up. See [EZTR_MSG_CALLBACK](@ref EZTR_MSG_CALLBACK) for more information.
+EZTR makes message callbacks easy to set up, as EZTR provides a macro that makes declaring callback functions easy. See [EZTR_MSG_CALLBACK](@ref EZTR_MSG_CALLBACK) for more information.
 
 When run, the callback will recieve an `EZTR_MsgBuffer` pointer. The lifetime of this buffer is managed by EZTR internally, and therefore
 you should NOT try to destroy it.
