@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.0
+
+* Adding printf functionality to all `ReplaceText` API functions.
+* Adding new, custom printf type specifiers `%%M`, `%%q`, and `%%w`
+* Message dumping now handles argument bytes correctly.
+* Adding the `WArg` macros to the API header.
+
 ## 2.1.0
 
 * All `EZTR_Basic_*` calls are required to be made during the `EZTR_ON_INIT` event.
