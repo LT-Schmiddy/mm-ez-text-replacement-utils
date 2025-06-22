@@ -1,9 +1,9 @@
 # Custom Messages and Handles {#custom_messages_and_handles}
 
 EZTR fully supports adding new messages with unique message IDs to Majora's Mask for use in your mods. For example, if you want to create a
-brand new NPC, you can use EZTR to define all of their dialog in a way that's fully compatible with standard dialog/message system in Majora's Mask.
+brand-new NPC, you can use EZTR to define all of their dialog in a way that's fully compatible with the standard dialog/message system in Majora's Mask.
 
-The process is slightly different from regular text replacements, however. This page documents those differences, and the important details to
+The process is slightly different from regular text replacements, however. This page documents those differences and the important details to
 keep in mind when adding new messages.
 
 ## Quickstart
@@ -32,7 +32,7 @@ EZTR_Basic_AddCustomText(EZTR_HNAME(my_custom_message_handle), EZTR_STANDARD_TEX
     EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO WORLD\xBF", NULL);
 ```
 
-You can only pass a custom message handle to the `EZTR_Basic_AddCustom*` functions once time. Attempting to use the handle again cause EZTR to print an error message.
+You can only pass a custom message handle to the `EZTR_Basic_AddCustom*` functions one time. Attempting to use the handle again will cause EZTR to print an error message.
 
 To get the actual text ID value (to display it with the Majora's Mask function `Message_StartTextbox`, for example), you can use `EZTR_GET_ID_H(my_custom_message_handle)`. For example:
 
@@ -57,16 +57,16 @@ EZTR_Basic_ReplaceCustomText(EZTR_HNAME(external_custom_message_handle), EZTR_ST
 
 ## Advanced Usage
 
-Instructions on more advanced features, as well a technical information about how custom messages work, is found below.
+Instructions on more advanced features, as well as technical information about how custom messages work, are found below.
 
 ### A Word on Implementation Decisions
 
-Before we continue, I'd like to take a moment and explain some things. In order to understand the advanced usage, you first need to understand certain, 'under-the-hood' details of the custom message system. And before I divulge that information, I'd like to explain why I settled on this implementation.
+Before we continue, I'd like to take a moment and explain some things. In order to understand the advanced usage, you first need to understand certain 'under-the-hood' details of the custom message system. And before I divulge that information, I'd like to explain why I settled on this implementation.
 
 There were 3 major challenges in implementing custom messages:
 
 * Preventing message ID overlap.
-* Ensuring effiecient use of the message ID space.
+* Ensuring efficient use of the message ID space.
 * Ensuring custom messages can be replaced by other mods in the load order.
 
 The first challenge is easily addressed by having EZTR manage and assign the ID values for every new message declared, rather than allowing mods to
@@ -74,21 +74,21 @@ declare their new message at any arbitrary ID value. The second and third challe
 
 It's important to remember that message IDs in Majora's Mask are unsigned 16-bit integers, and EZTR is not able to change that. The highest message ID
 value used by the original game is 13644 (0x354C). Since the highest possible unsigned 16-bit integer is 65535, that leaves us 51891 remaining message
-IDs to work with. Sure, that's a fairly large number, but it's not impossible that problems could arise as the Recomp modding matures, especially if
-a mod badly designed. Since EZTR is responsible for handling out new message IDs (and obviously should not be handing out the same ID more than once),
-it's not inconcievable some inexperienced modder might try to implement dynamic text generation by declaring a new message entry for every variant of
+IDs to work with. Sure, that's a fairly large number, but it's not impossible that problems could arise as Recomp modding matures—especially if
+a mod is badly designed. Since EZTR is responsible for handing out new message IDs (and obviously should not be handing out the same ID more than once),
+it's not inconceivable some inexperienced modder might try to implement dynamic text generation by declaring a new message entry for every variant of
 some statement. While EZTR's new restriction on declaring new messages outside of `EZTR_ON_INIT` will help with this (preventing those new messages from
 being generated during gameplay), it does not fully solve the issue. Dynamic text such as this can easily be handled with EZTR's callback system instead.
 
-For one mod to override a custom message from another mod is actually not far-fetched a situation as one might expect. Perhaps someone wishes to create
-a translation patch for a custom NPC, or alter their dialog so that is matches up with content are altered by another mod. Such patches are easy enough
+For one mod to override a custom message from another mod is actually not as far-fetched a situation as one might expect. Perhaps someone wishes to create
+a translation patch for a custom NPC, or alter their dialog so that it matches up with content altered by another mod. Such patches are easy enough
 with vanilla messages, where the ID is a universal, hardcoded value, but less so when the ID is assigned at runtime by EZTR.
 
-After considering several possible implementations, I settled on the system described below because it for the following reasons:
+After considering several possible implementations, I settled on the system described below for the following reasons:
 
-* EZTR manages custom message ID assignments, to prevent conflict between mods.
+* EZTR manages custom message ID assignments to prevent conflict between mods.
 * It encourages frugality with declaring message IDs by ensuring that the number of message IDs a mod will receive is countable at compile time, and encouraging the use of dynamic messages via callbacks where appropriate.
-* The IDs of specific custom messages are easily accessable (and the content replacable) by additional mods without requiring significant performance overhead.
+* The IDs of specific custom messages are easily accessible (and the content replaceable) by additional mods without requiring significant performance overhead.
 
 ### What is A Custom Message Handle, anyway?
 
@@ -114,22 +114,22 @@ RECOMP_EXPORT u16 EZTR_CustomMsgHandle_my_custom_message_handle(_EZTR_CustomMsgH
 }
 ```
 
-First of all, you'll notice that the full function name has the prefix `EZTR_CustomMsgHandle_`. This is meant to distinguish it as a custom message handle, and not an ordinary function. The `HNAME(my_custom_message_handle)` macro expands to full function name, and used for readability. You'll also notice that the function is marked as `RECOMP_EXPORT` automatically.
+First of all, you'll notice that the full function name has the prefix `EZTR_CustomMsgHandle_`. This is meant to distinguish it as a custom message handle, and not an ordinary function. The `HNAME(my_custom_message_handle)` macro expands to the full function name and is used for readability. You'll also notice that the function is marked as `RECOMP_EXPORT` automatically.
 
-As you can see, the message id is stored in a static variable within the function. There's also a different static variable that records whether the handle has been assigned to before.
+As you can see, the message ID is stored in a static variable within the function. There's also a different static variable that records whether the handle has been assigned before.
 
-When being assigned, EZTR calls the handle function with a pointer to a configuration struct. If the handle hasn't been set before, the ID is read and the operation is marked as a success in the struct (so EZTR knows that the provided ID was accepted). If the handle was assigned to before, an error message is printed (using a private function in EZTR's API), and the operation is marked as a failure in the struct (so EZTR knows it can use that ID value again). In either case, the function returns the message ID. Is assignment was reported as a success, EZTR will check the returned ID against the value in the configuration struct to ensure that the handle function is working correctly.
+When being assigned, EZTR calls the handle function with a pointer to a configuration struct. If the handle hasn't been set before, the ID is read and the operation is marked as a success in the struct (so EZTR knows that the provided ID was accepted). If the handle was assigned before, an error message is printed (using a private function in EZTR's API), and the operation is marked as a failure in the struct (so EZTR knows it can use that ID value again). In either case, the function returns the message ID. If the assignment was reported as a success, EZTR will check the returned ID against the value in the configuration struct to ensure that the handle function is working correctly.
 
 If the function is called with the configuration pointer set to `NULL`, no assignment operation is attempted. In all cases, the function will return the message ID value. That means that a handle's ID can be accessed by calling `EZTR_CustomMsgHandle_my_custom_message_handle(NULL)`. In fact, this is exactly
 how the various `GET_ID` macros work.
 
 ### Disabling the Handle Prefix
 
-If you want to disable use of the `EZTR_CustomMsgHandle_` prefix, you can use declaring `#define EZTR_NO_HANDLE_PREFIX` before including `eztr_api.h`,
-or by adding `-DEZTR_NO_HANDLE_PREFIX` to your compilation flags. If you do this, you won't need to use `HNAME` when referencing your handle by name, but
+If you want to disable use of the `EZTR_CustomMsgHandle_` prefix, you can declare `#define EZTR_NO_HANDLE_PREFIX` before including `eztr_api.h`,
+or add `-DEZTR_NO_HANDLE_PREFIX` to your compilation flags. If you do this, you won't need to use `HNAME` when referencing your handle by name, but
 it's recommended that you then add your own prefix instead.
 
-If another mod has the handle prefix disabled, you can import it's handles by using:
+If another mod has the handle prefix disabled, you can import its handles by using:
 
 ```C
 EZTR_IMPORT_CUSTOM_MSG_HANDLE_NO_PREFIX("other_mod_id", external_custom_message_handle);
@@ -149,13 +149,13 @@ This is not recommended.
 
 ### Using Handles as Variables and Arguments
 
-EZTR provided a type definition for custom message handles called `EZTR_CustomMsgHandle`, which is defined as
+EZTR provides a type definition for custom message handles called `EZTR_CustomMsgHandle`, which is defined as
 
 ```C
 typedef u16 (*EZTR_CustomMsgHandle)(_EZTR_CustomMsgHandleSetter* setter);
 ```
 
-This will allow you do use a custom message handle as you would a regular function pointer. Obviously, you won't need to use the `HNAME` macro
+This will allow you to use a custom message handle as you would a regular function pointer. Obviously, you won't need to use the `HNAME` macro
 when you do this.
 
 Note that the `EZTR_GET_ID_H` macro is shorthand for `EZTR_GET_ID(EZTR_HNAME(my_handle))`, and therefore shouldn't be used with function pointers.
