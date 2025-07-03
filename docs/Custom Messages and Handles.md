@@ -48,12 +48,7 @@ If you know the name of a custom message handle from another mod, add that mod a
 EZTR_IMPORT_CUSTOM_MSG_HANDLE("other_mod_id", external_custom_message_handle)
 ```
 
-During your `EZTR_ON_INIT` event function, you can use `EZTR_Basic_ReplaceCustomText`, `EZTR_Basic_ReplaceCustomBuffer`, or `EZTR_Basic_ReplaceCustomTextEmpty` using `EZTR_HNAME(my_custom_message_handle)` as the handle argument. For example:
-
-```C
-EZTR_Basic_ReplaceCustomText(EZTR_HNAME(external_custom_message_handle), EZTR_STANDARD_TEXT_BOX_I, 0, EZTR_ICON_NO_ICON, 
-        EZTR_NO_VALUE, EZTR_NO_VALUE, EZTR_NO_VALUE, false, "HELLO WORLD AGAIN!!\xBF", NULL);
-```
+During your `EZTR_ON_INIT` event function, you can simply assign your version of the message to that handle using `EZTR_Basic_AddCustomText`, `EZTR_Basic_AddCustomBuffer`, or `EZTR_Basic_AddCustomTextEmpty` using `EZTR_HNAME(my_custom_message_handle)` as the handle argument.
 
 ## Advanced Usage
 
@@ -102,15 +97,17 @@ RECOMP_EXPORT u16 EZTR_CustomMsgHandle_my_custom_message_handle(_EZTR_CustomMsgH
     static u8 is_set = 0;
     if (setter != NULL) {
         if (is_set) {
-            _EZTR_ReportErrorMessage("The textId of EZTR_CustomMsgHandle 'my_custom_message_handle' has already been set and will not be updated.");
+            _EZTR_ReportDebugMessage("EZTR_CustomMsgHandle 'my_custom_message_handle', Header Version 2.3.0: The textId has already been set and will not be updated.");
             setter->out_success = 0;
-        } else { 
+        }
+        else {
+            _EZTR_ReportDebugMessage("EZTR_CustomMsgHandle 'my_custom_message_handle', Header Version 2.3.0: Assignment of textId was successful.");
             id = setter->new_id;
             is_set = 1;
             setter->out_success = 1;
         }
-    } 
-    return id; 
+    }
+    return id;
 }
 ```
 

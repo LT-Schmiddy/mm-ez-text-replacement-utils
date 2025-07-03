@@ -2,7 +2,7 @@
 #define __EZTR_API__
 
 /*! \file eztr_api.h
-    \version 2.1.0
+    \version 2.3.0
     \brief The main header for EZTR
  */
 
@@ -24,9 +24,22 @@ typedef struct {
 } _EZTR_CustomMsgHandleSetter;
 
 #define __EZTR_CUSTOM_MSG_HANDLE_BODY(name) { \
-    static u16 id; static u8 is_set = 0; if (setter != NULL) { if (is_set) { _EZTR_ReportErrorMessage( \
-    "The textId of EZTR_CustomMsgHandle '" #name "' has already been set and will not be updated." \
-    ); setter->out_success = 0;} else { id = setter->new_id; is_set = 1; setter->out_success = 1;}} return id; }
+    static u16 id; \
+    static u8 is_set = 0; \
+    if (setter != NULL) { \
+        if (is_set) { \
+            _EZTR_ReportDebugMessage("EZTR_CustomMsgHandle '" #name "', Header Version 2.3.0: The textId has already been set and will not be updated."); \
+            setter->out_success = 0; \
+        } \
+        else { \
+            _EZTR_ReportDebugMessage("EZTR_CustomMsgHandle '" #name "', Header Version 2.3.0: Assignment of textId was successful."); \
+            id = setter->new_id; \
+            is_set = 1; \
+            setter->out_success = 1; \
+        } \
+    } \
+    return id; \
+} \
 
 #endif
 
@@ -48,8 +61,15 @@ typedef struct {
 #define EZTR_MOD_ID_STR "MM_EZ_Text_Replacer_API"
 
 #ifndef DOXYGEN
-EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* error_msg));
-EZTR_IMPORT( void _EZTR_ReportErrorMessage(char* error_msg));
+EZTR_IMPORT( void _EZTR_ReportFatalMessage(char* msg));
+EZTR_IMPORT( void _EZTR_ReportErrorMessage(char* msg));
+EZTR_IMPORT( void _EZTR_ReportWarningMessage(char* msg));
+EZTR_IMPORT( void _EZTR_ReportInfoMessage(char* msg));
+EZTR_IMPORT( void _EZTR_ReportDebugMessage(char* msg));
+EZTR_IMPORT( void _EZTR_ReportVerboseMessage(char* msg));
+
+// Typo, Included for backwards compatibility:
+EZTR_IMPORT( void _EXTR_ReportErrorMessage(char* msg));
 #endif
 
 #define EZTR_MSG_HIGHEST_ID 0x354C
@@ -1495,6 +1515,9 @@ EZTR_IMPORT(void EZTR_Basic_AddCustomTextEmpty(EZTR_CustomMsgHandle handle, EZTR
  * If you've defined a message using the MsgBuffer/MsgSContent functions, you can use this to set it (or, rather,
  * a copy of it) as the new message.
  * 
+ * @deprecated since 2.3.0. The new handling of message replacement order makes this unnecessary. 
+ * As of this version, this function just wraps `EZTR_Basic_AddCustomBuffer` for compatability.
+ * 
  * @param handle The handle for the message being replaced. 
  * @param buf The message buffer to copy from.
  * @param callback A function pointer to call right before this text is displayed. Useful for dynamic text. Set as NULL if
@@ -1509,6 +1532,9 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceCustomBuffer(EZTR_CustomMsgHandle handle, EZT
  * 
  * The `content` argument uses EZTR's printf formatting arguments, specified after `callback`.
  * See \ref prinf_functions for more information on EZTR's custom printf behavior. 
+ * 
+ * @deprecated since 2.3.0. The new handling of message replacement order makes this unnecessary. 
+ * As of this version, this function just wraps `EZTR_Basic_AddCustomText` for compatability.
  * 
  * @param handle The handle for the message being replaced. 
  * @param text_box_type The style of textbox to display. Use the `EZTR_TextBoxType` enum for more readable values.
@@ -1535,6 +1561,9 @@ EZTR_IMPORT(void EZTR_Basic_ReplaceCustomText(EZTR_CustomMsgHandle handle, u8 te
  * @brief Declare a replacement of a custom message, where the replacement message is empty.
  * 
  * This is primarily used if you want the message to be completely dynamically generated.
+ * 
+ * @deprecated since 2.3.0. The new handling of message replacement order makes this unnecessary. 
+ * As of this version, this function just wraps `EZTR_Basic_AddCustomTextEmpty` for compatability.
  * 
  * @param handle The handle for the message being replaced.
  * @param callback A function pointer to call right before this text is displayed, in which you will construct the 

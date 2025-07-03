@@ -31,6 +31,7 @@ CustomMsgHandleSetter;
 // Type of the custom message handle:
 typedef u16 (*CustomMsgHandle)(CustomMsgHandleSetter* setter);
 
-bool CustomMsgHandle_AssignAndValidate(CustomMsgHandle handle, u16 textId);
+extern u16 CustomMsgHandle_NextMessageId;
+bool CustomMsgHandle_AssignAndValidate(CustomMsgHandle handle);
 
 #endif

@@ -116,7 +116,7 @@ EZTR_ON_INIT void run_tests() {
     validate("b2count == 10", b2count == 10);
 
     EZTR_MsgSContent_Copy(buf3->data.content, "Hello Alex\xBF");
-    EZTR_MsgBuffer_PrintFull(buf3);
+    // EZTR_MsgBuffer_PrintFull(buf3);
 
     recomp_printf("USER_CHECK: These two buffers should have the same values.");
     EZTR_MsgBuffer_Print(buf2);
@@ -179,7 +179,7 @@ EZTR_ON_INIT void run_tests() {
             
     EZTR_Basic_AddCustomTextEmpty(EZTR_HNAME(test_message2), my_callback);
     
-    validate("EZTR_test_message2 id == 0x354D", EZTR_GET_ID(EZTR_HNAME(test_message2)) == 0x354E);
+    validate("EZTR_test_message2 id == 0x354E", EZTR_GET_ID(EZTR_HNAME(test_message2)) == 0x354E);
     recomp_printf("EZTR_test_message2 id = 0x%04X\n", EZTR_GET_ID(EZTR_HNAME(test_message2)));
 
     // Deku Nut message. Tests item description replacement.

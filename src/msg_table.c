@@ -101,7 +101,6 @@ MsgTable* MsgTable_Create() {
         retVal->clusters[i] = NULL;
     }
     retVal->cluster_count = 0;
-    retVal->highest_msg_id = MSG_HIGHEST_ID;
     retVal->locked = false;
     LOGI("Message Table Created.\n");
     return retVal;
@@ -157,16 +156,15 @@ void MsgTable_StoreBufferEmpty(MsgTable* table, u16 textId, MsgCallback callback
     MsgTable_StoreBuffer(table, textId, buf, callback);
     MsgBuffer_Destroy(buf);
 }
-
+/* 
 bool MsgTable_StoreNewCustomBuffer(MsgTable* table, CustomMsgHandle handle, MsgBuffer* entry, MsgCallback callback) {
     MSG_TABLE_LOCK_CHECK_BOOL(table);
 
-    u16 new_id = table->highest_msg_id + 1;
+    u16 new
     // Setting the handle ID:
-    bool success = CustomMsgHandle_AssignAndValidate(handle, new_id);
+    bool success = CustomMsgHandle_AssignAndValidate(handle);
 
     if (success) {
-        table->highest_msg_id = new_id;
         MsgTable_StoreBuffer(table, new_id, entry, callback);
     }
 
@@ -187,7 +185,7 @@ bool MsgTable_StoreNewCustomBufferEmpty(MsgTable* table, CustomMsgHandle handle,
     }
 
     return success;
-}
+} */
 
 u32 MsgTable_GetBufferLen(MsgTable* table, u16 textId) {
     MsgEntry* entry = MsgTable_GetEntry(table, textId);
